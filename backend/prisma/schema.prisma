@@ -11,3 +11,184 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  CUSTOMER
+  OWNER
+  DELIVERY_AGENT 
+}
+
+enum OrderStatus { 
+  ORDER_PLACED
+  CONFIRMED
+  PREPARING   
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum StockStatus {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+}
+
+model User {
+  id        String   @id // Clerk user ID
+  email     String   @unique
+  name      String?
+  role      UserRole @default(CUSTOMER) 
+  phone     String?
+  address   String?
+
+  // Relationships
+  orders             Order[]         @relation("CustomerOrders")
+  assignedDeliveries Order[]         @relation("DeliveryAgentOrders")
+  cartItems          CartItem[]
+  addresses          Address[]       
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // "Vegetables", "Fruits", "Dairy", etc.
+  slug        String   @unique // "vegetables", "fruits"
+  description String?
+  
+  // Relationships
+  products Product[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model Product {
+  id              Int         @id @default(autoincrement())
+  name            String     
+  description     String?     
+  price           Float       
+  imageUrl        String?     
+  unit            String    
+  stockStatus     StockStatus @default(IN_STOCK)
+  quantityInStock Int         @default(0)
+  
+  // Foreign key
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  // Relationships
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  stockConfig Stock?       
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId Int      
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Stock {
+  id                  Int      @id @default(autoincrement())
+  productId           Int      @unique
+  product             Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  quantity            Int      @default(0) 
+  lowStockThreshold   Int      @default(5) 
+  reorderQuantity     Int      @default(50) 
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  street  String
+  area    String
+  city    String 
+  postalCode String?
+  phone   String?
+  
+  isDefault Boolean @default(false) 
+  label     String? 
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation("CustomerOrders", fields: [userId], references: [id], onDelete: Cascade)
+
+  deliveryAddress String      
+  area            String      
+  phoneNumber     String?    
+  
+  status          OrderStatus @default(ORDER_PLACED) 
+  paymentStatus   PaymentStatus @default(PENDING) 
+  
+  deliveryAgentId String?     
+  deliveryAgent   User?       @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
+  
+  items           OrderItem[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deliveredAt DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@index([deliveryAgentId])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  
+  quantity  Int  
+  price     Float  
+  
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
