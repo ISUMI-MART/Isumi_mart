@@ -1,8 +1,10 @@
+import { clerkMiddleware } from "@clerk/express";
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
 
 const app = express();
+app.use(clerkMiddleware());
 const PORT = Number(process.env.PORT) || 4000;
 
 app.use(express.json());
