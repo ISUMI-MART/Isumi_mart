@@ -278,6 +278,7 @@ Install the following before running the project:
 ### 1. Clone the Repository
 
 ```bash
+https://github.com/ISUMI-MART/Isumi_mart.git
 
 ```
 
