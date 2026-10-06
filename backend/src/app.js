@@ -1,6 +1,7 @@
-import { clerkMiddleware } from "@clerk/express";
 import "dotenv/config";
 import express from "express";
+import { clerkMiddleware } from "@clerk/express";
+import globalRouter from "./routes/index.js";
 import cors from "cors";
 
 const app = express();
@@ -23,6 +24,8 @@ app.use(cors({
     },
     credentials: true,
 }));
+
+app.use("/api", globalRouter)
 
 app.use((req, res) => {
     res.status(404).json({ success: false, message: "Route not found" });

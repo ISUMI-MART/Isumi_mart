@@ -1,6 +1,6 @@
 import { getAuth } from "@clerk/express";
 
-export const requireAuth = (req, res, next) => {
+export const requireAuth = async(req, res, next) => {
   const auth = getAuth(req);
 
   if (!auth.userId) {
@@ -10,6 +10,6 @@ export const requireAuth = (req, res, next) => {
     });
   }
 
-  req.clerkUserId = auth.userId;
+  req.clerkId = auth.userId;
   next();
 };

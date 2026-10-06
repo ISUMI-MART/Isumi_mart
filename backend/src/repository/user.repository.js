@@ -21,12 +21,7 @@ export class UserRepository {
     return await prisma.user.create({ data });
   }
 
-  async findByUserName(userName) {
-    return await prisma.user.findUnique({ where: { userName } });
-  }
-
   async updateRole(userId, role) {
-
     return await prisma.user.update({
       where: { id: userId },
       data: role,

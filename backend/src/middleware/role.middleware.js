@@ -1,6 +1,7 @@
 import { createClerkClient } from "@clerk/express";
-import { UserRepository } from "../repository/user.repository";
-const UserRepository = new UserRepository
+import { UserRepository } from "../repository/user.repository.js";
+
+const userRepository = new UserRepository
 const clerkClient = createClerkClient({
     secretKey: process.env.CLERK_SECRET_KEY || "",
 });
@@ -8,21 +9,21 @@ const clerkClient = createClerkClient({
 export function requireRole(...allowedRoles) {
     return async (req, res, next) => {
         try {
-            const clerkUserId = req.clerkUserId;
+            const clerkId = req.clerkId;
 
-            if (!clerkUserId) {
+            if (!clerkId) {
                 return res.status(401).json({
                     success: false,
                     message: "Unauthorized: Missing authentication context.",
                 });
             }
 
-            let user = await UserRepository.findByClerkId(clerkId)
+            let localuser = await userRepository.findByClerkId(clerkId)
 
-            if (!user) {
-                console.log(`User ${clerkUserId} not found in database. Initiating safe emergency sync...`);
+            if (!localuser) {
+                console.log(`User ${clerkId} not found in database. Initiating safe emergency sync...`);
 
-                const clerkUser = await clerkClient.users.getUser(clerkUserId);
+                const clerkUser = await clerkClient.users.getUser(clerkId);
                 const email = clerkUser.emailAddresses[0]?.emailAddress;
 
                 if (!email) {
@@ -46,18 +47,18 @@ export function requireRole(...allowedRoles) {
                 if (clerkUser.lastName) {
                     userData.lastName = clerkUser.lastName;
                 }
-                user = await UserRepository.upsertUserByClerkId(clerkUserId, userData);
-                console.log(`Successfully synced user to DB with ID: ${user.id}`);
+                localuser = await userRepository.upsertUserByClerkId(clerkId, userData);
+                console.log(`Successfully synced user to DB with ID: ${localuser.id}`);
             }
 
-            if (!allowedRoles.includes(user.role)) {
+            if (!allowedRoles.includes(localuser.role)) {
                 return res.status(403).json({
                     success: false,
                     message: "Forbidden: You do not have permission to perform this action.",
                 });
             }
 
-            req.currentUser = user;
+            req.currentUser = localuser;
             next();
         } catch (error) {
             console.error("Critical error inside requireRole middleware:", error);
