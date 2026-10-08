@@ -10,9 +10,8 @@ const userRouter = Router();
 const userController = new UserController();
 
 userRouter.get("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),userController.getProfile)
-userRouter.put("/profile",requireAuth,requireRole("OWNER"),validate(updateUserSchema),userController.updateProfile);
+userRouter.put("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),validate(updateUserSchema),userController.updateProfile);
 userRouter.delete("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),userController.deleteProfile)
-
-
+userRouter.get("/profile/:id",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),userController.getProfile)
 
 export default userRouter;

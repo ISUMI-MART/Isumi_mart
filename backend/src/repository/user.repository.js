@@ -10,13 +10,10 @@ export class UserRepository {
   async findById(id) {
     return await prisma.user.findUnique({
       where: { id },
-      include: {
-        address: true,
-        phone: true,
-      },
+
     });
   }
-
+  
   async createUser(data) {
     return await prisma.user.create({ data });
   }
@@ -25,6 +22,12 @@ export class UserRepository {
     return await prisma.user.update({
       where: { id: userId },
       data: role,
+    });
+  }
+  async updateUser(id, data) {
+    return await prisma.user.update({
+      where: { id },
+      data,
     });
   }
 

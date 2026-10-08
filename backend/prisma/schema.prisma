@@ -15,13 +15,13 @@ datasource db {
 enum UserRole {
   CUSTOMER
   OWNER
-  DELIVERY_AGENT 
+  DELIVERY_AGENT
 }
 
-enum OrderStatus { 
+enum OrderStatus {
   ORDER_PLACED
   CONFIRMED
-  PREPARING   
+  PREPARING
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
@@ -40,20 +40,21 @@ enum StockStatus {
 }
 
 model User {
-  id        String   @id // Clerk user ID
+  id        Int      @id @default(autoincrement())
+  clerkId   String   @unique
   email     String   @unique
-  firstName      String?
-  lasttName      String?
-  usertName      String
-  role      UserRole @default(CUSTOMER) 
+  firstName String?
+  lastName  String?
+  userName  String
+  role      UserRole @default(CUSTOMER)
   phone     String?
   address   String?
 
   // Relationships
-  orders             Order[]         @relation("CustomerOrders")
-  assignedDeliveries Order[]         @relation("DeliveryAgentOrders")
+  orders             Order[]    @relation("CustomerOrders")
+  assignedDeliveries Order[]    @relation("DeliveryAgentOrders")
   cartItems          CartItem[]
-  addresses          Address[]       
+  addresses          Address[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,14 +64,14 @@ model User {
 }
 
 model Category {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique // "Vegetables", "Fruits", "Dairy", etc.
-  slug        String   @unique // "vegetables", "fruits"
+  id          Int     @id @default(autoincrement())
+  name        String  @unique // "Vegetables", "Fruits", "Dairy", etc.
+  slug        String  @unique // "vegetables", "fruits"
   description String?
-  
+
   // Relationships
   products Product[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -78,22 +79,22 @@ model Category {
 }
 
 model Product {
-  id              Int         @id @default(autoincrement())
-  name            String     
-  description     String?     
-  price           Decimal     @db.Decimal(10, 2)       
-  imageUrl        String?     
-  unit            String    
-  
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  imageUrl    String?
+  unit        String
+
   // Foreign key
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
   // Relationships
   cartItems   CartItem[]
   orderItems  OrderItem[]
-  stockConfig Stock?       
-  
+  stockConfig Stock?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -102,27 +103,27 @@ model Product {
 
 model CartItem {
   id        String   @id @default(cuid())
-  userId    String
-  productId Int      
+  userId    Int
+  productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
 
 model Stock {
-  id                  Int      @id @default(autoincrement())
-  productId           Int      @unique
-  product             Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  quantity            Int      @default(0) 
-  lowStockThreshold   Int      @default(5) 
-  reorderQuantity     Int      @default(50) 
-  
+  id        Int     @id @default(autoincrement())
+  productId Int     @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  quantity          Int @default(0)
+  lowStockThreshold Int @default(5)
+  reorderQuantity   Int @default(50)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -130,19 +131,19 @@ model Stock {
 }
 
 model Address {
-  id      Int    @id @default(autoincrement())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  street  String
-  area    String
-  city    String 
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  street     String
+  area       String
+  city       String
   postalCode String?
-  phone   String?
-  
-  isDefault Boolean @default(false) 
-  label     String? 
-  
+  phone      String?
+
+  isDefault Boolean @default(false)
+  label     String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -150,22 +151,22 @@ model Address {
 }
 
 model Order {
-  id              String      @id @default(cuid())
-  userId          String
-  user            User        @relation("CustomerOrders", fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId Int
+  user   User   @relation("CustomerOrders", fields: [userId], references: [id], onDelete: Cascade)
 
-  deliveryAddress String      
-  area            String      
-  phoneNumber     String?    
-  
-  status          OrderStatus @default(ORDER_PLACED) 
-  paymentStatus   PaymentStatus @default(PENDING) 
-  
-  deliveryAgentId String?     
-  deliveryAgent   User?       @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
-  
-  items           OrderItem[]
-  
+  deliveryAddress String
+  area            String
+  phoneNumber     String?
+
+  status        OrderStatus   @default(ORDER_PLACED)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  deliveryAgentId Int?
+  deliveryAgent   User?   @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
+
+  items OrderItem[]
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deliveredAt DateTime?
@@ -177,16 +178,16 @@ model Order {
 }
 
 model OrderItem {
-  id        Int    @id @default(autoincrement())
-  orderId   String
-  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
+  id      Int    @id @default(autoincrement())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
   productId Int
   product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
-  
-  quantity  Int  
-  price     Decimal     @db.Decimal(10, 2)  
-  
+
+  quantity Int
+  price    Decimal @db.Decimal(10, 2)
+
   createdAt DateTime @default(now())
 
   @@index([orderId])

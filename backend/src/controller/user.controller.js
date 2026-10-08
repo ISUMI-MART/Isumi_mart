@@ -8,7 +8,7 @@ const userService = new UserService();
 export class UserController {
   getProfile = catchAsync(
     async (req, res) => {
-      const userId = req.user.id;
+      const userId = req.currentUser.id;
       const user = await userService.getUserProfile(userId);
 
       if (!user) {
@@ -23,13 +23,17 @@ export class UserController {
     },
   );
 
-    updateProfile = catchAsync(async (req,res) => {
-    const userId = req.user.id;
-    const clerkId = req.user.clerkId;
-    const body = req.validated.body ;
+  updateProfile = catchAsync(async (req, res) => {
+    const userId = req.currentUser.id;
+    const clerkId = req.currentUser.clerkId;
+    const body = req.validated.body;
 
-    const user = await userService.updateUserProfile(userId, body);
-    await clerkClient.users.updateUser(clerkId);
+    const user = await userService.updateUser(userId, body);
+    await clerkClient.users.updateUser(clerkId, {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      username: body.userName,
+    });
 
     res.json({
       success: true,
@@ -37,11 +41,11 @@ export class UserController {
       user,
     });
   });
-  
+
   deleteProfile = catchAsync(
-    async (req,res) => {
-      const userId = req.user.id;
-      const clerkId = req.user.clerkId;
+    async (req, res) => {
+      const userId = req.currentUser.id;
+      const clerkId = req.currentUser.clerkId;
       const deletedUser = await userService.deleteUser(userId);
       await clerkClient.users.deleteUser(clerkId);
 

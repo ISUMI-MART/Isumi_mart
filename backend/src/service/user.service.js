@@ -12,7 +12,6 @@ export class UserService {
   async findOrCreateLocalUser(clerkId) {
     
     let localUser = await userRepository.findByClerkId(clerkId);
-
     
     if (!localUser) {
       
@@ -54,7 +53,7 @@ export class UserService {
      return user
   }
 
-  async updateUserProfile(userId) {
+  async updateUser(userId,data) {
     const updatedUser  = await userRepository.findById(userId);
 
     if(!updatedUser ){
