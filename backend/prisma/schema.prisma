@@ -40,15 +40,15 @@ enum StockStatus {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  clerkId   String   @unique
-  email     String   @unique
-  firstName String?
-  lastName  String?
-  userName  String
-  role      UserRole @default(CUSTOMER)
-  phone     String?
-  address   String?
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String?
+  firstName    String?
+  lastName     String?
+  userName     String
+  role         UserRole @default(CUSTOMER)
+  phone        String?
+  address      String?
 
   // Relationships
   orders             Order[]    @relation("CustomerOrders")
@@ -131,9 +131,9 @@ model Stock {
 }
 
 model Address {
-  id     Int    @id @default(autoincrement())
+  id     Int  @id @default(autoincrement())
   userId Int
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   street     String
   area       String
@@ -163,7 +163,7 @@ model Order {
   paymentStatus PaymentStatus @default(PENDING)
 
   deliveryAgentId Int?
-  deliveryAgent   User?   @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
+  deliveryAgent   User? @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
 
   items OrderItem[]
 

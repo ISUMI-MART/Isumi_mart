@@ -1,37 +1,62 @@
-import { verifyToken } from "@clerk/backend";
+import jwt from "jsonwebtoken";
+import { UserRepository } from "../repository/user.repository.js";
+
+const userRepository = new UserRepository();
 
 export const requireAuth = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized: Bearer token is required.",
-      });
-    }
-
-    const token = authHeader.substring(7);
-
-    const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY,
-    });
-
-    if (!payload.sub) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized: Invalid Clerk token.",
-      });
-    }
-
-    req.clerkId = payload.sub;
-    next();
-  } catch (error) {
-    console.error("Clerk token verification failed:", error);
-
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
-      message: "Unauthorized: Invalid or expired Clerk token.",
+      message: "Authentication token is required.",
     });
+  }
+
+  const token = authHeader.substring(7);
+
+  let payload;
+
+  try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not configured");
+    }
+
+    payload = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token.",
+    });
+  }
+
+  if (
+    typeof payload !== "object" ||
+    !payload ||
+    !Number.isInteger(payload.userId)
+  ) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid token payload.",
+    });
+  }
+
+  try {
+    const user = await userRepository.findById(payload.userId);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User account not found.",
+      });
+    }
+
+    const { passwordHash, ...safeUser } = user;
+
+    req.currentUser = safeUser;
+
+    next();
+  } catch (error) {
+    next(error);
   }
 };
