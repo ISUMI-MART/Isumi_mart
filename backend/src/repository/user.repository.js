@@ -1,9 +1,9 @@
 import { prisma } from "../config/Prisma.js";
 
 export class UserRepository {
-  async findByClerkId(clerkId) {
+  async findByEmail(email) {
     return await prisma.user.findUnique({
-      where: { clerkId },
+      where: { email },
     });
   }
 
@@ -18,12 +18,6 @@ export class UserRepository {
     return await prisma.user.create({ data });
   }
 
-  async updateRole(userId, role) {
-    return await prisma.user.update({
-      where: { id: userId },
-      data: role,
-    });
-  }
   async updateUser(id, data) {
     return await prisma.user.update({
       where: { id },
