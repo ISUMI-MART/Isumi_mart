@@ -2,6 +2,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { UserRepository } from "../repository/user.repository.js";
+import { BadRequestError, ConflictError, UnauthorizedError } from "../errors/appError.js";
 
 const userRepository = new UserRepository();
 
@@ -16,24 +17,17 @@ export class AuthService {
     }
 
     if (!userName?.trim()) {
-      throw Object.assign(new Error("Username is required"), {
-        statusCode: 400,
-      });
+      throw new BadRequestError("Username is required")
     }
 
     if (typeof password !== "string" || password.length < 8) {
-      throw Object.assign(
-        new Error("Password must be at least 8 characters"),
-        { statusCode: 400 }
-      );
+      throw new BadRequestError("Password must be at least 8 characters")
     }
 
     const existingUser = await userRepository.findByEmail(email);
 
     if (existingUser) {
-      throw Object.assign(new Error("Email is already registered"), {
-        statusCode: 409,
-      });
+      throw new ConflictError("Email is already registered");
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
@@ -54,9 +48,7 @@ export class AuthService {
 
   async login({ email, password }) {
     if (typeof email !== "string" || typeof password !== "string") {
-      throw Object.assign(new Error("Email and password are required"), {
-        statusCode: 400,
-      });
+      throw new BadRequestError("Email and password are required")
     }
 
     const user = await userRepository.findByEmail(
@@ -64,9 +56,7 @@ export class AuthService {
     );
 
     if (!user || !user.passwordHash) {
-      throw Object.assign(new Error("Invalid email or password"), {
-        statusCode: 401,
-      });
+      throw new UnauthorizedError("Invalid email or password")
     }
 
     const passwordMatches = await bcrypt.compare(
@@ -75,9 +65,7 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
-      throw Object.assign(new Error("Invalid email or password"), {
-        statusCode: 401,
-      });
+      throw new UnauthorizedError("Invalid email or password")
     }
 
     const secret = process.env.JWT_SECRET;

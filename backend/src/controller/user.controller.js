@@ -1,6 +1,6 @@
 import { UserService } from "../service/user.service.js";
 import { catchAsync } from "../util/catchAsync.js";
-import { clerkClient } from "@clerk/express";
+
 
 
 const userService = new UserService();
@@ -25,15 +25,9 @@ export class UserController {
 
   updateProfile = catchAsync(async (req, res) => {
     const userId = req.currentUser.id;
-    const clerkId = req.currentUser.clerkId;
     const body = req.validated.body;
 
     const user = await userService.updateUser(userId, body);
-    await clerkClient.users.updateUser(clerkId, {
-      firstName: body.firstName,
-      lastName: body.lastName,
-      username: body.userName,
-    });
 
     res.json({
       success: true,
@@ -45,9 +39,7 @@ export class UserController {
   deleteProfile = catchAsync(
     async (req, res) => {
       const userId = req.currentUser.id;
-      const clerkId = req.currentUser.clerkId;
       const deletedUser = await userService.deleteUser(userId);
-      await clerkClient.users.deleteUser(clerkId);
 
       if (!deletedUser) {
         throw new Error("User profile not found");
@@ -61,4 +53,33 @@ export class UserController {
     },
   );
 
+   createDeliveryAgent = async (req, res, next) => {
+    try {
+      const user = await userService.createDeliveryAgent(req.body);
+
+      return res.status(201).json({
+        success: true,
+        message: "Delivery Agent account created successfully",
+        user,
+      });
+    } catch (error) {
+      if (error.statusCode) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+        });
+      }
+
+      if (error.code === "P2002") {
+        return res.status(409).json({
+          success: false,
+          message: "Email is already registered",
+        });
+      }
+
+      next(error);
+    }
+  };
 }
+
+
