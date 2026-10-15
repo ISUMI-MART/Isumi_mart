@@ -204,7 +204,6 @@ Stock Movement History Is Created
 | Tailwind CSS | Styling and responsive user interface design |
 | shadcn/ui | Reusable UI components |
 | Lucide React | Icons |
-| Clerk | User registration, login, session management, and role-based authentication |
 | Prisma ORM | Database schema, migrations, and database queries |
 | PostgreSQL | Relational database |
 | Node.js | Server-side JavaScript runtime |
@@ -252,8 +251,6 @@ Main database entities include:
 
 ### Important Database Rules
 
-- Clerk manages authentication credentials; passwords are not stored in the Isumi Mart database.
-- Each system user is linked to Clerk through `clerkUserId`.
 - A customer can access only their own online orders.
 - A delivery agent can access only deliveries assigned to them.
 - Product prices are saved in order items so previous orders retain the correct historical price.
@@ -272,7 +269,6 @@ Install the following before running the project:
 - Node.js version 18 or later
 - npm, pnpm, or yarn
 - PostgreSQL
-- A Clerk account and Clerk application
 - Git
 
 ### 1. Clone the Repository
@@ -346,19 +342,6 @@ Create a `.env` file using the following example.
 # PostgreSQL Database
 DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/isumi_mart?schema=public"
 
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
-CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
-
-# Clerk Redirect URLs
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
-NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-
-# Application Configuration
-NEXT_PUBLIC_APP_NAME=Isumi Mart
-NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 > Never commit `.env` files, database passwords, Clerk secret keys, or production credentials to GitHub.
@@ -442,7 +425,7 @@ The application API is organized around the following modules:
 
 | Module | Main Responsibilities |
 |---|---|
-| Authentication | Clerk user synchronization and role validation |
+| Authentication | JWT authentication and role validation |
 | Users | Customer profiles, owner accounts, delivery-agent accounts |
 | Categories | Create, update, list, and deactivate categories |
 | Products | Product CRUD operations, search, filtering, and availability |
@@ -462,9 +445,8 @@ The application API is organized around the following modules:
 
 The system uses Clerk for authentication and session management.
 
-- Customer registration is handled through Clerk Sign Up.
-- Customer login is handled through Clerk Sign In.
-- Clerk user IDs are linked with local PostgreSQL user records.
+- Customer registration is handled through JWT auth system.
+- Customer login is handled through JWT.
 - Access to protected pages and API routes is controlled by user role.
 - Public registration creates only a `CUSTOMER` account.
 - Owner accounts and delivery-agent accounts are created or managed through protected Owner functions.
@@ -480,7 +462,7 @@ The system uses Clerk for authentication and session management.
 | Team Member | Role | Main Contribution |
 |---|---|---|
 | M.A.C.J. Perera | Project Manager + Backend Support | Project planning, Jira management, documentation, testing coordination, API documentation, and deployment support |
-| H.N. Jayalath | Backend Developer + Database Administrator | PostgreSQL database, Prisma schema, backend APIs, inventory logic, order logic, Clerk integration, and role authorization |
+| H.N. Jayalath | Backend Developer + Database Administrator | PostgreSQL database, Prisma schema, backend APIs, inventory logic, order logic, JWT authentication, and role authorization |
 | V.R. De Alwis Karunarathne | Frontend Developer | Owner portal, delivery-agent portal, dashboards, product management, order management, and delivery interfaces |
 | K.A.H.B. Kasthuriarachchi | Frontend Developer | Customer portal, product browsing, authentication UI, cart, checkout, customer orders, and tracking pages |
 
@@ -491,7 +473,7 @@ The system uses Clerk for authentication and session management.
 The project is managed using Jira and is organized into the following development stages:
 
 1. Project planning, requirement gathering, and system design
-2. Database, Prisma schema, Clerk setup, and backend API development
+2. Database, Prisma schema, and backend API development
 3. Customer, Owner, and Delivery Agent frontend development
 4. Frontend and backend integration
 5. Testing, bug fixing, deployment, documentation, and final demonstration
