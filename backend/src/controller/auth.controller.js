@@ -5,8 +5,6 @@ const authService = new AuthService();
 export class AuthController {
   register = async (req, res, next) => {
     try {
-      console.log("Request body:", req.body);
-
       const user = await authService.register(req.body);
       
 
