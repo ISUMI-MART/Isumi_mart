@@ -1,9 +1,9 @@
-import { prisma } from "../config/Prisma";
+import { prisma } from "../config/Prisma.js";
 
 export class CategoryRepository {
-    async findById(id) {
+    async findBySlug(slug) {
         return await prisma.category.findUnique({
-            where: { id }
+            where: { slug }
         })
     }
     async getAll(){
@@ -15,13 +15,13 @@ orderBy :{name :'asc'},
     async createCategory(data) {
         return await prisma.category.create({ data });
     }
-    async updateCategory(id, data) {
-        return await prisma.category.create({
-            Where: { id },
+    async updateCategory(slug, data) {
+        return await prisma.category.update({
+            where: { slug: slug, },
             data,
         });
     }
-    async deleteCategory(id) {
-        return await prisma.category.delete({ where: { id } });
+    async deleteCategory(slug) {
+        return await prisma.category.delete({ where: { slug } });
     }
 }

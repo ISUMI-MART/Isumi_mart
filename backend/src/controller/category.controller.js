@@ -1,34 +1,35 @@
-import { CategoryService } from "../service/category.service";
-import { catchAsync } from "../util/catchAsync";
+import { CategoryService } from "../service/category.service.js";
+import { catchAsync } from "../util/catchAsync.js";
 
 const categoryService = new CategoryService();
 
 export class CategoryController {
 
     create = catchAsync(async (req, res) => {
-        const body = req.validated.body;
+        const body = req.body;
         const category = await categoryService.createCategory(body);
         res.status(201).json({ success: true, data: category })
     })
     getAll = catchAsync(async (req, res) => {
-        const category = await categoryService.getAll();
-        res.json({ success: true, date: category })
+        const categories  = await categoryService.getAllCategory();
+        res.json({ success: true, data: categories  })
     })
-    getById = catchAsync(async (req, res) => {
-        const id = req.validated.params.id;
-        const category = await tagService.getById(id);
-        res.json({ success: true, data: category });
-    });
+     getBySlug = catchAsync(async (req, res) => {
+    const slug = req.params.slug;
+    const category = await categoryService.getCategoryBySlug(slug);
+    res.json({ success: true, data: category });
+  });
     update = catchAsync(async (req, res) => {
-        const id = req.validated.params.id;
-        const body = req.validated.body;
-        const category = await categoryService.updateCategory(id, body);
+
+        const slug = req.params.slug;
+        const body = req.body;
+        const category = await categoryService.updateCategory(slug, body);
         res.json({ success: true, data: category });
     });
 
     delete = catchAsync(async (req, res) => {
-        const id = req.validated.params.id;
-        await categoryService.deleteCategory(id);
+        const slug = req.params.slug;
+        await categoryService.deleteCategory(slug);
         res.json({ success: true, message: "Category deleted successfully" });
     });
 
