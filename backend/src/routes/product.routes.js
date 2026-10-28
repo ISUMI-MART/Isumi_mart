@@ -12,6 +12,6 @@ productRouter.get("/",requireAuth,requireRole("OWNER", "CUSTOMER"),validate(getP
 productRouter.get("/:id",requireAuth,requireRole("OWNER", "CUSTOMER"),validate(productIdParamSchema),controller.getById)
 productRouter.put("/:id",requireAuth,requireRole("OWNER"),validate(updateProductSchema),controller.update)
 productRouter.post("/",requireAuth,requireRole("OWNER"),validate(createProductSchema),controller.create)
-productRouter.delete("/:id",requireAuth,requireRole("OWNER"),controller.delete)
+productRouter.delete("/:id",requireAuth,requireRole("OWNER"),validate(productIdParamSchema),controller.delete)
 
 export default productRouter
