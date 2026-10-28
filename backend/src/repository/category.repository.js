@@ -6,9 +6,9 @@ export class CategoryRepository {
             where: { slug }
         })
     }
-    async getAll(){
+    async getAll() {
         return await prisma.category.findMany({
-orderBy :{name :'asc'},
+            orderBy: { name: 'asc' },
         })
     }
 
@@ -22,6 +22,7 @@ orderBy :{name :'asc'},
         });
     }
     async deleteCategory(slug) {
-        return await prisma.category.delete({ where: { slug } });
+        return await prisma.category.delete({ 
+            where: { slug } });
     }
 }
