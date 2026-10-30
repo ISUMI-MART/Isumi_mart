@@ -393,3 +393,129 @@ a.light-button {
 .empty-box .green-button {
   margin-top: 14px;
 }
+
+/* ======================================================================
+   5. NAVBAR
+   ====================================================================== */
+
+.navbar {
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.navbar-inner {
+  width: min(1180px, 92%);
+  height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  color: var(--green);
+  font-size: 20px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #65736c;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--green);
+}
+
+.nav-links a.active {
+  color: var(--green);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  color: var(--green);
+  font-weight: 700;
+  transition: 0.2s;
+  position: relative;
+}
+
+.cart-button:hover {
+  background: var(--green-light);
+  border-color: #c7ddce;
+}
+
+.cart-count {
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.login-link {
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.login-link:hover {
+  color: var(--green-dark);
+}
+
+.logo em {
+  font-style: italic;
+  font-weight: 800;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  margin-right: 9px;
+  border-radius: 9px;
+  background: var(--green);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.bottom-nav {
+  display: none;
+}
