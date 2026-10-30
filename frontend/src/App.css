@@ -1,184 +1,395 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* ======================================================================
+   1. DESIGN TOKENS (CSS variables)
+   ====================================================================== */
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+:root {
+  --green: #176b45;
+  --green-dark: #0d5133;
+  --green-light: #e8f4ec;
+  --cream: #f7f8ef;
+  --cream-dark: #eeeada;
+  --text: #18352a;
+  --muted: #718078;
+  --border: #dfe7df;
+  --white: #ffffff;
+  --danger: #c94a4a;
+  --warning: #bd7918;
+  --shadow-sm: 0 2px 8px rgba(25, 65, 45, 0.05);
+  --shadow-md: 0 10px 30px rgba(25, 65, 45, 0.08);
+  --shadow-lg: 0 20px 50px rgba(25, 65, 45, 0.1);
 }
 
-.hero {
-  position: relative;
+/* ======================================================================
+   2. RESET & BASE ELEMENTS
+   ====================================================================== */
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+* {
+  box-sizing: border-box;
 }
 
-#center {
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fafbf7;
+  color: #18352a;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ======================================================================
+   3. PAGE LAYOUT HELPERS
+   ====================================================================== */
+
+main {
+  min-height: 70vh;
+}
+
+.page-container {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  padding: 70px 0;
+}
+
+.page-header {
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  margin: 8px 0;
+  font-size: 42px;
+  line-height: 1.15;
+}
+
+.page-header p {
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.small-title {
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ---------- Simple pages (Owner, Delivery) - direct children of .page-container ---------- */
+
+.page-container > h3 {
+  margin-top: 35px;
+}
+
+.page-container > h2 {
+  margin-top: 10px;
+}
+
+.page-container > a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 13px 20px;
+  background: var(--green);
+  color: white;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.page-container > a:hover {
+  background: var(--green-dark);
+}
+
+.page-container h1 {
+  color: var(--text);
+}
+
+.page-container > p {
+  color: var(--muted);
+}
+
+/* ======================================================================
+   4. SHARED COMPONENTS
+   ====================================================================== */
+
+/* ---------- Buttons ---------- */
+
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 21px;
+  border-radius: 12px;
+  font-weight: 800;
+  transition: 0.2s;
+}
+
+.primary-button {
+  background: var(--green);
+  color: white;
+}
+
+.primary-button:hover {
+  background: var(--green-dark);
+  transform: translateY(-2px);
+}
+
+.secondary-button {
+  background: white;
+  color: var(--green);
+  border: 1px solid var(--border);
+}
+
+.secondary-button:hover {
+  background: var(--green-light);
+}
+
+.green-button {
+  border: none;
+  background: var(--green);
+  color: white;
+  padding: 11px 17px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.green-button:hover {
+  background: var(--green-dark);
+  transform: translateY(-1px);
+}
+
+.light-button {
+  border: 1px solid #d9ddd5;
+  background: white;
+  color: #263d32;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.light-button:hover {
+  background: #f5f7f1;
+  border-color: #c5d0c8;
+}
+
+.full-button {
+  width: 100%;
+}
+
+.large-button {
+  padding: 12px 20px;
+}
+
+a.green-button,
+a.light-button {
+  display: inline-block;
+  text-align: center;
+}
+
+/* ---------- Form fields ---------- */
+
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+.form-group label {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #31483d;
+  font-weight: 700;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
+.form-group input {
   width: 100%;
+  height: 44px;
+  border: 1px solid #d9e0d9;
+  border-radius: 9px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #263d32;
+  font-size: 13px;
+  outline: none;
+  transition: 0.2s;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.form-group input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.08);
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+/* ---------- Badges ---------- */
+
+.status-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 7px;
+  background: #eef0e9;
+  color: #53665c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.green-badge {
+  background: var(--green);
+  color: white;
+}
+
+/* ---------- Stock status ---------- */
+
+.in-stock {
+  background: #dff2e5;
+  color: #237346;
+}
+
+.low-stock {
+  background: #fff2c8;
+  color: #8c6800;
+}
+
+.out-stock {
+  background: #f8dddd;
+  color: #a63d3d;
+}
+
+.stock-pill {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* ---------- Tables ---------- */
+
+.summary-table,
+.confirmation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.summary-table th,
+.confirmation-table th {
+  background: #f1f3e9;
+  text-align: left;
+  padding: 13px 12px;
+  font-weight: 700;
+  color: #33473d;
+}
+
+.summary-table td,
+.confirmation-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e9e3;
+}
+
+.summary-table tbody tr:last-child td,
+.confirmation-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---------- Cards (shared surface) ---------- */
+
+.order-summary-card,
+.side-card,
+.confirmation-card,
+.track-order-card,
+.delivery-card,
+.tracking-card,
+.profile-left-card,
+.profile-form-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Quantity control (Product details + Cart) ---------- */
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+
+.qty-control button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.qty-control button:disabled {
+  color: #bbb;
+  cursor: not-allowed;
+}
+
+.qty-control span {
+  min-width: 34px;
+  text-align: center;
+  font-weight: 800;
+}
+
+/* ---------- Empty state ---------- */
+
+.empty-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 60px 30px;
+  text-align: center;
+}
+
+.empty-box > span {
+  font-size: 55px;
+}
+
+.empty-box h2,
+.empty-box h3 {
+  margin: 15px 0 8px;
+}
+
+.empty-box p {
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+
+.empty-box .green-button {
+  margin-top: 14px;
 }
