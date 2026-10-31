@@ -1344,3 +1344,114 @@ a.product-image {
   min-width: 220px;
   padding: 13px 20px;
 }
+
+/* ======================================================================
+   13. CHECKOUT - ORDER SUMMARY
+   ====================================================================== */
+
+/* ---------- Layout and items ---------- */
+
+.checkout-summary-page {
+  min-height: 75vh;
+}
+
+.checkout-summary-container {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+  padding: 60px 0;
+}
+
+.checkout-summary-container > h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+}
+
+.summary-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.order-summary-card {
+  padding: 22px;
+}
+
+/* ---------- Price summary ---------- */
+
+.price-summary {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.price-summary > div,
+.confirmation-prices > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+}
+
+.total-row {
+  border-top: 1px solid #dce2db;
+  margin-top: 8px;
+  padding-top: 13px !important;
+  font-size: 16px;
+}
+
+/* ---------- Address and payment (right side) ---------- */
+
+.summary-right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.side-card {
+  padding: 22px;
+}
+
+.side-card h2 {
+  font-size: 17px;
+  margin: 0 0 14px;
+}
+
+.side-card p {
+  font-size: 13px;
+  margin: 6px 0;
+  color: #69766e;
+}
+
+.side-card .light-button {
+  margin-top: 13px;
+}
+
+.radio-row,
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.radio-row input,
+.checkbox-row input {
+  margin-top: 2px;
+  accent-color: var(--green);
+}
+
+.payment-message,
+.payment-info {
+  border: 1px solid #e0e5db;
+  background: #f8f9f2;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 12px;
+  color: #65736c;
+  margin: 12px 0;
+}
+
+.side-card .green-button {
+  margin-top: 8px;
+  padding: 13px;
+}
