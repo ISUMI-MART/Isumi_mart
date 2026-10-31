@@ -1290,3 +1290,57 @@ a.product-image {
   margin-top: 16px;
   text-align: center;
 }
+
+/* ======================================================================
+   12. CHECKOUT - DELIVERY ADDRESS
+   ====================================================================== */
+
+.checkout-address-page {
+  min-height: 75vh;
+}
+
+.checkout-address-container {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+  padding: 60px 0;
+}
+
+.checkout-address-container > h1 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  color: var(--text);
+}
+
+.step-text {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.checkout-address-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 20px;
+}
+
+.full-width {
+  margin-top: 22px;
+}
+
+.full-width input::placeholder {
+  color: #9a9b91;
+}
+
+.checkout-address-card .green-button {
+  margin-top: 25px;
+  min-width: 220px;
+  padding: 13px 20px;
+}
