@@ -1026,3 +1026,62 @@ a.product-image {
   color: #d4ecdc;
   font-size: 16px;
 }
+
+/* ======================================================================
+   9. PRODUCTS PAGE
+   ====================================================================== */
+
+/* ---------- Controls ---------- */
+
+.products-controls {
+  margin-bottom: 20px;
+}
+
+/* ---------- Search ---------- */
+
+.products-search {
+  max-width: 500px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+}
+
+.products-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font-size: 14px;
+}
+
+/* ---------- Category tabs ---------- */
+
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 25px;
+}
+
+.category-tab {
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.category-tab:hover {
+  border-color: #bdd4c4;
+}
+
+.category-tab.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
