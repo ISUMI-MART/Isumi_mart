@@ -1,0 +1,23 @@
+{
+  "name": "isumi_mart",
+  "version": "1.0.0",
+  "description": "A web-based grocery management system developed for **Isumi Mart**. The system helps replace manual, paper-based shop operations with a centralized digital platform for managing grocery products, inventory, customer orders, deliveries, walk-in sales, suppliers, and Cash on Delivery payments.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ISUMI-MART/Isumi_mart.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/ISUMI-MART/Isumi_mart/issues"
+  },
+  "homepage": "https://github.com/ISUMI-MART/Isumi_mart#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6"
+  }
+}
