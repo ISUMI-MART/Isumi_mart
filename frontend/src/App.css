@@ -1823,3 +1823,106 @@ a.product-image {
   margin-top: 25px;
   min-width: 140px;
 }
+
+/* ======================================================================
+   18. LOGIN & REGISTER
+   ====================================================================== */
+
+.auth-page {
+  min-height: 75vh;
+  padding: 70px 20px;
+  background: linear-gradient(135deg, #eef7ef, #fafaf3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-card {
+  width: min(440px, 100%);
+  padding: 40px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-card h1 {
+  margin: 0 0 20px;
+  font-size: 28px;
+}
+
+.auth-card > p {
+  color: var(--muted);
+}
+
+.auth-card form {
+  margin-top: 25px;
+}
+
+.auth-card label {
+  display: block;
+  margin: 15px 0 7px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  outline: none;
+}
+
+.auth-card input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.08);
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--green);
+  color: white;
+  font-weight: 800;
+  transition: 0.2s;
+}
+
+.auth-button:hover {
+  background: var(--green-dark);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+.auth-footer a {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.staff-logins {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.staff-logins div {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.staff-logins a {
+  color: var(--green);
+  font-weight: 700;
+}
