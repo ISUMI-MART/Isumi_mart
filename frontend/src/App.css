@@ -1729,3 +1729,97 @@ a.product-image {
 .delivery-card .light-button {
   margin-top: 15px;
 }
+
+/* ======================================================================
+   17. PROFILE PAGE
+   ====================================================================== */
+
+/* ---------- Page ---------- */
+
+.profile-page {
+  min-height: 75vh;
+}
+
+.profile-container {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+  padding: 60px 0;
+}
+
+.profile-container > h1 {
+  margin: 0 0 25px;
+  font-size: 32px;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 20px;
+}
+
+/* ---------- Left card ---------- */
+
+.profile-left-card {
+  padding: 25px;
+  text-align: center;
+}
+
+.avatar {
+  height: 110px;
+  background: #eef1e8;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7b857e;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.profile-left-card h2 {
+  font-size: 18px;
+  margin: 8px 0 5px;
+}
+
+.profile-left-card p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+.profile-link-button {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px;
+  margin-top: 8px;
+  color: #33473d;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-link-button:hover {
+  background: var(--green-light);
+  color: var(--green);
+  border-color: #c8dfcf;
+}
+
+/* ---------- Form ---------- */
+
+.profile-form-card {
+  padding: 25px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 20px;
+}
+
+.save-button {
+  margin-top: 25px;
+  min-width: 140px;
+}
