@@ -1,3 +1,27 @@
+/* 
+   TABLE OF CONTENTS
+    1. DESIGN TOKENS (CSS variables)
+    2. RESET & BASE ELEMENTS
+    3. PAGE LAYOUT HELPERS
+    4. SHARED COMPONENTS
+    5. NAVBAR
+    6. FOOTER
+    7. PRODUCT CARD (Home + Products)
+    8. HOME PAGE
+    9. PRODUCTS PAGE
+   10. PRODUCT DETAILS PAGE
+   11. CART PAGE
+   12. CHECKOUT - DELIVERY ADDRESS
+   13. CHECKOUT - ORDER SUMMARY
+   14. ORDER CONFIRMATION PAGE
+   15. ORDER HISTORY PAGE
+   16. TRACK ORDER PAGE
+   17. PROFILE PAGE
+   18. LOGIN & REGISTER
+   19. RESPONSIVE - TABLET (max-width: 900px)
+   20. RESPONSIVE - MOBILE (max-width: 600px)
+*/
+
 /* ======================================================================
    1. DESIGN TOKENS (CSS variables)
    ====================================================================== */
@@ -764,44 +788,6 @@ a.product-image {
   display: block;
 }
 
-.food-item {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  box-shadow: var(--shadow-md);
-}
-
-.food-1 {
-  top: 25px;
-  left: 70px;
-}
-
-.food-2 {
-  top: 70px;
-  right: 15px;
-}
-
-.food-3 {
-  bottom: 50px;
-  right: 20px;
-}
-
-.food-4 {
-  bottom: 20px;
-  left: 80px;
-}
-
-.food-5 {
-  top: 150px;
-  left: -20px;
-}
-
 /* ---------- Search bar ---------- */
 
 .search-section {
@@ -833,19 +819,6 @@ a.product-image {
   border: 0;
   outline: 0;
   font-size: 15px;
-}
-
-.search-box a {
-  background: var(--green);
-  color: white;
-  padding: 13px 18px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.search-box a:hover {
-  background: var(--green-dark);
 }
 
 .search-button {
@@ -967,10 +940,6 @@ a.product-image {
   gap: 40px;
 }
 
-.staff-section .small-title {
-  color: #bde3c9;
-}
-
 .staff-section h2 {
   margin: 10px 0 0;
   font-size: 31px;
@@ -1006,19 +975,12 @@ a.product-image {
   flex: 1;
 }
 
-.staff-card strong,
-.staff-card small {
+.staff-card strong {
   display: block;
 }
 
 .staff-card strong {
   font-size: 14px;
-}
-
-.staff-card small {
-  color: var(--muted);
-  margin-top: 3px;
-  font-size: 12px;
 }
 
 .staff-text {
@@ -1691,6 +1653,7 @@ a.product-image {
 }
 
 .cancelled-card {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
