@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { DELIVERY_FEE } from "../data/orders";
 
-function Cart({ cart, removeFromCart, updateQuantity }) {
+function Cart({ cart = [], removeFromCart, updateQuantity }) {
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const delivery = cart.length > 0 ? DELIVERY_FEE : 0;
 

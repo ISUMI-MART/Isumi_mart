@@ -29,7 +29,7 @@ function Footer() {
 
         <div>
           <h4>Staff</h4>
-          <Link to="/owner">Owner / Cashier</Link>
+          <Link to="/owner">Owner </Link>
           <Link to="/delivery">Delivery Agent</Link>
         </div>
       </div>

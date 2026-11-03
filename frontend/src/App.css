@@ -1,6 +1,5 @@
-/* ======================================================================
-   1. DESIGN TOKENS (CSS variables)
-   ====================================================================== */
+
+   /* 1. DESIGN TOKENS (CSS variables) */
 
 :root {
   --green: #176b45;
@@ -19,9 +18,8 @@
   --shadow-lg: 0 20px 50px rgba(25, 65, 45, 0.1);
 }
 
-/* ======================================================================
-   2. RESET & BASE ELEMENTS
-   ====================================================================== */
+
+   /* 2. RESET & BASE ELEMENTS */
 
 * {
   box-sizing: border-box;
@@ -55,9 +53,7 @@ a {
   text-decoration: none;
 }
 
-/* ======================================================================
-   3. PAGE LAYOUT HELPERS
-   ====================================================================== */
+/* 3. PAGE LAYOUT HELPERS*/
 
 main {
   min-height: 70vh;
@@ -124,9 +120,7 @@ main {
   color: var(--muted);
 }
 
-/* ======================================================================
-   4. SHARED COMPONENTS
-   ====================================================================== */
+/* 4. SHARED COMPONENTS */
 
 /* ---------- Buttons ---------- */
 
@@ -394,9 +388,7 @@ a.light-button {
   margin-top: 14px;
 }
 
-/* ======================================================================
-   5. NAVBAR
-   ====================================================================== */
+/*5. NAVBAR */
 
 .navbar {
   background: rgba(255, 255, 255, 0.97);
@@ -520,9 +512,7 @@ a.light-button {
   display: none;
 }
 
-/* ======================================================================
-   6. FOOTER
-   ====================================================================== */
+/* 6. FOOTER*/
 
 .footer {
   background: #102e23;
@@ -578,9 +568,7 @@ a.light-button {
   font-size: 12px;
 }
 
-/* ======================================================================
-   7. PRODUCT CARD (Home + Products)
-   ====================================================================== */
+/* 7. PRODUCT CARD (Home + Products) */
 
 .product-grid {
   display: grid;
@@ -689,59 +677,298 @@ a.product-image {
   object-fit: contain;
 }
 
-/* ======================================================================
-   8. HOME PAGE
-   ====================================================================== */
+
+   /* 8. HOME PAGE */
 
 /* ---------- Hero ---------- */
 
-.hero {
+/* Main container */
+.home-page {
+  width: 100%;
+  background: #ffffff;
+  color: #18352a;
+}
+
+.home-container {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+/* Search */
+.home-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.home-search input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid #115e3b; /* Dark green border from your image */
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2937;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.home-search input:focus {
+  box-shadow: 0 0 0 3px rgba(17, 94, 59, 0.15);
+}
+
+.home-search input::placeholder {
+  color: #9ca3af;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.home-search button {
+  padding: 12px 24px;
+  background: #115e3b; /* Matching dark green button */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.home-search button:hover {
+  background: #064e3b;
+}
+
+
+/* Hero */
+.home-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 45px;
+  padding: 48px;
   background: linear-gradient(135deg, #eef7ef 0%, #f8f9ef 100%);
+  border-radius: 22px;
+  min-height: 420px;
   overflow: hidden;
 }
 
-.hero-content {
-  width: min(1180px, 92%);
-  min-height: 580px;
-  margin: auto;
+.home-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.home-hero-label {
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.home-hero h1 {
+  font-size: clamp(34px, 4vw, 52px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  margin: 0 0 20px;
+}
+
+.home-hero-description {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+
+.home-hero-description p {
+  margin: 0;
+}
+
+.home-shop-button {
+  display: inline-block;
+  padding: 14px 24px;
+  background: var(--green);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: 0.2s;
+  margin-bottom: 16px;
+}
+
+
+
+.home-shop-button:hover {
+  background: var(--green-dark);
+  transform: translateY(-2px);
+}
+
+.home-hero-note {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Hero image */
+.home-hero-image {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 50px;
+  justify-content: center;
 }
 
-.hero-text {
-  max-width: 610px;
+.home-hero-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
 }
 
-.hero-label {
-  color: var(--green);
-  font-weight: 800;
-  font-size: 14px;
+/* Benefits */
+.home-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
 }
 
-.hero h1 {
-  margin: 20px 0;
-  font-size: 60px;
-  line-height: 1.05;
-  letter-spacing: -2px;
-}
-
-.hero h1 span {
-  color: var(--green);
-}
-
-.hero p {
-  max-width: 560px;
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 17px;
-}
-
-.hero-buttons {
+.home-benefit {
   display: flex;
-  gap: 13px;
-  margin-top: 30px;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.home-benefit span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+}
+
+.home-benefit svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* General sections */
+.home-section {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .home-container {
+    width: 92%;
+  }
+
+  .home-hero {
+    grid-template-columns: 1fr;
+    padding: 30px;
+    gap: 28px;
+  }
+
+  .home-hero h1 {
+    font-size: 36px;
+  }
+
+  .home-hero-image {
+    min-height: 230px;
+  }
+
+  .home-benefits {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    width: 94%;
+    padding: 18px 0;
+  }
+
+  .home-hero {
+    padding: 23px;
+    gap: 22px;
+  }
+
+  .home-hero h1 {
+    font-size: 30px;
+  }
+
+  .home-hero-description {
+    font-size: 14px;
+  }
+
+  .home-hero-image {
+    min-height: 200px;
+  }
+
+  .home-hero-image img {
+    min-height: 200px;
+  }
+
+  .home-search {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .home-search button {
+    padding: 12px;
+    font-size: 12px;
+  }
+  
+
+  .home-search input {
+    font-size: 12px;
+  }
+
+  .home-search input::placeholder {
+    font-size: 11px;
+  }
+
+
+  .home-benefits {
+    gap: 10px;
+  }
+
+  .home-benefit {
+    padding: 14px;
+  }
 }
 
 /* ---------- Hero image ---------- */
@@ -1086,9 +1313,7 @@ a.product-image {
   color: white;
 }
 
-/* ======================================================================
-   10. PRODUCT DETAILS PAGE
-   ====================================================================== */
+/* 10. PRODUCT DETAILS PAGE */
 
 .pd-page {
   width: min(1100px, 92%);
@@ -1202,9 +1427,7 @@ a.product-image {
   border-radius: inherit;
 }
 
-/* ======================================================================
-   11. CART PAGE
-   ====================================================================== */
+/* 11. CART PAGE */
 
 .cart-layout {
   display: grid;
@@ -1291,9 +1514,7 @@ a.product-image {
   text-align: center;
 }
 
-/* ======================================================================
-   12. CHECKOUT - DELIVERY ADDRESS
-   ====================================================================== */
+/* 12. CHECKOUT - DELIVERY ADDRESS */
 
 .checkout-address-page {
   min-height: 75vh;
@@ -1345,9 +1566,7 @@ a.product-image {
   padding: 13px 20px;
 }
 
-/* ======================================================================
-   13. CHECKOUT - ORDER SUMMARY
-   ====================================================================== */
+/* 13. CHECKOUT - ORDER SUMMARY*/
 
 /* ---------- Layout and items ---------- */
 
