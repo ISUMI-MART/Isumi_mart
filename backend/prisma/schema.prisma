@@ -65,7 +65,7 @@ model User {
 
 model Category {
   id          Int     @id @default(autoincrement())
-  name        String  @unique // "Vegetables", "Fruits", "Dairy", etc.
+  name        String  @unique 
   slug        String  @unique // "vegetables", "fruits"
   description String?
 
