@@ -1455,3 +1455,96 @@ a.product-image {
   margin-top: 8px;
   padding: 13px;
 }
+
+/* ======================================================================
+   14. ORDER CONFIRMATION PAGE
+   ====================================================================== */
+
+/* ---------- Page ---------- */
+
+.order-confirmation-page {
+  min-height: 75vh;
+}
+
+.confirmation-container {
+  width: min(820px, 92%);
+  margin: 0 auto;
+  padding: 60px 0;
+}
+
+/* ---------- Header ---------- */
+
+.confirmation-header {
+  text-align: center;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 35px 25px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.success-icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 1px solid #cbe2d2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.confirmation-header h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31px;
+  margin: 0 0 8px;
+  color: #17382b;
+}
+
+.confirmation-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #6f7c74;
+}
+
+/* ---------- Details ---------- */
+
+.confirmation-card {
+  padding: 24px;
+}
+
+.confirmation-prices {
+  font-size: 13px;
+  margin-top: 15px;
+}
+
+.confirmation-total {
+  border-top: 1px solid #dce2db;
+  margin-top: 7px;
+  padding-top: 13px !important;
+  font-size: 16px;
+}
+
+.deliver-text {
+  font-size: 12px;
+  color: #68766d;
+  margin-top: 17px;
+}
+
+/* ---------- Buttons ---------- */
+
+.confirmation-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.confirmation-buttons .green-button,
+.confirmation-buttons .light-button {
+  flex: 1;
+}
