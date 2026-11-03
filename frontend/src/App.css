@@ -1926,3 +1926,356 @@ a.product-image {
   color: var(--green);
   font-weight: 700;
 }
+
+/* ======================================================================
+   19. RESPONSIVE - TABLET (max-width: 900px)
+   ====================================================================== */
+
+@media (max-width: 900px) {
+  /* Navbar */
+  .navbar-inner {
+    gap: 12px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 10px;
+    background: white;
+    border-top: 1px solid var(--border);
+  }
+
+  .bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 64px;
+    color: var(--muted);
+    font-size: 18px;
+  }
+
+  .bottom-nav a span {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .bottom-nav a.active {
+    color: var(--green);
+  }
+
+  /* Home */
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 70px 0;
+  }
+
+  .hero-text {
+    max-width: 700px;
+  }
+
+  .hero p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero h1 {
+    font-size: 46px;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-image {
+    width: 330px;
+    height: 330px;
+  }
+
+  /* Categories */
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Products */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Staff */
+  .staff-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 30px;
+  }
+
+  .staff-buttons {
+    width: 100%;
+  }
+
+  /* Product details & Cart */
+  .pd-layout,
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-row {
+    grid-template-columns: 56px 1fr auto;
+  }
+
+  .cart-line-total {
+    text-align: left;
+  }
+
+  /* Checkout / Track */
+  .summary-layout,
+  .track-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Profile */
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-left-card {
+    max-width: 450px;
+  }
+
+  /* Footer */
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer {
+    padding-bottom: 70px;
+  }
+}
+
+/* ======================================================================
+   20. RESPONSIVE - MOBILE (max-width: 600px)
+   ====================================================================== */
+
+@media (max-width: 600px) {
+  /* Navbar */
+  .navbar-inner {
+    height: 68px;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+
+  .cart-button {
+    padding: 9px 11px;
+  }
+
+  .login-link {
+    font-size: 13px;
+  }
+
+  /* Home - Hero */
+  .hero h1 {
+    font-size: 38px;
+    letter-spacing: -1px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+
+  .hero-image {
+    width: 280px;
+    height: 280px;
+  }
+
+  /* Home - Search */
+  .search-box {
+    flex-wrap: wrap;
+    padding: 12px 15px;
+  }
+
+  .search-box input {
+    min-width: 150px;
+  }
+
+  /* Sections */
+  .section {
+    padding: 60px 0;
+  }
+
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .section-heading h2 {
+    font-size: 28px;
+  }
+
+  /* Category / Product */
+  .category-grid,
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Staff */
+  .staff-section {
+    padding: 30px;
+  }
+
+  .staff-section h2 {
+    font-size: 25px;
+  }
+
+  /* General pages */
+  .page-container {
+    padding: 45px 0;
+  }
+
+  .page-header h1 {
+    font-size: 34px;
+  }
+
+  /* Checkout */
+  .checkout-address-container,
+  .checkout-summary-container,
+  .confirmation-container,
+  .orders-container,
+  .track-container,
+  .profile-container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .checkout-address-container > h1,
+  .checkout-summary-container > h1,
+  .orders-container h1,
+  .track-container h1,
+  .profile-container > h1 {
+    font-size: 28px;
+  }
+
+  .checkout-address-card {
+    padding: 20px;
+  }
+
+  .address-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .checkout-address-card .green-button {
+    width: 100%;
+  }
+
+  /* Order Summary */
+  .order-summary-card,
+  .side-card,
+  .track-order-card,
+  .delivery-card,
+  .confirmation-card {
+    padding: 17px;
+  }
+
+  .summary-table,
+  .confirmation-table {
+    font-size: 11px;
+  }
+
+  .summary-table th,
+  .summary-table td,
+  .confirmation-table th,
+  .confirmation-table td {
+    padding: 10px 7px;
+  }
+
+  /* Order Confirmation */
+  .confirmation-header {
+    padding: 28px 18px;
+  }
+
+  .confirmation-header h1 {
+    font-size: 25px;
+  }
+
+  .confirmation-buttons {
+    flex-direction: column;
+  }
+
+  .confirmation-buttons .green-button,
+  .confirmation-buttons .light-button {
+    width: 100%;
+  }
+
+  /* Order History */
+  .order-history-card {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .order-history-actions {
+    flex-wrap: wrap;
+  }
+
+  /* Track Order */
+  .tracking-card {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .cancelled-card {
+    gap: 6px;
+  }
+
+  .tracking-step {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  /* Profile */
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+
+  .profile-form-card {
+    padding: 20px;
+  }
+
+  .save-button {
+    width: 100%;
+  }
+
+  /* Login / Register */
+  .auth-card {
+    padding: 28px;
+  }
+
+  /* Footer */
+  .footer-container {
+    grid-template-columns: 1fr;
+  }
+}
