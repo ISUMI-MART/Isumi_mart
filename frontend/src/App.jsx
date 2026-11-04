@@ -119,6 +119,12 @@ import {
   read,
 } from "./data/ownerData";
 
+import {
+  DELIVERY_FEE,
+  getNextOrderId,
+  saveOrder,
+} from "./data/orders";
+
 // Customer layout
 function CustomerLayout() {
   return (
@@ -234,6 +240,75 @@ const [deliveryOrders, setDeliveryOrders] = useState(
     );
   };
 
+  // Place customer order
+const placeOrder = ({ address }) => {
+  if (cart.length === 0) {
+    return null;
+  }
+
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  const newOrder = {
+    id: getNextOrderId(),
+
+    date: new Date().toLocaleDateString("en-CA"),
+
+    status: "Order Placed",
+
+    payment: "Cash on Delivery",
+
+    paymentStatus: "Pending",
+
+    items: cart.map((item) => ({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+    })),
+
+    subtotal,
+
+    deliveryFee: DELIVERY_FEE,
+
+    discount: 0,
+
+    total: subtotal + DELIVERY_FEE,
+
+    address: {
+      fullName: address.fullName,
+      phone: address.phone,
+      street: address.street,
+      city: address.city,
+      note: address.note,
+    },
+
+    agent: null,
+  };
+
+  // Save using the order helper
+  saveOrder(newOrder);
+
+  // Also update Owner portal orders
+  setOrders((previousOrders) => {
+    const updatedOrders = [newOrder, ...previousOrders];
+
+    localStorage.setItem(
+      "isumi-orders",
+      JSON.stringify(updatedOrders)
+    );
+
+    return updatedOrders;
+  });
+
+  // Empty the cart after successful order placement
+  setCart([]);
+
+  return newOrder;
+};
+
   // Delivery login
 const loginAgent = (id) => {
   sessionStorage.setItem("isumi-agent-login", "yes");
@@ -297,12 +372,13 @@ const saveDeliveryOrders = (updatedOrders) => {
 
         <Route
           path="/checkout/address"
-          element={<CheckoutAddress />}
+          element={<CheckoutAddress cart={cart}/>}
         />
 
         <Route
           path="/checkout/summary"
-          element={<CheckoutSummary />}
+          element={<CheckoutSummary cart={cart}
+      placeOrder={placeOrder}/>}
         />
 
         <Route
