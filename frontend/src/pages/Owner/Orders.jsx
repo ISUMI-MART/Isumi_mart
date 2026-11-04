@@ -11,13 +11,16 @@ function Orders({ orders, updateOrder }) {
       filter === "All" || order.status === filter;
 
     const matchesSearch = [
-      order.id,
-      order.customer,
-      order.address,
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.toLowerCase());
+  order.id,
+  order.customer,
+  order.address?.fullName,
+  order.address?.phone,
+  order.address?.street,
+  order.address?.city,
+]
+  .join(" ")
+  .toLowerCase()
+  .includes(query.toLowerCase());
 
     return matchesStatus && matchesSearch;
   });

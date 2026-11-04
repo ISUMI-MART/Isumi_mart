@@ -1,7 +1,11 @@
 
 import { money } from "../../data/ownerData";
 
-function TableOrders({ orders, updateOrder }) {
+function TableOrders({
+  orders,
+  updateOrder,
+  assignDeliveryAgent
+}) {
   return (
     <div className="tablewrap">
       <table>
@@ -11,7 +15,7 @@ function TableOrders({ orders, updateOrder }) {
             <th>Customer</th>
             <th>Items</th>
             <th>Total</th>
-            <th>Delivery</th>
+            <th>Delivery Agent</th>
             <th>Status / update</th>
           </tr>
         </thead>
@@ -25,14 +29,53 @@ function TableOrders({ orders, updateOrder }) {
               </td>
 
               <td>
-                {o.customer}
-                <div className="muted">{o.address}</div>
+                {o.customer || o.address?.fullName || "Walk-in Customer"}
+
+                <div className="muted">
+                  {o.address
+                    ? `${o.address.street || ""}, ${o.address.city || ""}`
+                    : ""}
+                </div>
+
+                <div className="muted">
+                  {o.address?.phone || ""}
+                </div>
               </td>
 
-              <td>{o.items}</td>
-              <td className="strong">{money(o.total)}</td>
-              <td>{o.agent}</td>
+              <td>
+                {Array.isArray(o.items)
+                  ? o.items.map((item) => (
+                      <div key={item.id}>
+                        {item.name} × {item.quantity}
+                      </div>
+                    ))
+                  : o.items || "-"}
+              </td>
 
+              <td className="strong">
+                {money(o.total)}
+              </td>
+
+              {/* Assign delivery agent */}
+              <td>
+                <select
+                  className="field"
+                  value={
+                    typeof o.agent === "string"
+                      ? o.agent
+                      : o.agent?.shortName || ""
+                  }
+                  onChange={(e) =>
+                    assignDeliveryAgent(o.id, e.target.value)
+                  }
+                >
+                  <option value="">Unassigned</option>
+                  <option value="Ruwan">Ruwan Perera</option>
+                  <option value="Nuwan">Nuwan Silva</option>
+                </select>
+              </td>
+
+              {/* Update order status */}
               <td>
                 <select
                   className="field"
@@ -42,6 +85,7 @@ function TableOrders({ orders, updateOrder }) {
                   }
                 >
                   {[
+                    "Order Placed",
                     "Pending",
                     "Processing",
                     "Out for Delivery",
