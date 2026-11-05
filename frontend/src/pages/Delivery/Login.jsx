@@ -66,11 +66,11 @@ function Login({ onLogin }) {
           Credentials are not verified in this demonstration.
         </p>
 
-        <p style={{ marginTop: 18 }}>
+        {/* <p style={{ marginTop: 18 }}>
           <Link to="/" style={{ color: "#39734a", fontSize: 12 }}>
             ← Back to Isumi Mart
           </Link>
-        </p>
+        </p> */}
       </form>
     </div>
   );
