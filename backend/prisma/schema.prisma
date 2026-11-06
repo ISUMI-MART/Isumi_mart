@@ -22,8 +22,11 @@ enum OrderStatus {
   ORDER_PLACED
   CONFIRMED
   PREPARING
+  ASSIGNED
+  PICKED_UP
   OUT_FOR_DELIVERY
   DELIVERED
+  DELIVERY_FAILED
   CANCELLED
 }
 
@@ -46,6 +49,7 @@ model User {
   firstName    String?
   lastName     String?
   userName     String
+  agentCode    String?  @unique
   role         UserRole @default(CUSTOMER)
   phone        String?
   address      String?
@@ -65,7 +69,7 @@ model User {
 
 model Category {
   id          Int     @id @default(autoincrement())
-  name        String  @unique 
+  name        String  @unique
   slug        String  @unique // "vegetables", "fruits"
   description String?
 
@@ -85,15 +89,18 @@ model Product {
   price       Decimal @db.Decimal(10, 2)
   imageUrl    String?
   unit        String
+  isActive    Boolean @default(true)
 
   // Foreign key
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   // Relationships
-  cartItems   CartItem[]
-  orderItems  OrderItem[]
-  stockConfig Stock?
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  stockConfig     Stock?
+  walkInSaleItems WalkInSaleItem[]
+  stockMovements  StockMovement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -105,6 +112,7 @@ model CartItem {
   id        String   @id @default(cuid())
   userId    Int
   productId Int
+  quantity  Int    @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -113,6 +121,7 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@index([userId])
 }
 
 model Stock {
@@ -130,6 +139,20 @@ model Stock {
   @@index([productId])
 }
 
+model StockMovement {
+  id        Int               @id @default(autoincrement())
+  productId Int
+  quantity  Int
+  note      String?
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
+}
+
 model Address {
   id     Int  @id @default(autoincrement())
   userId Int
@@ -140,6 +163,7 @@ model Address {
   city       String
   postalCode String?
   phone      String?
+  note       String?
 
   isDefault Boolean @default(false)
   label     String?
@@ -155,21 +179,41 @@ model Order {
   userId Int
   user   User   @relation("CustomerOrders", fields: [userId], references: [id], onDelete: Cascade)
 
+deliveryFullName String?
   deliveryAddress String
   area            String
   phoneNumber     String?
+  deliveryNote     String?
 
+  // Order amounts
+  subtotal     Decimal @db.Decimal(10, 2)
+  deliveryFee  Decimal @default(0) @db.Decimal(10, 2)
+  discount     Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount  Decimal @default(0) @db.Decimal(10, 2)
+
+  // Order and payment
   status        OrderStatus   @default(ORDER_PLACED)
   paymentStatus PaymentStatus @default(PENDING)
+  
 
   deliveryAgentId Int?
   deliveryAgent   User? @relation("DeliveryAgentOrders", fields: [deliveryAgentId], references: [id], onDelete: SetNull)
 
+  deliveryAssignedAt DateTime?
+  pickedUpAt         DateTime?
+  deliveredAt        DateTime?
+
+  // Failed delivery information
+  deliveryFailureReason String?
+  deliveryFailureNote   String?
+  deliveryFailedAt      DateTime?
+
+  notes String?
+
   items OrderItem[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deliveredAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([status])
@@ -191,5 +235,40 @@ model OrderItem {
   createdAt DateTime @default(now())
 
   @@index([orderId])
+  @@index([productId])
+}
+
+
+model WalkInSale {
+  id           String        @id @default(cuid())
+  billNumber   String        @unique
+  customerName String?
+  paymentStatus PaymentStatus @default(PAID)
+
+  subtotal    Decimal @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+
+  items WalkInSaleItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+model WalkInSaleItem {
+  id        Int    @id @default(autoincrement())
+  saleId    String
+  productId Int
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+
+  sale WalkInSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([saleId])
   @@index([productId])
 }
