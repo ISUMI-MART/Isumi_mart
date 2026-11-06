@@ -1,78 +1,30 @@
-import React from 'react';
+
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import '../layouts/IsumiMartOrders.css';
+import "../layouts/IsumiMartOrders.css";
 
-const OrderHistory = () => {
-
+const OrderHistory = ({ orders = [] }) => {
   const navigate = useNavigate();
-  
-  const orders = [
-    {
-      id: 'IM-1048',
-      date: '14 Oct 2026',
-      items: '6 items',
-      total: 'LKR 2,600.00',
-      payment: 'Pending',
-      status: 'Out for Delivery',
-      action: 'Track order →',
-      isLink: true
-    },
-    {
-      id: 'IM-1032',
-      date: '10 Oct 2026',
-      items: '8 items',
-      total: 'LKR 3,180.00',
-      payment: 'Paid',
-      status: 'Delivered',
-      action: 'View details →',
-      isLink: false
-    },
-    {
-      id: 'IM-1017',
-      date: '04 Oct 2026',
-      items: '4 items',
-      total: 'LKR 1,620.00',
-      payment: 'Paid',
-      status: 'Delivered',
-      action: 'View details →',
-      isLink: false
-    },
-    {
-      id: 'IM-1004',
-      date: '28 Sep 2026',
-      items: '3 items',
-      total: 'LKR 1,100.00',
-      payment: 'Pending',
-      status: 'Cancelled',
-      action: 'View details →',
-      isLink: false,
-      note: 'Cancelled order IM-1004: cancelled by you before preparation. No payment collected.'
-    }
-  ];
+
+  const formatMoney = (amount) =>
+    `LKR ${Number(amount || 0).toLocaleString("en-LK", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
 
   return (
     <div className="page-container">
-
-      {/* Page Content */}
       <main className="main-content">
+
         <h1 className="page-title">Your orders</h1>
-        <p className="page-subtitle">All your neighborhood grocery runs, in one place.</p>
 
-        {/* Search Bar Area */}
-        <div className="search-container">
-          <div className="search-input-wrapper">
-            <span className="search-icon">🔍</span>
-            <input type="text" placeholder="Search by order number..." className="search-input" />
-          </div>
-          <select className="filter-dropdown">
-            <option>All orders</option>
-          </select>
-        </div>
+        <p className="page-subtitle">
+          All your neighborhood grocery runs, in one place.
+        </p>
 
-        {/* Table Container Card */}
         <div className="orders-card">
           <h2 className="card-title">Current & past orders</h2>
-          
+
           <table className="orders-table">
             <thead>
               <tr>
@@ -85,51 +37,130 @@ const OrderHistory = () => {
                 <th>Action</th>
               </tr>
             </thead>
+
             <tbody>
-              {orders.map((order, index) => (
-                <React.Fragment key={order.id}>
-                  <tr className={order.status === 'Cancelled' ? 'row-cancelled' : ''}>
-                    <td className="order-id">{order.id}</td>
-                    <td>{order.date}</td>
-                    <td>{order.items}</td>
-                    <td>{order.total}</td>
-                    <td>
-                      <span className={`badge-payment ${order.payment.toLowerCase()}`}>
-                        {order.payment}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge-status ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>
-                      <button className={`action-btn ${order.isLink ? 'btn-link' : ''}`}>
-                        {order.action}
-                      </button>
-                    </td>
-                  </tr>
-                  {order.note && (
-                    <tr className="note-row">
-                      <td colSpan="7" className="cancelled-note">
-                        {order.note}
+              {orders.map((order) => {
+                const failed = order.status === "Not Delivered";
+
+                const itemCount = Array.isArray(order.items)
+                  ? order.items.reduce(
+                      (total, item) =>
+                        total + Number(item.quantity || 1),
+                      0
+                    )
+                  : order.items || "-";
+
+                return (
+                  <React.Fragment key={order.id}>
+                    <tr
+                      className={
+                        failed || order.status === "Cancelled"
+                          ? "row-cancelled"
+                          : ""
+                      }
+                    >
+                      <td className="order-id">{order.id}</td>
+
+                      <td>{order.date || "-"}</td>
+
+                      <td>
+                        {typeof itemCount === "number"
+                          ? `${itemCount} items`
+                          : itemCount}
+                      </td>
+
+                      <td>{formatMoney(order.total)}</td>
+
+                      <td>
+                        <span
+                          className={`badge-payment ${
+                            (order.payment || "Pending").toLowerCase()
+                          }`}
+                        >
+                          {order.payment || "Pending"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`badge-status ${order.status
+                            ?.toLowerCase()
+                            .replace(/\s+/g, "-")}`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+
+                      <td>
+                        <button
+                          className="action-btn"
+                          onClick={() =>
+                            navigate(`/orders/${order.id}`)
+                          }
+                        >
+                          View details →
+                        </button>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
+
+                    {/* Delivery failure information */}
+                    {failed && (
+                      <tr className="note-row">
+                        <td colSpan="7" className="cancelled-note">
+                          <strong>Delivery Unsuccessful</strong>
+
+                          <p>
+                            Reason:{" "}
+                            {order.deliveryFailureReason ||
+                              "No reason provided"}
+                          </p>
+
+                          {order.deliveryFailureNote && (
+                            <p>
+                              Additional details:{" "}
+                              {order.deliveryFailureNote}
+                            </p>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+
+                    {order.status === "Cancelled" && (
+                      <tr className="note-row">
+                        <td colSpan="7" className="cancelled-note">
+                          This order has been cancelled.
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+
+              {!orders.length && (
+                <tr>
+                  <td colSpan="7" className="empty">
+                    You haven't placed any orders yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Footer Navigation Controls */}
         <div className="table-footer">
-          <span className="results-count">Showing all 4 orders</span>
-          <button className="back-btn"onClick={() => navigate("/products")}>Back to shopping</button>
-        </div>
-      </main>
+          <span className="results-count">
+            Showing {orders.length} orders
+          </span>
 
-    
+          <button
+            className="back-btn"
+            onClick={() => navigate("/products")}
+          >
+            Back to shopping
+          </button>
+        </div>
+
+      </main>
     </div>
   );
 };

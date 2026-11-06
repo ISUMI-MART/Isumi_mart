@@ -8,6 +8,12 @@ function Dashboard({ orders, saveOrders, showCompleted = false, agentId }) {
   const [tab, setTab] = useState(showCompleted ? "Delivered" : "All");
   const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState("");
+  
+const [showReasonForm, setShowReasonForm] = useState(false);
+const [pendingOrderId, setPendingOrderId] = useState(null);
+const [failureReason, setFailureReason] = useState("");
+const [failureNote, setFailureNote] = useState("");
+
 
   const filtered = orders.filter((order) => {
     if (showCompleted) {
@@ -22,24 +28,65 @@ function Dashboard({ orders, saveOrders, showCompleted = false, agentId }) {
     );
   });
 
-  const updateStatus = (orderId, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === orderId
-        ? { ...order, status: newStatus }
-        : order
-    );
 
-    saveOrders(updatedOrders);
 
-    const updatedSelected = updatedOrders.find(
-      (order) => order.id === orderId
-    );
+const updateStatus = (orderId, newStatus, failureDetails = {}) => {
+  const updatedOrders = orders.map((order) =>
+    order.id === orderId
+      ? {
+          ...order,
+          ...failureDetails,
+          status: newStatus,
+        }
+      : order
+  );
 
-    setSelected(updatedSelected);
-    setToast("Order status updated");
+  saveOrders(updatedOrders);
 
-    setTimeout(() => setToast(""), 2200);
-  };
+  const updatedSelected = updatedOrders.find(
+    (order) => order.id === orderId
+  );
+
+  setSelected(updatedSelected);
+  setToast("Order status updated");
+
+  setTimeout(() => setToast(""), 2200);
+};
+
+const saveDeliveryFailure = () => {
+  if (!failureReason) {
+    setToast("Please select a reason");
+    return;
+  }
+
+  const updatedOrders = orders.map((order) =>
+    order.id === pendingOrderId
+      ? {
+          ...order,
+          status: "Not Delivered",
+          deliveryFailureReason: failureReason,
+          deliveryFailureNote: failureNote,
+          deliveryFailedAt: new Date().toISOString(),
+        }
+      : order
+  );
+
+  saveOrders(updatedOrders);
+
+  const updatedSelected = updatedOrders.find(
+    (order) => order.id === pendingOrderId
+  );
+
+  setSelected(updatedSelected);
+  setShowReasonForm(false);
+  setPendingOrderId(null);
+
+  setToast("Delivery failure reason saved");
+
+  setTimeout(() => setToast(""), 2200);
+};
+
+
 
   return (
     <section className="content">
@@ -86,6 +133,7 @@ function Dashboard({ orders, saveOrders, showCompleted = false, agentId }) {
                 <option value="All">All</option>
                 <option value="Active">Active</option>
                 <option value="Delivered">Delivered</option>
+                <option value="Not Delivered">Not Delivered</option>
               </select>
             )}
           </div>
@@ -138,6 +186,71 @@ function Dashboard({ orders, saveOrders, showCompleted = false, agentId }) {
           </div>
         </div>
       )}
+
+      
+{showReasonForm && (
+  <div className="panel">
+    <div className="panelhead">
+      <h3>Why couldn't you deliver this order?</h3>
+    </div>
+
+    <p className="sub">
+      Please select a reason. The owner and customer
+      will be able to see this information.
+    </p>
+
+    <select
+      className="field"
+      value={failureReason}
+      onChange={(e) => setFailureReason(e.target.value)}
+    >
+      <option value="">Select a reason</option>
+      <option value="Customer unavailable">
+        Customer unavailable
+      </option>
+      <option value="Customer phone not reachable">
+        Customer phone not reachable
+      </option>
+      <option value="Incorrect delivery address">
+        Incorrect delivery address
+      </option>
+      <option value="Customer cancelled the order">
+        Customer cancelled the order
+      </option>
+      <option value="Customer refused to accept the order">
+        Customer refused to accept the order
+      </option>
+      <option value="Other">
+        Other
+      </option>
+    </select>
+
+    <textarea
+      className="field"
+      placeholder="Additional details (optional)"
+      value={failureNote}
+      onChange={(e) => setFailureNote(e.target.value)}
+      rows="3"
+    />
+
+    <div className="confirmation-buttons">
+      <button
+        className="white-button"
+        onClick={() => setShowReasonForm(false)}
+      >
+        Cancel
+      </button>
+
+      <button
+        className="green-button"
+        onClick={saveDeliveryFailure}
+      >
+        Submit reason
+      </button>
+    </div>
+  </div>
+)}
+
 
       {toast && (
         <div

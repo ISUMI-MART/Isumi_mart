@@ -281,3 +281,42 @@ body {
 .footer-right a:hover {
   text-decoration: underline;
 }
+
+.delivery-failure-form {
+  background: #fffaf5;
+  border: 1px solid #ead9c5;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.delivery-failure-form h3 {
+  font-size: 15px;
+  color: #8b492c;
+}
+
+.delivery-failure-form label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delivery-failure {
+  background: #fff4f0;
+  border: 1px solid #f2c6b8;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+
+.delivery-failure strong {
+  color: #b54730;
+}
+
+.delivery-failure p {
+  font-size: 12px;
+  margin-top: 7px;
+}

@@ -91,12 +91,32 @@ function TableOrders({
                     "Out for Delivery",
                     "Delivered",
                     "Cancelled",
+                    "Not Delivered"
                   ].map((status) => (
                     <option key={status} value={status}>
                       {status}
                     </option>
                   ))}
                 </select>
+
+                {/* Delivery failure information */}
+                {o.status === "Not Delivered" && (
+                  <div className="delivery-failure">
+                    <strong>Delivery Unsuccessful</strong>
+
+                    <p>
+                      <b>Reason:</b>{" "}
+                      {o.deliveryFailureReason || "No reason provided"}
+                    </p>
+
+                    {o.deliveryFailureNote && (
+                      <p>
+                        <b>Additional details:</b>{" "}
+                        {o.deliveryFailureNote}
+                      </p>
+                    )}
+                  </div>
+                )}
               </td>
             </tr>
           ))}
@@ -104,7 +124,9 @@ function TableOrders({
       </table>
 
       {!orders.length && (
-        <div className="empty">No matching orders.</div>
+        <div className="empty">
+          No matching orders.
+        </div>
       )}
     </div>
   );

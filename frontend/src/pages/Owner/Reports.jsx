@@ -1,21 +1,49 @@
 
 import { money } from "../../data/ownerData";
 
-function Reports({ orders, products }) {
-  const delivered = orders.filter(
+function Reports({ orders = [], products = [], walkInSales = [] }) {
+
+  // Online sales
+  const deliveredOrders = orders.filter(
     (order) => order.status === "Delivered"
   );
 
-  const revenue = delivered.reduce(
-    (total, order) => total + order.total,
+  const onlineRevenue = deliveredOrders.reduce(
+    (total, order) => total + Number(order.total || 0),
     0
   );
 
+  // Walk-in sales
+  const walkInRevenue = walkInSales.reduce(
+    (total, sale) => total + Number(sale.total || 0),
+    0
+  );
+
+  // Overall sales
+  const totalRevenue = onlineRevenue + walkInRevenue;
+
+  const totalSales = orders.length + walkInSales.length;
+
+  // Other order information
+  const pendingOrders = orders.filter(
+    (order) => order.status !== "Delivered"
+  );
+
+  // Low stock products
+  const lowStockProducts = products.filter(
+    (product) =>
+      Number(product.stock) <= Number(product.lowStockThreshold)
+  );
+
   const reports = [
-    ["Total orders", orders.length],
-    ["Delivered orders", delivered.length],
-    ["Revenue (delivered)", money(revenue)],
-    ["Total products", products.length],
+    ["Total Sales", totalSales],
+    ["Total Revenue", money(totalRevenue)],
+    ["Online Revenue", money(onlineRevenue)],
+    ["Walk-in Revenue", money(walkInRevenue)],
+    ["Delivered Orders", deliveredOrders.length],
+    ["Pending Orders", pendingOrders.length],
+    ["Total Products", products.length],
+    ["Low Stock Products", lowStockProducts.length],
   ];
 
   return (
@@ -23,30 +51,53 @@ function Reports({ orders, products }) {
       <div className="eyebrow">BUSINESS REPORTS</div>
 
       <h1 className="heading">Reports</h1>
+
       <p className="sub">
         Review your grocery shop performance.
       </p>
 
+      {/* Business statistics */}
       <div className="stats">
         {reports.map(([label, value]) => (
           <div className="stat" key={label}>
             <div className="stat-top">{label}</div>
             <strong>{value}</strong>
-            <small>Current demo data</small>
           </div>
         ))}
       </div>
 
+      {/* Revenue summary */}
       <div className="panel">
         <div className="panelhead">
-          <h3>Order summary</h3>
+          <h3>Sales Summary</h3>
         </div>
 
-        <p>Total orders: {orders.length}</p>
-        <p>Delivered: {delivered.length}</p>
-        <p>Other orders: {orders.length - delivered.length}</p>
-        <p>Delivered revenue: {money(revenue)}</p>
+        <p>Total sales: {totalSales}</p>
+
+        <p>Online revenue: {money(onlineRevenue)}</p>
+
+        <p>Walk-in revenue: {money(walkInRevenue)}</p>
+
+        <p>
+          <strong>Total revenue: {money(totalRevenue)}</strong>
+        </p>
       </div>
+
+      {/* Order summary */}
+      <div className="panel">
+        <div className="panelhead">
+          <h3>Order Summary</h3>
+        </div>
+
+        <p>Total online orders: {orders.length}</p>
+
+        <p>Delivered orders: {deliveredOrders.length}</p>
+
+        <p>Other orders: {pendingOrders.length}</p>
+
+        <p>Total walk-in sales: {walkInSales.length}</p>
+      </div>
+
     </section>
   );
 }

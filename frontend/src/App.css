@@ -1765,6 +1765,25 @@ a.product-image {
   padding: 13px 20px;
 }
 
+/* --------Not delivered--------- */
+
+.badge-status.not-delivered {
+  background: #fff0eb;
+  color: #b54730;
+  border: 1px solid #f2c6b8;
+}
+
+.note-row .cancelled-note {
+  background: #fff4f0;
+  color: #8b3928;
+  padding: 14px 18px;
+  font-size: 13px;
+}
+
+.cancelled-note p {
+  margin-top: 7px;
+}
+
 @media (max-width: 600px) {
   .confirmation-header h1 {
     font-size: 23px;

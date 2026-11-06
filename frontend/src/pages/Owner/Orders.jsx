@@ -10,14 +10,17 @@ function Orders({ orders, updateOrder }) {
     const matchesStatus =
       filter === "All" || order.status === filter;
 
-    const matchesSearch = [
+const matchesSearch = [
   order.id,
   order.customer,
   order.address?.fullName,
   order.address?.phone,
   order.address?.street,
   order.address?.city,
+  order.deliveryFailureReason,
+  order.deliveryFailureNote,
 ]
+  .filter(Boolean)
   .join(" ")
   .toLowerCase()
   .includes(query.toLowerCase());
@@ -63,6 +66,7 @@ function Orders({ orders, updateOrder }) {
                 "Processing",
                 "Out for Delivery",
                 "Delivered",
+                 "Not Delivered",
                 "Cancelled",
               ].map((status) => (
                 <option key={status} value={status}>

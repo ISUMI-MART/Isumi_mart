@@ -80,14 +80,13 @@ button {
   color: #c9ddce; 
   text-align: left; 
   font-size: 13px; 
-  text-decoration: none; /* Prevents default link underlines */
+  text-decoration: none;
 } 
 
 .nav a:visited {
   color: #c9ddce;
 }
 
-/* CHANGE FROM '.nav button.active, .nav button:hover' TO MATCH NAVLINK TARGETING */
 .nav a.active, 
 .nav a:hover { 
   background: #28543c; 
@@ -475,6 +474,27 @@ tr:last-child td {
   color: #738378 !important;
   margin-top: 16px !important;
 }
+.delivery-failure {
+  background: #fff4f0;
+  border: 1px solid #f2c6b8;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  min-width: 160px;
+}
+
+.delivery-failure strong {
+  color: #b54730;
+  font-size: 12px;
+}
+
+.delivery-failure p {
+  font-size: 12px;
+  margin: 6px 0 0;
+  white-space: normal;
+}
+
+
 @media (max-width: 900px) {
   .sidebar {
     width: 205px;
@@ -489,59 +509,6 @@ tr:last-child td {
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 650px) {
-  .shell {
-    display: block;
-  }
-  .sidebar {
-    width: 100%;
-    padding: 13px;
-    display: block;
-  }
-  .brand {
-    padding: 0 5px 12px;
-  }
-  .navlabel,
-  .sidebottom {
-    display: none;
-  }
-  .nav {
-    display: flex;
-    overflow: auto;
-  }
-  .nav button {
-    white-space: nowrap;
-    padding: 9px;
-  }
-  .topbar {
-    height: 56px;
-    padding: 0 17px;
-  }
-  .content {
-    padding: 22px 15px;
-  }
-  .stats {
-    gap: 9px;
-  }
-  .stat {
-    padding: 13px;
-  }
-  .stat strong {
-    font-size: 21px;
-  }
-  .quickgrid {
-    grid-template-columns: 1fr;
-  }
-  .row {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-  .search {
-    min-width: 0;
-    width: 100%;
-  }
-}
-
 
 /* Walk-in Sales / POS */
 
@@ -683,13 +650,46 @@ tr:last-child td {
   margin-top: 25px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+
+  .sidebar {
+    width: 180px;
+  }
+
+  .content {
+    padding: 24px 20px;
+  }
+
+  .topbar {
+    padding: 0 20px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* POS */
   .pos-layout {
     grid-template-columns: 1fr;
   }
 
   .pos-products {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Tables can scroll horizontally */
+  .tablewrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 760px;
   }
 }
 
@@ -715,5 +715,335 @@ tr:last-child td {
 
   .no-print {
     display: none !important;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .shell {
+    display: block;
+  }
+
+  /* Sidebar becomes top navigation */
+  .sidebar {
+    width: 100%;
+    padding: 13px;
+    display: block;
+  }
+
+  .brand {
+    padding: 0 5px 12px;
+  }
+
+  .brandmark {
+    width: 34px;
+    height: 34px;
+    font-size: 19px;
+  }
+
+  .brand strong {
+    font-size: 17px;
+  }
+
+  .navlabel,
+  .sidebottom {
+    display: none;
+  }
+
+  /* Horizontal scrolling navigation */
+  .nav {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 3px;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  /* ---------- TOP BAR ---------- */
+
+  .topbar {
+    height: 56px;
+    padding: 0 15px;
+  }
+
+  .crumb {
+    font-size: 11px;
+  }
+
+  .topright {
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  /* ---------- CONTENT ---------- */
+
+  .content {
+    padding: 20px 14px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+  }
+
+  .heading {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .sub {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* ---------- ROWS ---------- */
+
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .row > * {
+    width: 100%;
+  }
+
+  /* ---------- STATS ---------- */
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin: 16px 0;
+  }
+
+  .stat {
+    padding: 13px;
+    border-radius: 12px;
+  }
+
+  .stat-top {
+    font-size: 10px;
+  }
+
+  .stat-icon {
+    width: 29px;
+    height: 29px;
+    font-size: 14px;
+  }
+
+  .stat strong {
+    font-size: 20px;
+    margin: 10px 0 3px;
+  }
+
+  .stat small {
+    font-size: 10px;
+  }
+
+  /* ---------- PANELS ---------- */
+
+  .panel {
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+  }
+
+  .panelhead {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .panel h3 {
+    font-size: 14px;
+  }
+
+  .muted {
+    font-size: 11px;
+  }
+
+  /* ---------- BUTTONS ---------- */
+
+  .btn {
+    padding: 9px 12px;
+    font-size: 11px;
+  }
+
+  /* ---------- FILTERS ---------- */
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .filters .field,
+  .filters .search {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .field {
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  /* ---------- TABLE ---------- */
+
+  .tablewrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 700px;
+  }
+
+  th {
+    font-size: 9px;
+    padding: 10px 8px;
+  }
+
+  td {
+    font-size: 11px;
+    padding: 11px 8px;
+  }
+
+  /* ---------- PRODUCT CELL ---------- */
+
+  .thumb {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .productcell {
+    gap: 7px;
+  }
+
+  /* ---------- QUICK GRID ---------- */
+
+  .quickgrid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  /* ---------- POS ---------- */
+
+  .pos-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pos-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .pos-product {
+    padding: 11px;
+  }
+
+  .pos-emoji {
+    font-size: 24px;
+  }
+
+  .pos-product small {
+    font-size: 10px;
+  }
+
+  /* ---------- CART ---------- */
+
+  .cart-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quantity-control {
+    margin-left: auto;
+  }
+
+  .pos-total strong {
+    font-size: 19px;
+  }
+
+  /* ---------- MODAL ---------- */
+
+  .modalback {
+    padding: 12px;
+  }
+
+  .modal {
+    width: 100%;
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .modal h3 {
+    font-size: 16px;
+  }
+
+  .modalfoot {
+    flex-direction: column-reverse;
+  }
+
+  .modalfoot .btn {
+    width: 100%;
+  }
+
+  /* ---------- LOGIN ---------- */
+
+  .loginpage {
+    padding: 14px;
+  }
+
+  .loginbox {
+    padding: 25px 18px;
+    border-radius: 16px;
+  }
+
+  .loginbox h1 {
+    font-size: 21px;
+  }
+}
+
+/* VERY SMALL PHONE */
+@media (max-width: 400px) {
+
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    padding: 14px;
+  }
+
+  .stat strong {
+    font-size: 21px;
+  }
+
+  .heading {
+    font-size: 20px;
+  }
+
+  .content {
+    padding: 18px 12px;
   }
 }
