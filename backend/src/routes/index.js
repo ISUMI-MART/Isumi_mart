@@ -5,6 +5,7 @@ import categoryRouter from "./category.routes.js";
 import productRouter from "./product.routes.js";
 import stockRouter from "./stock.routes.js";
 import addressRouter from "./address.routes.js";
+import cartRouter from "./cart.routes.js";
 
 const globalRouter =Router();
 
@@ -14,4 +15,5 @@ globalRouter.use("/categories",categoryRouter)
 globalRouter.use("/products",productRouter)
 globalRouter.use("/stocks",stockRouter)
 globalRouter.use("/address",addressRouter)
+globalRouter.use("/carts",cartRouter)
 export default globalRouter;
