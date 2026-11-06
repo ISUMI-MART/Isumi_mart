@@ -1,56 +1,30 @@
+import { NotFoundError, BadRequestError } from "../errors/appError.js";
 import { WalkInSaleRepository } from "../repository/walkInSales.repository.js";
 
+const walkInSaleRepository = new WalkInSaleRepository();
+
 export class WalkInSaleService {
-  constructor() {
-    this.walkInSaleRepository = new WalkInSaleRepository();
-  }
 
-  async getAllSales() {
-    return await this.walkInSaleRepository.getAllSales();
-  }
+    async createSale(data) {
+        if (!data.items || data.items.length === 0) {
+            throw new BadRequestError("At least one product is required");
+        }
 
-  async getSaleById(id) {
-    if (!id) {
-      const error = new Error("Sale ID is required");
-      error.statusCode = 400;
-      throw error;
+        return await walkInSaleRepository.createSale(data);
     }
 
-    const sale = await this.walkInSaleRepository.getSaleById(id);
-
-    if (!sale) {
-      const error = new Error("Walk-in sale not found");
-      error.statusCode = 404;
-      throw error;
+    async getAllSales() {
+        return await walkInSaleRepository.getAllSales();
     }
 
-    return sale;
-  }
+    async getSaleById(id) {
+        const sale = await walkInSaleRepository.getSaleById(id);
 
-  async createSale(data) {
-    const combinedItems = new Map();
+        if (!sale) {
+            throw new NotFoundError("Walk-in sale not found");
+        }
 
-    for (const item of data.items) {
-      const currentQuantity =
-        combinedItems.get(item.productId) || 0;
-
-      combinedItems.set(
-        item.productId,
-        currentQuantity + item.quantity
-      );
+        return sale;
     }
 
-    const items = Array.from(
-      combinedItems,
-      ([productId, quantity]) => ({
-        productId,
-        quantity,
-      })
-    );
-
-    return await this.walkInSaleRepository.createSale({
-      ...data,
-      items,
-    });
-  }
 }

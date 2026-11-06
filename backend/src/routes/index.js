@@ -8,6 +8,7 @@ import addressRouter from "./address.routes.js";
 import cartRouter from "./cart.routes.js";
 import stockMovementRouter from "./stockMovements.routes.js";
 import walkInSalesRouter from "./walkInSales.routes.js";
+import walkInSaleItemsRouter from "./walkInSalesItems.routes.js";
 
 const globalRouter =Router();
 
@@ -20,5 +21,7 @@ globalRouter.use("/address",addressRouter)
 globalRouter.use("/carts",cartRouter)
 globalRouter.use("/stock-movements",stockMovementRouter)
 globalRouter.use("/walk-in-sales",walkInSalesRouter)
+globalRouter.use("/walk-in-sales-items",walkInSaleItemsRouter)
+
 
 export default globalRouter;
