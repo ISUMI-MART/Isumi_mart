@@ -114,12 +114,12 @@ function OrderConfirmation() {
             Track Order
           </button>
 
-          <button
+          {/* <button
             className="light-button large-button"
             onClick={() => navigate("/orders")}
           >
             Order History
-          </button>
+          </button> */}
 
           <button
             className="light-button large-button"

@@ -87,9 +87,20 @@ function CheckoutAddress({ cart = [] }) {
               />
             </div>
 
+            <div className="confirmation-buttons">
+
             <button type="submit" className="green-button">
               Continue to Order Summary
             </button>
+
+            <button
+              type="button"
+              className="light-button large-button"
+              onClick={() => navigate("/cart")}
+            >
+              Back to cart
+            </button>
+            </div>
           </form>
         </div>
       </div>

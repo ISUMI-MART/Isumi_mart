@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
+import { Routes, Route, Outlet, useNavigate, Navigate ,Link } from "react-router-dom";
 import { useState } from "react";
 import "./App.css";
 import "./layouts/Owner.css"
@@ -11,6 +11,7 @@ import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
 import CheckoutSummary from "./pages/CheckoutSummary";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import OrderHistory from "./pages/OrderHistory";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -28,7 +29,7 @@ import Reports from "./pages/Owner/Reports";
 import Settings from "./pages/Owner/Settings";
 import WalkInSales from "./pages/Owner/WalkInSales";
 
-import { Navigate } from "react-router-dom";
+//import { Navigate } from "react-router-dom";
 
 import DeliveryLayout from "./layouts/DeliveryLayout";
 import DeliveryLogin from "./pages/Delivery/Login";
@@ -46,8 +47,9 @@ import {
 import {
   DELIVERY_FEE,
   getNextOrderId,
-  saveOrder,
+  saveOrder,sampleOrders,
 } from "./data/orders";
+import TrackOrder from "./pages/TrackOrder";
 
 // Customer layout
 function CustomerLayout() {
@@ -232,20 +234,20 @@ function App() {
   };
 
   // Assign delivery agent to an order
-const assignDeliveryAgent = (id, agent) => {
-  const updatedOrders = orders.map((order) =>
-    order.id === id
-      ? { ...order, agent: agent || null }
-      : order
-  );
+  const assignDeliveryAgent = (id, agent) => {
+    const updatedOrders = orders.map((order) =>
+      order.id === id
+        ? { ...order, agent: agent || null }
+        : order
+    );
 
-  setOrders(updatedOrders);
+    setOrders(updatedOrders);
 
-  localStorage.setItem(
-    "isumi-orders",
-    JSON.stringify(updatedOrders)
-  );
-};
+    localStorage.setItem(
+      "isumi-orders",
+      JSON.stringify(updatedOrders)
+    );
+  };
 
   // Delivery login
   const loginAgent = (id) => {
@@ -308,6 +310,12 @@ const assignDeliveryAgent = (id, agent) => {
           }
         />
 
+
+        <Route
+          path="/my-orders"
+          element={<OrderHistory />}
+        />
+
         <Route
           path="/checkout/address"
           element={<CheckoutAddress cart={cart} />}
@@ -323,6 +331,7 @@ const assignDeliveryAgent = (id, agent) => {
           path="/order-confirmation"
           element={<OrderConfirmation />}
         />
+        <Route path="/orders/:id" element={<TrackOrder />} />
 
       </Route>
 
@@ -333,12 +342,12 @@ const assignDeliveryAgent = (id, agent) => {
           index
           element={
             <Overview
-  products={products}
-  orders={orders}
-  updateOrder={updateOrder}
-  assignDeliveryAgent={assignDeliveryAgent}
-  navigate={navigate}
-/>
+              products={products}
+              orders={orders}
+              updateOrder={updateOrder}
+              assignDeliveryAgent={assignDeliveryAgent}
+              navigate={navigate}
+            />
           }
         />
 
@@ -346,10 +355,10 @@ const assignDeliveryAgent = (id, agent) => {
           path="orders"
           element={
             <Orders
-  orders={orders}
-  updateOrder={updateOrder}
-  assignDeliveryAgent={assignDeliveryAgent}
-/>
+              orders={orders}
+              updateOrder={updateOrder}
+              assignDeliveryAgent={assignDeliveryAgent}
+            />
           }
         />
 

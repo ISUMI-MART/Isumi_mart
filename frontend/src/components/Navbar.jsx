@@ -15,7 +15,7 @@ function Navbar({ cartCount = 0, user }) {
           <nav className="nav-links">
             <NavLink to="/" end>Home</NavLink>
             <NavLink to="/products">Products</NavLink>
-            <NavLink to="/orders">Orders</NavLink>
+            <NavLink to="/my-orders">My Orders</NavLink>
             {user && <NavLink to="/profile">Profile</NavLink>}
           </nav>
 

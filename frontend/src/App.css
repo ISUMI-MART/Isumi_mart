@@ -1760,7 +1760,8 @@ a.product-image {
 }
 
 .confirmation-buttons button {
-  min-width: 150px;
+  flex: 1;
+  max-width: 250px;
   padding: 13px 20px;
 }
 
