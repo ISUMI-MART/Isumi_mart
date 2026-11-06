@@ -113,7 +113,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginCustomer } from "../../services/authService";
-import "../../layouts/auth.css";
+import "../../Layouts/auth.css";
 
 function Login() {
   const navigate = useNavigate();

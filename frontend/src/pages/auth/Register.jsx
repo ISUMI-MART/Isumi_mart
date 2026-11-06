@@ -145,7 +145,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerCustomer } from "../../services/authService";
-import "../../layouts/auth.css";
+import "../../Layouts/auth.css";
 
 function Register() {
   const navigate = useNavigate();
