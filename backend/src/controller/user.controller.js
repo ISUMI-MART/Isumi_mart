@@ -54,7 +54,6 @@ export class UserController {
   );
 
    createDeliveryAgent = async (req, res, next) => {
-    try {
       const user = await userService.createDeliveryAgent(req.body);
 
       return res.status(201).json({
@@ -62,23 +61,6 @@ export class UserController {
         message: "Delivery Agent account created successfully",
         user,
       });
-    } catch (error) {
-      if (error.statusCode) {
-        return res.status(error.statusCode).json({
-          success: false,
-          message: error.message,
-        });
-      }
-
-      if (error.code === "P2002") {
-        return res.status(409).json({
-          success: false,
-          message: "Email is already registered",
-        });
-      }
-
-      next(error);
-    }
   };
 }
 

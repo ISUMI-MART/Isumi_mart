@@ -10,12 +10,13 @@ export const updateUserSchema = z.object({
       .max(30, "Username cannot exceed 30 characters.")
       .trim()
       .optional(),
-      phone: z.
+    phone: z.
       string()
       .trim()
       .max(10, "Phon should contain 10 numbers")
+      .regex(/^\d{10}$/, "Phone number must contain exactly 10 digits")
       .optional(),
-      address: z.string().trim().max(100).optional(),
+    address: z.string().trim().max(100).optional(),
 
   }),
 });
