@@ -1,48 +1,112 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
+// import { Navigate, useNavigate } from "react-router-dom";
+// import { DELIVERY_FEE, formatAddress } from "../data/orders";
+
+// function CheckoutSummary({ cart = [], placeOrder }) {
+//   const navigate = useNavigate();
+//   const [cashReady, setCashReady] = useState(true);
+//   const [orderPlaced, setOrderPlaced] = useState(false);
+
+//   let address = null;
+//   try {
+//     address = JSON.parse(localStorage.getItem("checkoutAddress"));
+//   } catch {
+//     address = null;
+//   }
+
+import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { DELIVERY_FEE, formatAddress } from "../data/orders";
 
 function CheckoutSummary({ cart = [], placeOrder }) {
   const navigate = useNavigate();
+
   const [cashReady, setCashReady] = useState(true);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  let address = null;
-  try {
-    address = JSON.parse(localStorage.getItem("checkoutAddress"));
-  } catch {
-    address = null;
+  const [address, setAddress] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Retrieve delivery address from backend
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "http://localhost:4000/api/addresses",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Unable to retrieve address");
+        }
+
+        if (result.data && result.data.length > 0) {
+          setAddress(result.data[0]);
+        } else {
+          setAddress(null);
+        }
+      } catch (err) {
+        console.error("Address fetching error:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAddress();
+  }, []);
+
+  // No items -> go to cart
+  if (cart.length === 0 && !orderPlaced) {
+    return <Navigate to="/cart" replace />;
   }
 
   // No items -> go to cart. No address -> go to the address step.
   if (cart.length === 0 && !orderPlaced) {
-  return <Navigate to="/cart" replace />;
-}
+    return <Navigate to="/cart" replace />;
+  }
+  if (loading) { return <p>Loading order summary...</p>; }
   if (!address) return <Navigate to="/checkout/address" replace />;
 
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const discount = 0;
   const total = subtotal + DELIVERY_FEE - discount;
 
-  
-  
-const handlePlaceOrder = () => {
-  const order = placeOrder({ address });
 
-  if (!order) {
-    alert("Unable to place your order. Please try again.");
-    return;
-  }
 
-  setOrderPlaced(true);
+  const handlePlaceOrder = () => {
+    try {
+      const order = placeOrder({ address });
 
-  localStorage.setItem("latestOrder", JSON.stringify(order));
+      if (!order) {
+        alert("Unable to place your order. Please try again.");
+        return;
+      }
 
-  navigate("/order-confirmation", {
-    replace: true,
-    state: { order },
-  });
-};
+      setOrderPlaced(true);
+
+      //localStorage.setItem("latestOrder", JSON.stringify(order));
+
+      navigate("/order-confirmation", {
+        replace: true,
+        state: { order },
+      });
+    } catch (err) {
+      console.error("Order placement error:", err);
+      alert(err.message || "Unable to place your order.");
+    }
+  };
 
 
   return (
@@ -130,6 +194,9 @@ const handlePlaceOrder = () => {
             </div>
           </div>
         </div>
+        {error && (
+          <p className="error-message">{error}</p>
+        )}
       </div>
     </div>
   );
