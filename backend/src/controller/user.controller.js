@@ -1,8 +1,6 @@
 import { UserService } from "../service/user.service.js";
 import { catchAsync } from "../util/catchAsync.js";
 
-
-
 const userService = new UserService();
 
 export class UserController {
