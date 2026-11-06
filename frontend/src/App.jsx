@@ -1,7 +1,12 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
 
-// Import your pages from the pages folder
+
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+
+
+// Import pages from the pages folder
 import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -16,6 +21,10 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 function App() {
+
+  const location = useLocation();
+
+  const hideLayout = ["/login", "/register"].includes(location.pathname);
 
   const [cart, setCart] = useState([]);
 
@@ -52,21 +61,39 @@ function App() {
       )
     );
   };
+
   return (
     <>
-      <Navbar />
+      {!hideLayout && <Navbar />}
+
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
         <Route path="/" element={<Home addToCart={addToCart} />} />
         <Route path="/products" element={<Products addToCart={addToCart} />} />
         <Route path="/products/:id" element={<ProductDetails addToCart={addToCart} />} />
-        <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} updateQuantity={updateQuantity}/>} />
+
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cart={cart}
+              removeFromCart={removeFromCart}
+              updateQuantity={updateQuantity}
+            />
+          }
+        />
+
         <Route path="/checkout/address" element={<CheckoutAddress />} />
         <Route path="/checkout/summary" element={<CheckoutSummary />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
       </Routes>
-      <Footer />
+
+      {!hideLayout && <Footer />}
     </>
   );
+
 }
 
 export default App;
