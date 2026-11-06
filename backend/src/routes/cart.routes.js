@@ -10,7 +10,6 @@ import { addToCartSchema, updateCartSchema } from "../models/cart.schema.js";
 const cartRouter = Router();
 const cartController = new CartController();
 
-// Get cart
 cartRouter.get("/",requireAuth,requireRole("CUSTOMER"),cartController.getCart,);
 cartRouter.post("/",requireAuth,requireRole("CUSTOMER"),validate(addToCartSchema),cartController.addToCart,);
 cartRouter.put("/:productId",requireAuth,requireRole("CUSTOMER"),validate(updateCartSchema),cartController.updateQuantity,);
