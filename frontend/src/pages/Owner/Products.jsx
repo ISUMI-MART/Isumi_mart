@@ -13,7 +13,6 @@ function Products({ products, saveProducts }) {
     unit: "1 kg",
     price: "",
     stock: "",
-    emoji: "🛒",
   };
 
   const [form, setForm] = useState(emptyForm);
