@@ -1,14 +1,14 @@
 import TableOrders from "../../components/owner/TableOrders";
-import { money } from "../../data/ownerData";
 
-function Overview({ products, orders, updateOrder, navigate }) {
+function Overview({ products=[], orders, updateOrder, navigate }) {
   const pending = orders.filter(
     (o) => !["Delivered", "Cancelled"].includes(o.status)
   ).length;
 
-  const lowStock = products.filter(
-    (p) => p.stock > 0 && p.stock <= 10
-  );
+    const lowStock = products.filter((product) => {
+    const stock = getStock(product);
+    return stock > 0 && stock <= 10;
+  });
 
   const stats = [
     ["Total orders", orders.length, "▤", "Across all time"],
@@ -82,10 +82,27 @@ function Overview({ products, orders, updateOrder, navigate }) {
               key={product.id}
             >
               <div className="productcell">
-                <span className="thumb">{product.emoji}</span>
+                <span className="thumb">
+                  {product.imageUrl || product.image ? (
+                    <img
+                      src={product.imageUrl || product.image}
+                      alt={product.name}
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    product.emoji || "📦"
+                  )}
+                </span>
+
                 <div>
                   <b className="strong">{product.name}</b>
-                  <div className="muted">{product.category}</div>
+                  <div className="muted">
+                    {product.category?.name || product.category || ""}
+                  </div>
                 </div>
               </div>
 
