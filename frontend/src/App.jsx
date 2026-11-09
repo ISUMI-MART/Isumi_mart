@@ -1,13 +1,10 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import './App.css';
-
+import { useState, useEffect } from "react";
+import "./App.css";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
-
-// Import pages from the pages folder
-import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
@@ -16,18 +13,19 @@ import CheckoutAddress from "./pages/CheckoutAddress";
 import CheckoutSummary from "./pages/CheckoutSummary";
 import OrderConfirmation from "./pages/OrderConfirmation";
 
-// Import layout components if needed
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 function App() {
-
   const location = useLocation();
 
-  const hideLayout = ["/login", "/register"].includes(location.pathname);
+  const hideLayout = ["/login", "/register"].includes(
+    location.pathname
+  );
 
   const [cart, setCart] = useState([]);
 
+  // Add a product to the cart
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find(
@@ -44,14 +42,19 @@ function App() {
 
       return [...prevCart, { ...product, quantity: 1 }];
     });
+
+    // Show success alert
+    window.alert(`${product.name} added to cart successfully!`);
   };
 
+  // Remove a product from the cart
   const removeFromCart = (id) => {
     setCart((prevCart) =>
       prevCart.filter((item) => item.id !== id)
     );
   };
 
+  // Update product quantity
   const updateQuantity = (id, quantity) => {
     if (quantity < 1) return;
 
@@ -70,9 +73,20 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<Home addToCart={addToCart} />} />
-        <Route path="/products" element={<Products addToCart={addToCart} />} />
-        <Route path="/products/:id" element={<ProductDetails addToCart={addToCart} />} />
+        <Route
+          path="/"
+          element={<Home addToCart={addToCart} />}
+        />
+
+        <Route
+          path="/products"
+          element={<Products addToCart={addToCart} />}
+        />
+
+        <Route
+          path="/products/:id"
+          element={<ProductDetails addToCart={addToCart} />}
+        />
 
         <Route
           path="/cart"
@@ -85,15 +99,25 @@ function App() {
           }
         />
 
-        <Route path="/checkout/address" element={<CheckoutAddress />} />
-        <Route path="/checkout/summary" element={<CheckoutSummary />} />
-        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route
+          path="/checkout/address"
+          element={<CheckoutAddress />}
+        />
+
+        <Route
+          path="/checkout/summary"
+          element={<CheckoutSummary />}
+        />
+
+        <Route
+          path="/order-confirmation"
+          element={<OrderConfirmation />}
+        />
       </Routes>
 
       {!hideLayout && <Footer />}
     </>
   );
-
 }
 
 export default App;

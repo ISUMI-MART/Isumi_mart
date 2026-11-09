@@ -8,8 +8,8 @@ import { validate } from "../middleware/validation.middleware.js";
 const productRouter = Router();
 const controller = new ProductController();
 
-productRouter.get("/",requireAuth,requireRole("OWNER", "CUSTOMER"),validate(getProductsQuerySchema),controller.getAll)
-productRouter.get("/:id",requireAuth,requireRole("OWNER", "CUSTOMER"),validate(productIdParamSchema),controller.getById)
+productRouter.get("/",validate(getProductsQuerySchema),controller.getAll)
+productRouter.get("/:id",validate(productIdParamSchema),controller.getById)
 productRouter.put("/:id",requireAuth,requireRole("OWNER"),validate(updateProductSchema),controller.update)
 productRouter.post("/",requireAuth,requireRole("OWNER"),validate(createProductSchema),controller.create)
 productRouter.delete("/:id",requireAuth,requireRole("OWNER"),validate(productIdParamSchema),controller.delete)

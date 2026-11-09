@@ -1,25 +1,11 @@
-// import React, { useState } from "react";
-// import { Navigate, useNavigate } from "react-router-dom";
-// import { DELIVERY_FEE, formatAddress } from "../data/orders";
-
-// function CheckoutSummary({ cart = [], placeOrder }) {
-//   const navigate = useNavigate();
-//   const [cashReady, setCashReady] = useState(true);
-//   const [orderPlaced, setOrderPlaced] = useState(false);
-
-//   let address = null;
-//   try {
-//     address = JSON.parse(localStorage.getItem("checkoutAddress"));
-//   } catch {
-//     address = null;
-//   }
-
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { DELIVERY_FEE, formatAddress } from "../data/orders";
 
 function CheckoutSummary({ cart = [], placeOrder }) {
   const navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [cashReady, setCashReady] = useState(true);
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -34,8 +20,12 @@ function CheckoutSummary({ cart = [], placeOrder }) {
       try {
         const token = localStorage.getItem("token");
 
+        if (!token) {
+          throw new Error("You need to login first.");
+        }
+
         const response = await fetch(
-          "http://localhost:4000/api/addresses",
+          `${API_URL}/addresses`,
           {
             method: "GET",
             headers: {
@@ -96,8 +86,6 @@ function CheckoutSummary({ cart = [], placeOrder }) {
 
       setOrderPlaced(true);
 
-      //localStorage.setItem("latestOrder", JSON.stringify(order));
-
       navigate("/order-confirmation", {
         replace: true,
         state: { order },
@@ -155,10 +143,13 @@ function CheckoutSummary({ cart = [], placeOrder }) {
           <div className="summary-right">
             <div className="side-card">
               <h2>Delivery Address</h2>
-              <p>{address.fullName}</p>
-              <p>{address.phone}</p>
-              <p>{formatAddress(address)}</p>
-              {address.note && <p>Note: {address.note}</p>}
+
+              {address.phone && (<p>{address.phone} </p>)}
+              <p> {address.street}</p>
+              <p>{address.area}</p>
+              <p>{address.city}</p>
+              {address.postalCode && (<p>{address.postalCode}</p> )}
+              {address.note && (<p>Note: {address.note} </p>)}
 
               <button className="light-button" onClick={() => navigate("/checkout/address")}>
                 Edit Address

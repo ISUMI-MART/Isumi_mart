@@ -13,7 +13,7 @@ app.use(express.json());
 const allowOrigins = [
   "http://localhost:3000",
   "https://isumi-mart.vercel.app",
-  "http://localhost:5174",
+  "http://localhost:5173",
 ];
 
 app.use(
