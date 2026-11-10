@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
 import CheckoutSummary from "./pages/CheckoutSummary";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import Profile from "./pages/Profile";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -20,11 +21,21 @@ import Footer from "./components/Footer";
 function App() {
   const location = useLocation();
 
+  const [user, setUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("user") || "null");
+  });
+
   const hideLayout = ["/login", "/register"].includes(
     location.pathname
   );
 
   const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+
+    setUser(savedUser ? JSON.parse(savedUser) : null);
+  }, [location.pathname]);
 
   // Add a product to the cart
   const addToCart = (product) => {
@@ -66,9 +77,43 @@ function App() {
     );
   };
 
+  const placeOrder = ({ address }) => {
+    if (cart.length === 0) {
+      return null;
+    }
+
+    //temperory
+
+    const order = {
+      id: `IM-${Date.now()}`,
+      items: cart,
+      address: address,
+      total: cart.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      ),
+      status: "ORDER_PLACED",
+      paymentMethod: "CASH_ON_DELIVERY",
+      createdAt: new Date().toISOString(),
+    };
+
+    return order;
+  };
+
   return (
     <>
-      {!hideLayout && <Navbar />}
+      {!hideLayout && (
+        <Navbar
+          cartCount={cart.reduce(
+            (total, item) => total + item.quantity,
+            0
+          )}
+          user={user}
+          onLogout={() => setUser(null)}
+        />
+      )}
+
+
 
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -102,17 +147,26 @@ function App() {
 
         <Route
           path="/checkout/address"
-          element={<CheckoutAddress />}
+          element={<CheckoutAddress cart={cart} />}
         />
 
         <Route
           path="/checkout/summary"
-          element={<CheckoutSummary />}
+          element={<CheckoutSummary cart={cart} placeOrder={placeOrder} />}
         />
 
         <Route
           path="/order-confirmation"
           element={<OrderConfirmation />}
+        />
+
+        <Route
+          path="/profile"
+          element={
+            
+              <Profile />
+            
+          }
         />
       </Routes>
 

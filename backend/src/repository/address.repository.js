@@ -15,6 +15,17 @@ export class AddressRepository {
             }
         });
     }
+    async findCustomerById(userId) {
+    return await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            firstName: true,
+            lastName: true,
+            userName: true,
+            phone: true
+        }
+    });
+}
 
     async findById(id) {
         return await prisma.address.findUnique({

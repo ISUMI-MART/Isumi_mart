@@ -17,7 +17,7 @@ globalRouter.use("/auth",authRouter);
 globalRouter.use("/categories",categoryRouter)
 globalRouter.use("/products",productRouter)
 globalRouter.use("/stocks",stockRouter)
-globalRouter.use("/address",addressRouter)
+globalRouter.use("/addresses",addressRouter)
 globalRouter.use("/carts",cartRouter)
 globalRouter.use("/stock-movements",stockMovementRouter)
 globalRouter.use("/walk-in-sales",walkInSalesRouter)

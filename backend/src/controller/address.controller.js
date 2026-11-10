@@ -39,6 +39,17 @@ export class AddressController {
         });
     });
 
+    getCustomerDetails = catchAsync(async (req, res) => {
+    const userId = req.currentUser.id;
+
+    const customer = await addressService.getCustomerDetails(userId);
+
+    res.status(200).json({
+        success: true,
+        data: customer
+    });
+});
+
     update = catchAsync(async (req, res) => {
         const id = req.validated.params.id;
         const userId = req.currentUser.id;

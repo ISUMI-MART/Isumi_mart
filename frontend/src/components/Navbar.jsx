@@ -1,13 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-function Navbar({ cartCount = 0, user }) {
+
+
+function Navbar({ cartCount = 0, user, onLogout }) {
+
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    onLogout();
+
+    setShowMenu(false);
+
+    window.location.href = "/";
+  };
+
   return (
     <>
       <header className="navbar">
         <div className="navbar-inner">
           <Link to="/" className="logo">
-            <img src="logo-isumi mart.jpeg"alt="Isumi Mart Logo" className="logo-mark"/>
+            <img src="logo-isumi mart.jpeg" alt="Isumi Mart Logo" className="logo-mark" />
             Isumi&nbsp;<em>Mart</em>
           </Link>
 
@@ -26,15 +42,61 @@ function Navbar({ cartCount = 0, user }) {
             </Link>
 
             {user ? (
-              <Link to="/profile" className="login-link">Profile</Link>
+              <div className="profile-menu">
+
+                <button
+                  type="button"
+                  className="user-icon-button"
+                  onClick={() => setShowMenu(!showMenu)}
+                  aria-label="Open profile menu"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M5 21a7 7 0 0 1 14 0" />
+                  </svg>
+                </button>
+
+                {showMenu && (
+                  <div className="profile-dropdown">
+
+                    <Link
+                      to="/profile"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      My Profile
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                    >
+                      Sign Out
+                    </button>
+
+                  </div>
+                )}
+
+              </div>
             ) : (
-              <Link to="/login" className="login-link">Login</Link>
+              <Link to="/login" className="login-link">
+                Login
+              </Link>
             )}
           </div>
         </div>
       </header>
 
-      {/* Bottom tab bar - the reference site has Home, Shop, Cart, Orders */}
+      {/* Mobile tab bar  */}
       <nav className="bottom-nav">
         <NavLink to="/" end>🏠<span>Home</span></NavLink>
         <NavLink to="/products">🛍️<span>Products</span></NavLink>
@@ -44,5 +106,4 @@ function Navbar({ cartCount = 0, user }) {
     </>
   );
 }
-
-export default Navbar;
+export default Navbar

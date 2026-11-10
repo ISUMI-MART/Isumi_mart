@@ -2,7 +2,7 @@
 // Orders you place are saved in localStorage under "isumiOrders".
 // backend can replace these functions with API calls.
 
-export const DELIVERY_FEE = 250;
+export const DELIVERY_FEE = 200;
 
 const STORAGE_KEY = "isumiOrders";
 

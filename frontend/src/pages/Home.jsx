@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-// import { products, homeCategories } from "../data/products";
 import { getProducts, getCategories } from "../services/api";
 
 function Home({ addToCart }) {
@@ -14,28 +13,31 @@ function Home({ addToCart }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const loadHomeData = async () => {
-      try {
-        setLoading(true);
-        setError("");
+  const loadHomeData = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const [productData, categoryData] = await Promise.all([
-          getProducts(),
-          getCategories(),
-        ]);
+      const [productResult, categoryData] = await Promise.all([
+        getProducts({ page: 1, limit: 50 }),
+        getCategories(),
+      ]);
 
-        setProducts(productData);
-        setCategories(categoryData);
-      } catch (err) {
-        console.error("Home page loading error:", err);
-        setError("Unable to load products. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      // Get the products array from the backend response
+      setProducts(productResult.products || []);
 
-    loadHomeData();
-  }, []);
+      setCategories(categoryData);
+
+    } catch (err) {
+      console.error("Home page loading error:", err);
+      setError("Unable to load products. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadHomeData();
+}, []);
 
   const featuredProducts = products.slice(0, 6);
 
@@ -58,7 +60,7 @@ function Home({ addToCart }) {
 
           {/* Search */}
           <form className="home-search" onSubmit={handleSearch}>
-            <span className="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></span>
+            <span className="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokelinecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></span>
 
             <input
               type="text"
@@ -150,7 +152,7 @@ function Home({ addToCart }) {
                   className="category-card"
                   key={category.id}
                 >
-                  <div className="category-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg></div>
+                  <div className="category-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg></div>
 
                   <div>
                     <h3 className="category-name">{category.name}</h3>
@@ -158,7 +160,7 @@ function Home({ addToCart }) {
                   </div>
 
                   <span className="category-arrow">
-                    →
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                   </span>
                 </Link>
               );

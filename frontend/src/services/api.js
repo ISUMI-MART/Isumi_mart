@@ -1,9 +1,28 @@
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+export async function getProducts({
+  page = 1,
+  limit = 10,
+  search = "",
+  categorySlug = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
 
-export async function getProducts() {
-  const response = await fetch(`${API_URL}/products`);
+  if (search) {
+    params.set("search", search);
+  }
+
+  if (categorySlug) {
+    params.set("categorySlug", categorySlug);
+  }
+
+  const response = await fetch(
+    `${API_URL}/products?${params.toString()}`
+  );
 
   if (!response.ok) {
     throw new Error("Unable to load products");
@@ -11,42 +30,40 @@ export async function getProducts() {
 
   const result = await response.json();
 
-  const products = Array.isArray(result)
-    ? result
-    : Array.isArray(result.data)
-      ? result.data
-      : result.data?.products || result.products || [];
+  const products = result.data?.products || [];
 
-  if (!Array.isArray(products)) {
-    console.error("Invalid products response:", result);
-    return [];
-  }
+  const formattedProducts = products
+    .filter((product) => product.isActive !== false)
+    .map((product) => {
+      const available = Number(
+        product.stockConfig?.quantity ?? 0
+      );
 
-  return products
-  .filter((product) => product.isActive !== false)
-  .map((product) => {
-    const available = Number(product.stockConfig?.quantity ?? 0);
-    const threshold = Number(
-      product.stockConfig?.lowStockThreshold ?? 5
-    );
+      const threshold = Number(
+        product.stockConfig?.lowStockThreshold ?? 5
+      );
 
-    return {
-      ...product,
-      price: Number(product.price),
-      image: product.imageUrl || product.image || "",
-      category: product.category?.name || "",
-      categorySlug: product.category?.slug || "",
-      available,
-      stock:
-        available <= 0
-          ? "Out of Stock"
-          : available <= threshold
-            ? "Low Stock"
-            : "In Stock",
-    };
-  });
+      return {
+        ...product,
+        price: Number(product.price),
+        image: product.imageUrl || product.image || "",
+        category: product.category?.name || "",
+        categorySlug: product.category?.slug || "",
+        available,
+        stock:
+          available <= 0
+            ? "Out of Stock"
+            : available <= threshold
+              ? "Low Stock"
+              : "In Stock",
+      };
+    });
+
+  return {
+    products: formattedProducts,
+    pagination: result.data?.pagination,
+  };
 }
-
 
 export async function getProductById(id) {
   const response = await fetch(`${API_URL}/products/${id}`);
@@ -109,4 +126,46 @@ export async function getCategories() {
     : result.data || result.categories || [];
 
   return Array.isArray(categories) ? categories : [];
+}
+
+export async function getProfile() {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${API_URL}/users/profile`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Unable to load profile");
+    }
+
+    const result = await response.json();
+
+    console.log("PROFILE API RESPONSE:", result);
+
+    return result.user;
+}
+
+export async function updateProfile(profileData) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/users/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(profileData),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Unable to update profile");
+  }
+
+  return result.user;
 }

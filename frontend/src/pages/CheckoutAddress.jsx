@@ -7,7 +7,7 @@ function CheckoutAddress({ cart = [] }) {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-
+  const [customerName, setCustomerName] = useState("");
   const [address, setAddress] = useState({
     phone: "",
     street: "",
@@ -32,8 +32,26 @@ function CheckoutAddress({ cart = [] }) {
           setLoading(false);
           return;
         }
+        const customerResponse = await fetch(
+          `${API_URL}/addresses/customer-details`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
 
-        const response = await fetch(`${API_URL}/addresses`, 
+        const customerResult = await customerResponse.json();
+
+        if (!customerResponse.ok) {
+          throw new Error(
+            customerResult.message || "Failed to fetch customer details"
+          );
+        }
+
+        setCustomerName(customerResult.data.name);
+
+        const response = await fetch(`${API_URL}/addresses`,
           {
             method: "GET",
             headers: {
@@ -143,10 +161,10 @@ function CheckoutAddress({ cart = [] }) {
               <p className="error message">{error}</p>
             )}
             <div className="address-grid">
-              {/* <div className="form-group">
-                <label htmlFor="fullName">Full Name</label>
-                <input id="fullName" type="text" name="fullName" value={address.fullName} onChange={handleChange} required />
-              </div> */}
+              <div className="form-group">
+                <label htmlFor="customerName">Customer Name</label>
+                <input id="customerName"type="text"value={customerName}readOnly/>
+              </div>
 
               <div className="form-group">
                 <label htmlFor="phone">Phone Number</label>

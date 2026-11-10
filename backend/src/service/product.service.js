@@ -12,8 +12,11 @@ export class ProductService {
         // }
         return await productRepository.createProduct(data);
     }
-    async getAllProduct() {
-        return await productRepository.getAll();
+    // async getAllProduct() {
+    //     return await productRepository.getAll();
+    // }
+    async getAllProduct(filters = {}) {
+        return await productRepository.getAll(filters);
     }
 
     async getProductById(id) {

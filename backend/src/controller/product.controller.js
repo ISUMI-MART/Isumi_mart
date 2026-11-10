@@ -10,15 +10,26 @@ export class ProductController {
         const product = await productService.createProduct(body);
         res.status(201).json({ success: true, data: product })
     })
+    // getAll = catchAsync(async (req, res) => {
+    //     const products  = await productService.getAllProduct();
+    //     res.json({ success: true, data: products  })
+    // })
     getAll = catchAsync(async (req, res) => {
-        const products  = await productService.getAllProduct();
-        res.json({ success: true, data: products  })
-    })
-     getById = catchAsync(async (req, res) => {
-    const id = req.validated.params.id;
-    const product = await productService.getProductById(id);
-    res.json({ success: true, data: product });
-  });
+        const filters = req.validated.query;
+
+        const result = await productService.getAllProduct(filters);
+
+        res.status(200).json({
+            success: true,
+            data: result
+        });
+    });
+
+    getById = catchAsync(async (req, res) => {
+        const id = req.validated.params.id;
+        const product = await productService.getProductById(id);
+        res.json({ success: true, data: product });
+    });
     update = catchAsync(async (req, res) => {
 
         const id = req.validated.params.id;

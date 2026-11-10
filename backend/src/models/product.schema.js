@@ -43,6 +43,56 @@ export const createProductSchema = z.object({
 });
 
 
+// export const getProductsQuerySchema = z.object({
+//   query: z.object({
+//     page: z
+//       .string()
+//       .optional()
+//       .default("1")
+//       .transform((val) =>
+//         Math.max(1, parseInt(val, 10) || 1)
+//       ),
+
+//     limit: z
+//       .string()
+//       .optional()
+//       .default("10")
+//       .transform((val) =>
+//         Math.min(50, Math.max(1, parseInt(val, 10) || 10))
+//       ),
+
+//     sortBy: z
+//       .enum(["name", "price", "createdAt", "updatedAt"])
+//       .optional()
+//       .default("createdAt"),
+
+//     sortOrder: z
+//       .enum(["asc", "desc"])
+//       .optional()
+//       .default("desc"),
+
+//     search: z
+//       .string()
+//       .trim()
+//       .optional(),
+
+//     categoryId: z
+//       .string()
+//       .optional()
+//       .transform((val) => {
+//         if (val === undefined || val === "") {
+//           return undefined;
+//         }
+
+//         const parsed = Number(val);
+
+//         return Number.isInteger(parsed) && parsed > 0
+//           ? parsed
+//           : undefined;
+//       }),
+//   }),
+// });
+
 export const getProductsQuerySchema = z.object({
   query: z.object({
     page: z
@@ -71,28 +121,11 @@ export const getProductsQuerySchema = z.object({
       .optional()
       .default("desc"),
 
-    search: z
-      .string()
-      .trim()
-      .optional(),
+    search: z.string().trim().optional(),
 
-    categoryId: z
-      .string()
-      .optional()
-      .transform((val) => {
-        if (val === undefined || val === "") {
-          return undefined;
-        }
-
-        const parsed = Number(val);
-
-        return Number.isInteger(parsed) && parsed > 0
-          ? parsed
-          : undefined;
-      }),
+    categorySlug: z.string().trim().optional(),
   }),
 });
-
 
 export const productIdParamSchema = z.object({
   params: z.object({

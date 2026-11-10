@@ -57,10 +57,6 @@ function CheckoutSummary({ cart = [], placeOrder }) {
     fetchAddress();
   }, []);
 
-  // No items -> go to cart
-  if (cart.length === 0 && !orderPlaced) {
-    return <Navigate to="/cart" replace />;
-  }
 
   // No items -> go to cart. No address -> go to the address step.
   if (cart.length === 0 && !orderPlaced) {

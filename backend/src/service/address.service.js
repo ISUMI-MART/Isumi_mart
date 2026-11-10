@@ -28,6 +28,22 @@ export class AddressService {
         return address;
     }
 
+    async getCustomerDetails(userId) {
+    const customer = await addressRepository.findCustomerById(userId);
+
+    if (!customer) {
+        throw new NotFoundError("Customer not found");
+    }
+
+    return {
+        name:
+            [customer.firstName, customer.lastName]
+                .filter(Boolean)
+                .join(" ") || customer.userName,
+        phone: customer.phone || ""
+    };
+}
+
     async update(id, userId, data) {
         const address = await addressRepository.findById(id);
         if (!address || address.userId !== userId) {
