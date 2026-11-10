@@ -5,10 +5,15 @@ function Overview({ products=[], orders, updateOrder, navigate }) {
     (o) => !["Delivered", "Cancelled"].includes(o.status)
   ).length;
 
-    const lowStock = products.filter((product) => {
-    const stock = getStock(product);
-    return stock > 0 && stock <= 10;
-  });
+const lowStock = products.filter((product) => {
+  const stock = Number(product.stockConfig?.quantity ?? 0);
+
+  const threshold = Number(
+    product.stockConfig?.lowStockThreshold ?? 5
+  );
+
+  return stock > 0 && stock <= threshold;
+});
 
   const stats = [
     ["Total orders", orders.length, "▤", "Across all time"],
@@ -107,7 +112,7 @@ function Overview({ products=[], orders, updateOrder, navigate }) {
               </div>
 
               <span className="pill orange">
-                {product.stock} left
+                {product.stockConfig?.quantity ?? 0} left
               </span>
             </div>
           ))}

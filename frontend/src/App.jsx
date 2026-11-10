@@ -16,7 +16,7 @@ import CheckoutAddress from "./pages/CheckoutAddress";
 import CheckoutSummary from "./pages/CheckoutSummary";
 import OrderConfirmation from "./pages/OrderConfirmation";
 
-import OwnerLayout from "./layouts/OwnerLayouts";
+//import OwnerLayout from "./layouts/OwnerLayouts";
 
 import Overview from "./pages/Owner/Overview";
 // import Orders from "./pages/Owner/Orders";
