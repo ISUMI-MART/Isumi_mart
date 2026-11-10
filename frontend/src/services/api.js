@@ -23,13 +23,28 @@ export async function getProducts() {
   }
 
   return products
-    .filter((product) => product.isActive !== false)
-    .map((product) => ({
+  .filter((product) => product.isActive !== false)
+  .map((product) => {
+    const available = Number(product.stockConfig?.quantity ?? 0);
+    const threshold = Number(
+      product.stockConfig?.lowStockThreshold ?? 5
+    );
+
+    return {
       ...product,
       price: Number(product.price),
       image: product.imageUrl || product.image || "",
       category: product.category?.name || "",
-    }));
+      categorySlug: product.category?.slug || "",
+      available,
+      stock:
+        available <= 0
+          ? "Out of Stock"
+          : available <= threshold
+            ? "Low Stock"
+            : "In Stock",
+    };
+  });
 }
 
 
@@ -40,31 +55,39 @@ export async function getProductById(id) {
     if (response.status === 404) {
       return null;
     }
-    throw new Error("Unable to load product details");
+
+    throw new Error("Unable to load product");
   }
 
   const result = await response.json();
+  const product = result.data;
 
-  const product = result.data?.product || result.data || result.product || result;
-
-  if (!product || typeof product !== "object" || !product.id) {
+  if (!product || !product.id) {
     return null;
+  }
+
+  const available = Number(product.stockConfig?.quantity ?? 0);
+
+  const threshold = Number(
+    product.stockConfig?.lowStockThreshold ?? 5
+  );
+
+  let stock = "In Stock";
+
+  if (available <= 0) {
+    stock = "Out of Stock";
+  } else if (available <= threshold) {
+    stock = "Low Stock";
   }
 
   return {
     ...product,
     price: Number(product.price),
-    image: product.imageUrl || product.image || "",
-    category: product.category?.name || product.categoryName || "",
-    available: product.stockQuantity ?? product.available ?? 0,
-    stock:
-      product.stockQuantity === undefined
-        ? product.stock
-        : product.stockQuantity <= 0
-          ? "Out of Stock"
-          : product.stockQuantity <= 5
-            ? "Low Stock"
-            : "In Stock",
+    image: product.imageUrl || "",
+    category: product.category?.name || "",
+    categorySlug: product.category?.slug || "",
+    available,
+    stock,
   };
 }
 

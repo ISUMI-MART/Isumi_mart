@@ -3,9 +3,12 @@ import { prisma } from "../config/Prisma.js";
 export class ProductRepository {
     async findById(id) {
         return await prisma.product.findUnique({
-            where: { id }
-
-        })
+            where: { id },
+            include: {
+                category: true,
+                stockConfig: true,
+            },
+        });
     }
     async createProduct(data) {
         const { categorySlug, ...productData } = data;
