@@ -498,6 +498,7 @@ a.light-button {
   height: 32px;
   margin-right: 9px;
   border-radius: 9px;
+  border-color: var(--green-dark);
   background: var(--green);
   color: white;
   display: inline-flex;
@@ -1234,6 +1235,8 @@ a.product-image {
 .category-icon {
   width: 55px;
   height: 55px;
+  color: rgb(63, 123, 94);
+  text-decoration: none;
   border-radius: 15px;
   background: var(--green-light);
   display: flex;
@@ -1258,6 +1261,12 @@ a.product-image {
   margin-left: auto;
   color: var(--green);
   font-weight: 800;
+}
+
+.category-name{
+  color: #071105;
+  text-decoration: none;
+
 }
 
 /* CATEGORY RESPONSIVE */

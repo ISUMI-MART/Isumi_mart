@@ -1,99 +1,19 @@
-// import React, { useState, useEffect } from "react";
-// import { Navigate, useNavigate } from "react-router-dom";
-
-// // Reads a saved value from localStorage safely
-// // function readSaved(key) {
-// //   try {
-// //     return JSON.parse(localStorage.getItem(key));
-// //   } catch {
-// //     return null;
-// //   }
-// // }
-
-// function CheckoutAddress({ cart = [] }) {
-//   const navigate = useNavigate();
-
-//   // Start with the last address used. If none, start empty.
-//   // const [address, setAddress] = useState(() => {
-//   //   const saved = readSaved("checkoutAddress");
-//   //   const profile = readSaved("customerProfile");
-//   const [address, setAddress] = useState({
-//   fullName: "",
-//   phone: "",
-//   street: "",
-//   city: "",
-//   note: "",
-// });
-
-// const [loading, setLoading] = useState(true);
-
-//     useEffect(() => {
-//   const fetchAddress = async () => {
-//     try {
-//       const token = localStorage.getItem("token");
-
-//       const response = await fetch(
-//         "http://localhost:4000/api/addresses",
-//         {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       );
-
-//       const result = await response.json();
-
-//       if (!response.ok) {
-//         throw new Error(result.message || "Failed to retrieve address");
-//       }
-
-//       if (result.data && result.data.length > 0) {
-//         const savedAddress = result.data[0];
-
-//         setAddress((prev) => ({
-//           ...prev,
-//           fullName: savedAddress.fullName ?? prev.fullName,
-//           phone: savedAddress.phone ?? prev.phone,
-//           street: savedAddress.street ?? "",
-//           city: savedAddress.city ?? "",
-//           note: savedAddress.note ?? "",
-//         }));
-
-//         localStorage.setItem(
-//           "checkoutAddress",
-//           JSON.stringify(savedAddress)
-//         );
-//       }
-//     } catch (error) {
-//       console.error("Address retrieval error:", error);
-//     }
-//   };
-
-//   fetchAddress();
-// }, []);
-
-//     return {
-//       fullName: saved?.fullName ?? profile?.fullName ?? "",
-//       phone: saved?.phone ?? profile?.phone ?? "",
-//       street: saved?.street ?? "",
-//       city: saved?.city ?? "",
-//       note: saved?.note ?? "",
-//     };
-//   });
-
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+
 
 function CheckoutAddress({ cart = [] }) {
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
+
   const [address, setAddress] = useState({
-    fullName: "",
     phone: "",
     street: "",
+    area: "",
     city: "",
+    postalCode: "",
     note: "",
   });
 
@@ -101,14 +21,19 @@ function CheckoutAddress({ cart = [] }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Retrieve customer's saved address from backend
+  // fetch customer's saved address from backend
   useEffect(() => {
     const fetchAddress = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(
-          "http://localhost:4000/api/addresses",
+        if (!token) {
+          setError("You need to login first.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/addresses`, 
           {
             method: "GET",
             headers: {
@@ -130,10 +55,11 @@ function CheckoutAddress({ cart = [] }) {
           setAddressId(savedAddress.id);
 
           setAddress({
-            fullName: savedAddress.fullName || "",
             phone: savedAddress.phone || "",
             street: savedAddress.street || "",
+            area: savedAddress.area || "",
             city: savedAddress.city || "",
+            postalCode: savedAddress.postalCode || "",
             note: savedAddress.note || "",
           });
         }
@@ -146,9 +72,9 @@ function CheckoutAddress({ cart = [] }) {
     };
 
     fetchAddress();
-  }, []);
+  }, [API_URL]);
 
-  // Nothing to check out? Go back to the cart.
+  // If cart empty Go back to the cart.
   if (cart.length === 0) {
     return <Navigate to="/cart" replace />;
   }
@@ -159,19 +85,21 @@ function CheckoutAddress({ cart = [] }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  //   localStorage.setItem("checkoutAddress", JSON.stringify(address));
-  //   navigate("/checkout/summary");
-  // };
 
-   try {
+    try {
       setError("");
 
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        setError("You need to login first.");
+        return;
+      }
+
       const response = await fetch(
         addressId
-          ? `http://localhost:4000/api/addresses/${addressId}`
-          : "http://localhost:4000/api/addresses",
+          ? `${API_URL}/addresses/${addressId}`
+          : `${API_URL}/addresses`,
         {
           method: addressId ? "PUT" : "POST",
           headers: {
@@ -215,10 +143,10 @@ function CheckoutAddress({ cart = [] }) {
               <p className="error message">{error}</p>
             )}
             <div className="address-grid">
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="fullName">Full Name</label>
                 <input id="fullName" type="text" name="fullName" value={address.fullName} onChange={handleChange} required />
-              </div>
+              </div> */}
 
               <div className="form-group">
                 <label htmlFor="phone">Phone Number</label>
@@ -231,8 +159,18 @@ function CheckoutAddress({ cart = [] }) {
               </div>
 
               <div className="form-group">
+                <label htmlFor="area">Area</label>
+                <input id="area" type="text" name="area" value={address.area} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="city">City / Town</label>
                 <input id="city" type="text" name="city" value={address.city} onChange={handleChange} required />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="postalCode">Postal Code</label>
+                <input id="postalCode" type="text" name="postalCode" value={address.postalCode} onChange={handleChange} />
               </div>
             </div>
 

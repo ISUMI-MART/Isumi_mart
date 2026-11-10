@@ -7,7 +7,7 @@ function Navbar({ cartCount = 0, user }) {
       <header className="navbar">
         <div className="navbar-inner">
           <Link to="/" className="logo">
-            <span className="logo-mark">I</span>
+            <img src="logo-isumi mart.jpeg"alt="Isumi Mart Logo" className="logo-mark"/>
             Isumi&nbsp;<em>Mart</em>
           </Link>
 
