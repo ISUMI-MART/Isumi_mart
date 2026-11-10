@@ -7,6 +7,12 @@ export class OrderItemRepository {
     });
   }
 
+  async getItemById(id) {
+    return await prisma.orderItem.findUnique({
+        where: { id: Number(id) },
+    });
+}
+
   async updateItem(id, data) {
     return await prisma.orderItem.update({
       where: { id: Number(id) },
