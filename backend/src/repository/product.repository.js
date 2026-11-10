@@ -10,6 +10,7 @@ export class ProductRepository {
             },
         });
     }
+
     async createProduct(data) {
         const { categorySlug, ...productData } = data;
 
@@ -18,27 +19,33 @@ export class ProductRepository {
                 ...productData,
                 category: {
                     connect: {
-                        slug: categorySlug
-                    }
-                }
+                        slug: categorySlug,
+                    },
+                },
             },
             include: {
-                category: true
-            }
+                category: true,
+                stockConfig: true,
+            },
         });
     }
+
     async updateProduct(id, data) {
         return await prisma.product.update({
             where: { id },
             data,
-        });
-    }
-    async deleteProduct(id) {
-        return await prisma.product.delete({
-            where: { id }
+            include: {
+                category: true,
+                stockConfig: true,
+            },
         });
     }
 
+    async deleteProduct(id) {
+        return await prisma.product.delete({
+            where: { id },
+        });
+    }
 
     async getAll(filters = {}) {
         const {
@@ -47,7 +54,7 @@ export class ProductRepository {
             sortBy = "createdAt",
             sortOrder = "desc",
             search,
-            categorySlug
+            categorySlug,
         } = filters;
 
         const where = {};
@@ -57,23 +64,23 @@ export class ProductRepository {
                 {
                     name: {
                         contains: search,
-                        mode: "insensitive"
-                    }
+                        mode: "insensitive",
+                    },
                 },
                 {
                     description: {
                         contains: search,
-                        mode: "insensitive"
-                    }
-                }
+                        mode: "insensitive",
+                    },
+                },
             ];
         }
 
         if (categorySlug) {
             where.category = {
                 is: {
-                    slug: categorySlug
-                }
+                    slug: categorySlug,
+                },
             };
         }
 
@@ -85,13 +92,15 @@ export class ProductRepository {
                 skip,
                 take: limit,
                 orderBy: {
-                    [sortBy]: sortOrder
+                    [sortBy]: sortOrder,
                 },
                 include: {
-                    category: true
-                }
+                    category: true,
+                    stockConfig: true,
+                },
             }),
-            prisma.product.count({ where })
+
+            prisma.product.count({ where }),
         ]);
 
         return {
@@ -100,9 +109,8 @@ export class ProductRepository {
                 page,
                 limit,
                 total,
-                totalPages: Math.ceil(total / limit)
-            }
+                totalPages: Math.ceil(total / limit),
+            },
         };
     }
-
 }

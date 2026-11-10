@@ -16,6 +16,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+
 function App() {
   const location = useLocation();
 
