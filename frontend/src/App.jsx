@@ -7,7 +7,7 @@ import Register from "./pages/auth/Register";
 
 
 // Import pages from the pages folder
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
@@ -16,9 +16,21 @@ import CheckoutAddress from "./pages/CheckoutAddress";
 import CheckoutSummary from "./pages/CheckoutSummary";
 import OrderConfirmation from "./pages/OrderConfirmation";
 
+import OwnerLayout from "./layouts/OwnerLayouts";
+
+import Overview from "./pages/Owner/Overview";
+// import Orders from "./pages/Owner/Orders";
+// import OwnerProducts from "./pages/Owner/Products";
+// import Inventory from "./pages/Owner/Inventory";
+// import DeliveryAgents from "./pages/Owner/DeliveryAgents";
+// import Reports from "./pages/Owner/Reports";
+// import Settings from "./pages/Owner/Settings";
+// import WalkInSales from "./pages/Owner/WalkInSales";
+
 // Import layout components if needed
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
 
 function App() {
 
@@ -88,6 +100,8 @@ function App() {
         <Route path="/checkout/address" element={<CheckoutAddress />} />
         <Route path="/checkout/summary" element={<CheckoutSummary />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
+
+        <Route path="/owner" element={Overview}/>
       </Routes>
 
       {!hideLayout && <Footer />}

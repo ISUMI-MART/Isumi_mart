@@ -1,4 +1,4 @@
-import TableOrders from "../../components/owner/TableOrders";
+import TableOrders from "../../components/Owner/TableOrders";
 
 function Overview({ products=[], orders, updateOrder, navigate }) {
   const pending = orders.filter(
