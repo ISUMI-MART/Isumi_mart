@@ -9,6 +9,8 @@ import cartRouter from "./cart.routes.js";
 import stockMovementRouter from "./stockMovements.routes.js";
 import walkInSalesRouter from "./walkInSales.routes.js";
 import walkInSaleItemsRouter from "./walkInSalesItems.routes.js";
+import orderRouter from "./order.routes.js";
+import orderItemRouter from "./orderItem.routes.js";
 
 const globalRouter =Router();
 
@@ -22,6 +24,8 @@ globalRouter.use("/carts",cartRouter)
 globalRouter.use("/stock-movements",stockMovementRouter)
 globalRouter.use("/walk-in-sales",walkInSalesRouter)
 globalRouter.use("/walk-in-sales-items",walkInSaleItemsRouter)
+globalRouter.use("/orders",orderRouter)
+globalRouter.use("/order-items", orderItemRouter);
 
 
 export default globalRouter;
