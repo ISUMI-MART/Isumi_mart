@@ -16,6 +16,11 @@ export class OrderItemController {
         });
     });
 
+    getAll = catchAsync(async (req, res) => {
+        const item = await orderItemService.getAll();
+        res.json({ success: true, data: item })
+    })
+
     // Update an existing order item
     update = catchAsync(async (req, res) => {
         const id = req.validated.params.id;

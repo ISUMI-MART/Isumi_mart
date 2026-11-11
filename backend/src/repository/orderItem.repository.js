@@ -9,9 +9,18 @@ export class OrderItemRepository {
 
   async getItemById(id) {
     return await prisma.orderItem.findUnique({
-        where: { id: Number(id) },
+      where: { id: Number(id) },
     });
-}
+  }
+
+  async getAll() {
+    return await prisma.orderItem.findMany({
+      orderBy: { createdAt: 'desc' }, include: {
+        order: true,
+        product: true
+      }
+    })
+  }
 
   async updateItem(id, data) {
     return await prisma.orderItem.update({

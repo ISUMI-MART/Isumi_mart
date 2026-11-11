@@ -19,6 +19,9 @@ export class OrderItemService {
 
         return await orderItemRepository.updateItem(id, data);
     }
+    async getAll() {
+        return await orderItemRepository.getAll();
+    }
 
     // Delete an order item
     async delete(id) {

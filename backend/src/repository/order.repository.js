@@ -1,12 +1,21 @@
-import { prisma } from "../config/Prisma.js"; 
+import { prisma } from "../config/Prisma.js";
 
 export class OrderRepository {
   async createOrder(data) {
-    return await prisma.order.create({
-      data,
-      include: {
-        items: true,
+    const { items, ...orderData } = data;
+
+    return prisma.order.create({
+      data: {
+        ...orderData,
+
+        items: {
+          create: items
+        }
       },
+
+      include: {
+        items: true
+      }
     });
   }
 
