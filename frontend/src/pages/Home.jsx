@@ -58,20 +58,6 @@ function Home({ addToCart }) {
       <div className="home-page">
         <section className="home-container">
 
-          {/* Search */}
-          <form className="home-search" onSubmit={handleSearch}>
-            <span className="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokelinecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></span>
-
-            <input
-              type="text"
-              placeholder="Search fresh groceries and everyday essentials."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            <button type="submit">Search</button>
-          </form>
-
           {/* Hero Banner */}
           <div className="home-hero">
 
@@ -137,7 +123,7 @@ function Home({ addToCart }) {
               <span className="small-title">Shop by aisle</span>
               <h2>Browse our market</h2>
             </div>
-            <Link to="/products" className="view-link">View everything</Link>
+            <Link to="/products" className="view-link">View everything<span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></Link>
           </div>
 
           <div className="category-grid">
@@ -175,7 +161,7 @@ function Home({ addToCart }) {
               <span className="small-title">Customer favourites</span>
               <h2>Fresh from the shelves</h2>
             </div>
-            <Link to="/products" className="view-link">View all</Link>
+            <Link to="/products" className="view-link">View all <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></Link>
           </div>
 
           {loading ? (

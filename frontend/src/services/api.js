@@ -108,8 +108,6 @@ export async function getProductById(id) {
   };
 }
 
-
-
 export async function getCategories() {
   const response = await fetch(`${API_URL}/categories`);
 
@@ -168,4 +166,192 @@ export async function updateProfile(profileData) {
   }
 
   return result.user;
+}
+
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+export const createOrder = async (orderData) => {
+  const response = await fetch(`${API_URL}/orders`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(orderData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create order");
+  }
+
+  return data;
+};
+
+export const createOrderItem = async (itemData) => {
+  const response = await fetch(`${API_URL}/order-items`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(itemData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create order item");
+  }
+
+  return data;
+};
+
+export const getMyOrders = async () => {
+  const response = await fetch(`${API_URL}/orders`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load orders");
+  }
+
+  return data;
+};
+
+export const getOrderById = async (id) => {
+  if (!id) {
+    throw new Error("Order ID is missing");
+  }
+
+  const response = await fetch(`${API_URL}/orders/${id}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load order");
+  }
+
+  return data;
+};
+
+
+export async function getCart() {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/carts`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to get cart");
+  }
+
+  return data;
+}
+
+
+// ADD TO CART
+export async function addCartItem(productId, quantity = 1) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/carts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      productId,
+      quantity,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to add product to cart");
+  }
+
+  return data;
+}
+
+
+// UPDATE QUANTITY
+export async function updateCartItem(productId, quantity) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/carts/${productId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      quantity,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update cart");
+  }
+
+  return data;
+}
+
+
+// REMOVE FROM CART
+export async function removeCartItem(productId) {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/carts/${productId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to remove item");
+  }
+
+  return data;
+}
+
+
+// CLEAR CART
+export async function clearCart() {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/carts`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to clear cart");
+  }
+
+  return data;
 }

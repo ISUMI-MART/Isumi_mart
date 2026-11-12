@@ -1,35 +1,69 @@
-import React from "react";
-import { Navigate, useNavigate, useLocation } from "react-router-dom";
-import { formatAddress, getStoredOrders } from "../data/orders";
+import React, { useState, useEffect } from "react";
+import { Navigate, useNavigate, useLocation, useParams } from "react-router-dom";
+import { getOrderById } from "../services/api";
 
 function OrderConfirmation() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { id } = useParams();
 
-  // Get the order passed from CheckoutSummary
-  let order = location.state?.order ?? null;
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // If it was not passed, read it from localStorage
-  if (!order) {
-    try {
-      order = JSON.parse(localStorage.getItem("latestOrder"));
-    } catch {
-      order = null;
-    }
+  useEffect(() => {
+    const loadOrder = async () => {
+      try {
+        if (!id) {
+          throw new Error("Order ID is missing.");
+        }
+
+        const response = await getOrderById(id);
+
+        console.log("Order API Response:", response);
+
+        // Your backend returns { success: true, data: {...} }
+        setOrder(response.data);
+      } catch (err) {
+        console.error("Failed to load order:", err);
+        setError(err.message || "Unable to load order.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOrder();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="page-container">
+        <p>Loading order...</p>
+      </div>
+    );
   }
 
-  // Final fallback: use the newest saved order
-  if (!order) {
-    const savedOrders = getStoredOrders();
+  if (error || !order) {
+    return (
+      <div className="page-container">
+        <p>{error || "Order not found."}</p>
 
-    if (savedOrders.length > 0) {
-      order = savedOrders[savedOrders.length - 1];
-    }
+        <button
+          className="light-button"
+          onClick={() => navigate("/products")}
+        >
+          Back to Products
+        </button>
+      </div>
+    );
   }
+  const subtotal = Number(order.subtotal || 0);
+  const deliveryFee = Number(order.deliveryFee || 0);
+  const discount = Number(order.discount || 0);
+  const totalAmount = Number(order.totalAmount || 0);
 
-  if (!order) {
-    return <Navigate to="/products" replace />;
-  }
+  const createdDate = order.createdAt
+    ? new Date(order.createdAt).toLocaleString()
+    : "Date unavailable";
 
   return (
     <div className="order-confirmation-page">
@@ -38,20 +72,27 @@ function OrderConfirmation() {
           <div className="success-icon">✓</div>
           <h1>Order Placed Successfully</h1>
           <p>
-            Order Number: <strong>{order.id}</strong> · Placed on {order.date}
+            Order Number: <strong>{order.id}</strong> {" . "} Placed on {createdDate}
           </p>
         </div>
 
         <div className="confirmation-card">
           <div className="status-badges">
-            <span className="badge green-badge">{order.status}</span>
+            <span className="badge green-badge">{order.status || "ORDER_PLACED"}</span>
             <span className="badge">
-              {order.payment || "Cash on Delivery"}
+              Cash on Delivery
             </span>
+            {/* <span className="badge"> {order.payment || "Cash on Delivery"}</span> */}
             <span className="badge">
               Payment: {order.paymentStatus || "Pending"}
             </span>
           </div>
+          <p>
+            <strong>Customer:</strong>{" "}
+            {order.user?.userName ||
+              order.deliveryFullName ||
+              "Customer"}
+          </p>
 
           <table className="confirmation-table">
             <thead>
@@ -62,38 +103,47 @@ function OrderConfirmation() {
               </tr>
             </thead>
             <tbody>
-              {(order.items || []).map((item) => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>{item.quantity}</td>
-                  <td>
-                    Rs. {(item.price * item.quantity).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
+              {(order.items || []).map((item) => {
+                const price = Number(item.price || 0);
+                const quantity = Number(item.quantity || 0);
+
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      {item.product?.name || "Product"}
+                    </td>
+
+                    <td>{quantity}</td>
+
+                    <td>
+                      Rs. {(price * quantity).toLocaleString()}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
           <div className="confirmation-prices">
             <div>
               <span>Subtotal</span>
-              <span>Rs. {(order.subtotal ?? 0).toLocaleString()}</span>
+              <span>Rs. {subtotal.toLocaleString()}</span>
             </div>
             <div>
               <span>Delivery Fee</span>
-              <span>Rs. {(order.deliveryFee ?? 0).toLocaleString()}</span>
+              <span>Rs. {deliveryFee.toLocaleString()}</span>
             </div>
             <div>
               <span>Discount</span>
               <span>
-                {order.discount > 0
-                  ? `- Rs. ${order.discount.toLocaleString()}`
+                {discount > 0
+                  ? `- Rs. ${discount.toLocaleString()}`
                   : "—"}
               </span>
             </div>
             <div className="confirmation-total">
               <strong>Total Amount</strong>
-              <strong>Rs. {(order.total ?? 0).toLocaleString()}</strong>
+              <strong>Rs. {totalAmount.toLocaleString()}</strong>
             </div>
           </div>
 
@@ -102,17 +152,14 @@ function OrderConfirmation() {
           </div>
 
           <p className="deliver-text">
-            Deliver to: {formatAddress(order.address)}
+            <strong>Deliver to:</strong>{" "}
+            {order.deliveryFullName}
+            {order.deliveryAddress && `, ${order.deliveryAddress}`}
+            {order.area && `, ${order.area}`}
           </p>
         </div>
 
         <div className="confirmation-buttons">
-          <button
-            className="green-button"
-            onClick={() => navigate(`/orders/${order.id}`)}
-          >
-            Track Order
-          </button>
 
           <button
             className="light-button large-button"

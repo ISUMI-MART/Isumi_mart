@@ -1,0 +1,152 @@
+/* TRACK ORDER PAGE */
+
+.track-order-container {
+  max-width: 950px;
+  margin: 40px auto;
+  padding: 35px;
+  background: #ffffff;
+  border: 1px solid #e5ece6;
+  border-radius: 14px;
+  box-shadow: 0 5px 22px rgba(23, 107, 69, 0.07);
+  color: #18352a;
+  font-family: Arial, sans-serif;
+}
+
+/* PAGE TITLE */
+
+.track-order-container h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #176b45;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e8f4ec;
+}
+
+.track-order-container h2 {
+  font-size: 20px;
+  color: #176b45;
+  margin-top: 32px;
+  margin-bottom: 18px;
+}
+
+/* ORDER INFORMATION */
+
+.track-order-container > p {
+  font-size: 15px;
+  color: #53665c;
+  margin: 13px 0;
+  line-height: 1.6;
+}
+
+.track-order-container p strong {
+  color: #18352a;
+  display: inline-block;
+  min-width: 135px;
+  font-weight: 600;
+}
+
+/* ORDERED ITEMS */
+
+.track-order-container h2 + div {
+  margin-top: 12px;
+}
+
+.track-order-container h2 ~ div {
+  background: #f8fbf8;
+  border: 1px solid #e6eee8;
+  border-radius: 9px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.track-order-container h2 ~ div p {
+  font-size: 14px;
+  color: #53665c;
+  margin: 7px 0;
+}
+
+/* PAYMENT SUMMARY */
+
+.track-order-container h3 {
+  margin-top: 20px;
+  padding: 18px 20px;
+  background: #e8f4ec;
+  border-radius: 9px;
+  color: #176b45;
+  font-size: 21px;
+}
+
+/* BUTTON */
+
+.light-button {
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: #ffffff;
+  color: #176b45;
+  border: 1.5px solid #176b45;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.light-button:hover {
+  background: #176b45;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(23, 107, 69, 0.15);
+}
+
+/* LOADING AND ERROR STATES */
+
+.track-order-container button {
+  font-family: inherit;
+}
+
+.track-order-container h2 {
+  line-height: 1.4;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 768px) {
+  .track-order-container {
+    margin: 20px 12px;
+    padding: 22px 18px;
+  }
+
+  .track-order-container h1 {
+    font-size: 23px;
+  }
+
+  .track-order-container h2 {
+    font-size: 18px;
+  }
+
+  .track-order-container p strong {
+    min-width: 110px;
+  }
+
+  .track-order-container h3 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .track-order-container {
+    padding: 18px 14px;
+  }
+
+  .track-order-container > p {
+    font-size: 13px;
+  }
+
+  .track-order-container p strong {
+    min-width: 100px;
+  }
+
+  .light-button {
+    width: 100%;
+  }
+}

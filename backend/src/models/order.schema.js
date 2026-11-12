@@ -12,19 +12,30 @@ export const createOrderSchema = z.object({
         deliveryNote: z.string().trim().optional().nullable(),
 
         // Order amounts
-        subtotal: z.number().positive("Subtotal must be positive."),
-        deliveryFee: z.number().nonnegative().default(0),
-        discount: z.number().nonnegative().default(0),
-        totalAmount: z.number().positive("Total amount must be positive."),
+        // subtotal: z.number().positive("Subtotal must be positive."),
+        // deliveryFee: z.number().nonnegative().default(0),
+        // discount: z.number().nonnegative().default(0),
+        // totalAmount: z.number().positive("Total amount must be positive."),
 
-        // Order Items (Array of items)
+        //Order Items (Array of items)
         items: z.array(
             z.object({
                 productId: z.number().int().positive("Invalid Product ID."),
                 quantity: z.number().int().positive("Quantity must be at least 1."),
-                price: z.number().positive("Price must be positive.")
+                //price: z.number().positive("Price must be positive.")
             })
         ).min(1, "Order must have at least one item.")
+        .superRefine((items,ctx)=>{
+            const ids= items.map((item)=>item.productId);
+            const uniqueIds = new Set(ids);
+            if(uniqueIds.size !=ids.length){
+                ctx.addIssue({
+                    code:"custom",
+                    message:"Duplicate products are not allowed"
+                })
+            }
+        })
+        
     })
 });
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { DELIVERY_FEE, formatAddress } from "../data/orders";
+//import { DELIVERY_FEE, formatAddress } from "../data/orders";
 
 function CheckoutSummary({ cart = [], placeOrder }) {
   const navigate = useNavigate();
@@ -9,10 +9,14 @@ function CheckoutSummary({ cart = [], placeOrder }) {
 
   const [cashReady, setCashReady] = useState(true);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [placingOrder, setPlacingOrder] = useState(false);
 
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const DELIVERY_FEE = 200;
+  const DISCOUNT = 0;
 
   // Retrieve delivery address from backend
   useEffect(() => {
@@ -63,32 +67,56 @@ function CheckoutSummary({ cart = [], placeOrder }) {
     return <Navigate to="/cart" replace />;
   }
   if (loading) { return <p>Loading order summary...</p>; }
-  if (!address) return <Navigate to="/checkout/address" replace />;
+  if (error && !address) {
+    return (
+      <div className="checkout-summary-page">
+        <div className="checkout-summary-container">
+          <p className="error-message">{error}</p>
 
-  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  const discount = 0;
-  const total = subtotal + DELIVERY_FEE - discount;
+          <button
+            className="green-button"
+            onClick={() => navigate("/checkout/address")}
+          >
+            Go to Address
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!address) {
+    return <Navigate to="/checkout/address" replace />;
+  }
+
+  const subtotal = cart.reduce(
+    (total, item) =>
+      total + Number(item.price || 0) * Number(item.quantity || 0),
+    0
+  );
+
+  const total = subtotal + DELIVERY_FEE - DISCOUNT;
 
 
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     try {
-      const order = placeOrder({ address });
+      setError("");
+      setPlacingOrder(true);
 
-      if (!order) {
-        alert("Unable to place your order. Please try again.");
-        return;
-      }
+      const order = await placeOrder({ address });
 
       setOrderPlaced(true);
 
-      navigate("/order-confirmation", {
+      navigate(`/order-confirmation/${order.id}`, {
         replace: true,
         state: { order },
       });
+
     } catch (err) {
       console.error("Order placement error:", err);
-      alert(err.message || "Unable to place your order.");
+      setError(err.message || "Unable to place your order.");
+    } finally {
+      setPlacingOrder(false);
     }
   };
 
@@ -144,7 +172,7 @@ function CheckoutSummary({ cart = [], placeOrder }) {
               <p> {address.street}</p>
               <p>{address.area}</p>
               <p>{address.city}</p>
-              {address.postalCode && (<p>{address.postalCode}</p> )}
+              {address.postalCode && (<p>{address.postalCode}</p>)}
               {address.note && (<p>Note: {address.note} </p>)}
 
               <button className="light-button" onClick={() => navigate("/checkout/address")}>
@@ -174,9 +202,9 @@ function CheckoutSummary({ cart = [], placeOrder }) {
               <button
                 className="green-button full-button"
                 onClick={handlePlaceOrder}
-                disabled={!cashReady}
+                disabled={!cashReady || placingOrder || orderPlaced}
               >
-                Place Order (Cash on Delivery)
+                {placingOrder ? "Placing Order..." : "Place Order"}
               </button>
             </div>
           </div>
