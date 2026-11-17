@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Navigate, useNavigate, useLocation, useParams } from "react-router-dom";
+import {
+  Navigate,
+  useNavigate,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { getOrderById } from "../services/api";
 
 function OrderConfirmation() {
@@ -20,8 +25,6 @@ function OrderConfirmation() {
         const response = await getOrderById(id);
 
         console.log("Order API Response:", response);
-
-        // Your backend returns { success: true, data: {...} }
         setOrder(response.data);
       } catch (err) {
         console.error("Failed to load order:", err);
@@ -47,10 +50,7 @@ function OrderConfirmation() {
       <div className="page-container">
         <p>{error || "Order not found."}</p>
 
-        <button
-          className="light-button"
-          onClick={() => navigate("/products")}
-        >
+        <button className="light-button" onClick={() => navigate("/products")}>
           Back to Products
         </button>
       </div>
@@ -72,16 +72,17 @@ function OrderConfirmation() {
           <div className="success-icon">✓</div>
           <h1>Order Placed Successfully</h1>
           <p>
-            Order Number: <strong>{order.id}</strong> {" . "} Placed on {createdDate}
+            Order Number: <strong>{order.id}</strong> {" . "} Placed on{" "}
+            {createdDate}
           </p>
         </div>
 
         <div className="confirmation-card">
           <div className="status-badges">
-            <span className="badge green-badge">{order.status || "ORDER_PLACED"}</span>
-            <span className="badge">
-              Cash on Delivery
+            <span className="badge green-badge">
+              {order.status || "ORDER_PLACED"}
             </span>
+            <span className="badge">Cash on Delivery</span>
             {/* <span className="badge"> {order.payment || "Cash on Delivery"}</span> */}
             <span className="badge">
               Payment: {order.paymentStatus || "Pending"}
@@ -89,9 +90,7 @@ function OrderConfirmation() {
           </div>
           <p>
             <strong>Customer:</strong>{" "}
-            {order.user?.userName ||
-              order.deliveryFullName ||
-              "Customer"}
+            {order.user?.userName || order.deliveryFullName || "Customer"}
           </p>
 
           <table className="confirmation-table">
@@ -109,15 +108,11 @@ function OrderConfirmation() {
 
                 return (
                   <tr key={item.id}>
-                    <td>
-                      {item.product?.name || "Product"}
-                    </td>
+                    <td>{item.product?.name || "Product"}</td>
 
                     <td>{quantity}</td>
 
-                    <td>
-                      Rs. {(price * quantity).toLocaleString()}
-                    </td>
+                    <td>Rs. {(price * quantity).toLocaleString()}</td>
                   </tr>
                 );
               })}
@@ -136,9 +131,7 @@ function OrderConfirmation() {
             <div>
               <span>Discount</span>
               <span>
-                {discount > 0
-                  ? `- Rs. ${discount.toLocaleString()}`
-                  : "—"}
+                {discount > 0 ? `- Rs. ${discount.toLocaleString()}` : "—"}
               </span>
             </div>
             <div className="confirmation-total">
@@ -152,15 +145,13 @@ function OrderConfirmation() {
           </div>
 
           <p className="deliver-text">
-            <strong>Deliver to:</strong>{" "}
-            {order.deliveryFullName}
+            <strong>Deliver to:</strong> {order.deliveryFullName}
             {order.deliveryAddress && `, ${order.deliveryAddress}`}
             {order.area && `, ${order.area}`}
           </p>
         </div>
 
         <div className="confirmation-buttons">
-
           <button
             className="light-button large-button"
             onClick={() => navigate("/orders")}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-//import { DELIVERY_FEE, formatAddress } from "../data/orders";
+
 
 function CheckoutSummary({ cart = [], placeOrder }) {
   const navigate = useNavigate();
@@ -28,16 +28,13 @@ function CheckoutSummary({ cart = [], placeOrder }) {
           throw new Error("You need to login first.");
         }
 
-        const response = await fetch(
-          `${API_URL}/addresses`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/addresses`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         const result = await response.json();
 
@@ -61,12 +58,13 @@ function CheckoutSummary({ cart = [], placeOrder }) {
     fetchAddress();
   }, []);
 
-
   // No items -> go to cart. No address -> go to the address step.
   if (cart.length === 0 && !orderPlaced) {
     return <Navigate to="/cart" replace />;
   }
-  if (loading) { return <p>Loading order summary...</p>; }
+  if (loading) {
+    return <p>Loading order summary...</p>;
+  }
   if (error && !address) {
     return (
       <div className="checkout-summary-page">
@@ -91,12 +89,10 @@ function CheckoutSummary({ cart = [], placeOrder }) {
   const subtotal = cart.reduce(
     (total, item) =>
       total + Number(item.price || 0) * Number(item.quantity || 0),
-    0
+    0,
   );
 
   const total = subtotal + DELIVERY_FEE - DISCOUNT;
-
-
 
   const handlePlaceOrder = async () => {
     try {
@@ -111,7 +107,6 @@ function CheckoutSummary({ cart = [], placeOrder }) {
         replace: true,
         state: { order },
       });
-
     } catch (err) {
       console.error("Order placement error:", err);
       setError(err.message || "Unable to place your order.");
@@ -119,7 +114,6 @@ function CheckoutSummary({ cart = [], placeOrder }) {
       setPlacingOrder(false);
     }
   };
-
 
   return (
     <div className="checkout-summary-page">
@@ -153,9 +147,18 @@ function CheckoutSummary({ cart = [], placeOrder }) {
             </table>
 
             <div className="price-summary">
-              <div><span>Subtotal</span><span>Rs. {subtotal.toLocaleString()}</span></div>
-              <div><span>Delivery Fee</span><span>Rs. {DELIVERY_FEE.toLocaleString()}</span></div>
-              <div><span>Discount</span><span>—</span></div>
+              <div>
+                <span>Subtotal</span>
+                <span>Rs. {subtotal.toLocaleString()}</span>
+              </div>
+              <div>
+                <span>Delivery Fee</span>
+                <span>Rs. {DELIVERY_FEE.toLocaleString()}</span>
+              </div>
+              <div>
+                <span>Discount</span>
+                <span>—</span>
+              </div>
               <div className="total-row">
                 <strong>Total Amount</strong>
                 <strong>Rs. {total.toLocaleString()}</strong>
@@ -168,14 +171,17 @@ function CheckoutSummary({ cart = [], placeOrder }) {
             <div className="side-card">
               <h2>Delivery Address</h2>
 
-              {address.phone && (<p>{address.phone} </p>)}
+              {address.phone && <p>{address.phone} </p>}
               <p> {address.street}</p>
               <p>{address.area}</p>
               <p>{address.city}</p>
-              {address.postalCode && (<p>{address.postalCode}</p>)}
-              {address.note && (<p>Note: {address.note} </p>)}
+              {address.postalCode && <p>{address.postalCode}</p>}
+              {address.note && <p>Note: {address.note} </p>}
 
-              <button className="light-button" onClick={() => navigate("/checkout/address")}>
+              <button
+                className="light-button"
+                onClick={() => navigate("/checkout/address")}
+              >
                 Edit Address
               </button>
             </div>
@@ -188,7 +194,9 @@ function CheckoutSummary({ cart = [], placeOrder }) {
                 <span>Cash on Delivery</span>
               </label>
 
-              <div className="payment-message">Payment will be collected on delivery.</div>
+              <div className="payment-message">
+                Payment will be collected on delivery.
+              </div>
 
               <label className="checkbox-row">
                 <input
@@ -209,9 +217,7 @@ function CheckoutSummary({ cart = [], placeOrder }) {
             </div>
           </div>
         </div>
-        {error && (
-          <p className="error-message">{error}</p>
-        )}
+        {error && <p className="error-message">{error}</p>}
       </div>
     </div>
   );

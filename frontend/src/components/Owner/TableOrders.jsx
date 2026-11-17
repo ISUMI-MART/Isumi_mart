@@ -201,25 +201,14 @@ function TableOrders({
             const customerName =
               o.deliveryFullName ||
               o.customer ||
-              [o.user?.firstName, o.user?.lastName]
-                .filter(Boolean)
-                .join(" ") ||
+              [o.user?.firstName, o.user?.lastName].filter(Boolean).join(" ") ||
               "Customer";
 
-            const address =
-              o.deliveryAddress ||
-              o.address?.street ||
-              "";
+            const address = o.deliveryAddress || o.address?.street || "";
 
-            const phone =
-              o.phoneNumber ||
-              o.address?.phone ||
-              "";
+            const phone = o.phoneNumber || o.address?.phone || "";
 
-            const total =
-              o.totalAmount ??
-              o.total ??
-              0;
+            const total = o.totalAmount ?? o.total ?? 0;
 
             return (
               <tr key={o.id}>
@@ -229,9 +218,7 @@ function TableOrders({
 
                   <div className="muted">
                     {o.createdAt
-                      ? new Date(
-                          o.createdAt
-                        ).toLocaleDateString()
+                      ? new Date(o.createdAt).toLocaleDateString()
                       : o.date || ""}
                   </div>
                 </td>
@@ -240,69 +227,42 @@ function TableOrders({
                 <td>
                   {customerName}
 
-                  <div className="muted">
-                    {address}
-                  </div>
+                  <div className="muted">{address}</div>
 
-                  <div className="muted">
-                    {phone}
-                  </div>
+                  <div className="muted">{phone}</div>
                 </td>
 
                 {/* ITEMS */}
                 <td>
-                  {Array.isArray(o.items) &&
-                  o.items.length > 0 ? (
-                    o.items.map((item) => (
-                      <div key={item.id}>
-                        {item.product?.name ||
-                          item.name ||
-                          "Product"}{" "}
-                        × {item.quantity}
-                      </div>
-                    ))
-                  ) : (
-                    "-"
-                  )}
+                  {Array.isArray(o.items) && o.items.length > 0
+                    ? o.items.map((item) => (
+                        <div key={item.id}>
+                          {item.product?.name || item.name || "Product"} ×{" "}
+                          {item.quantity}
+                        </div>
+                      ))
+                    : "-"}
                 </td>
 
                 {/* TOTAL */}
-                <td className="strong">
-                  {money(total)}
-                </td>
+                <td className="strong">{money(total)}</td>
 
                 {/* DELIVERY AGENT */}
                 <td>
                   <select
                     className="field"
-                    value={
-                      o.deliveryAgentId
-                        ? String(o.deliveryAgentId)
-                        : ""
-                    }
+                    value={o.deliveryAgentId ? String(o.deliveryAgentId) : ""}
                     onChange={(e) =>
-                      assignDeliveryAgent?.(
-                        o.id,
-                        e.target.value
-                      )
+                      assignDeliveryAgent?.(o.id, e.target.value)
                     }
                   >
-                    <option value="">
-                      Unassigned
-                    </option>
+                    <option value="">Unassigned</option>
 
                     {deliveryAgents.map((agent) => (
-                      <option
-                        key={agent.id}
-                        value={agent.id}
-                      >
-                        {agent.firstName ||
-                          agent.userName ||
-                          "Agent"}
+                      <option key={agent.id} value={agent.id}>
+                        {agent.firstName || agent.userName || "Agent"}
 
-                        {agent.lastName
-                          ? ` ${agent.lastName}`
-                          : ""}
+                        {agent.lastName ? ` ${agent.lastName}` : ""}
                       </option>
                     ))}
                   </select>
@@ -313,43 +273,28 @@ function TableOrders({
                   <select
                     className="field"
                     value={o.status}
-                    onChange={(e) =>
-                      updateOrder?.(
-                        o.id,
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => updateOrder?.(o.id, e.target.value)}
                   >
                     {statuses.map((status) => (
-                      <option
-                        key={status.value}
-                        value={status.value}
-                      >
+                      <option key={status.value} value={status.value}>
                         {status.label}
                       </option>
                     ))}
                   </select>
 
                   {/* DELIVERY FAILURE */}
-                  {o.status ===
-                    "DELIVERY_FAILED" && (
+                  {o.status === "DELIVERY_FAILED" && (
                     <div className="delivery-failure">
-                      <strong>
-                        Delivery Unsuccessful
-                      </strong>
+                      <strong>Delivery Unsuccessful</strong>
 
                       <p>
                         <b>Reason:</b>{" "}
-                        {o.deliveryFailureReason ||
-                          "No reason provided"}
+                        {o.deliveryFailureReason || "No reason provided"}
                       </p>
 
                       {o.deliveryFailureNote && (
                         <p>
-                          <b>
-                            Additional details:
-                          </b>{" "}
-                          {o.deliveryFailureNote}
+                          <b>Additional details:</b> {o.deliveryFailureNote}
                         </p>
                       )}
                     </div>
@@ -361,11 +306,7 @@ function TableOrders({
         </tbody>
       </table>
 
-      {orders.length === 0 && (
-        <div className="empty">
-          No matching orders.
-        </div>
-      )}
+      {orders.length === 0 && <div className="empty">No matching orders.</div>}
     </div>
   );
 }

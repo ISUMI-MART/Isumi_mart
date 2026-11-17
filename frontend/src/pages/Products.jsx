@@ -18,10 +18,7 @@ function Products({ addToCart }) {
     totalPages: 0,
   });
 
-  const currentPage = Math.max(
-    1,
-    Number(searchParams.get("page")) || 1
-  );
+  const currentPage = Math.max(1, Number(searchParams.get("page")) || 1);
 
   const categorySlug = searchParams.get("category") || "";
   const search = searchParams.get("search") || "";
@@ -39,7 +36,6 @@ function Products({ addToCart }) {
 
     loadCategories();
   }, []);
-
 
   // Load products whenever page, search or category changes
   useEffect(() => {
@@ -68,9 +64,6 @@ function Products({ addToCart }) {
     loadProducts();
   }, [currentPage, search, categorySlug]);
 
-
-
-
   const updateParams = (changes) => {
     const next = new URLSearchParams(searchParams);
 
@@ -94,25 +87,33 @@ function Products({ addToCart }) {
 
       <div className="products-controls">
         <div className="products-search">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-search preview-icon"
+          >
+            <path d="m21 21-4.34-4.34" />
+            <circle cx="11" cy="11" r="8" />
+          </svg>
           <input
             type="text"
             placeholder="Search products..."
             value={search}
-            onChange={(e) =>
-              updateParams({ search: e.target.value })
-            }
+            onChange={(e) => updateParams({ search: e.target.value })}
           />
         </div>
       </div>
 
       <div className="category-tabs">
         <button
-          className={
-            !categorySlug
-              ? "category-tab active"
-              : "category-tab"
-          }
+          className={!categorySlug ? "category-tab active" : "category-tab"}
           onClick={() => updateParams({ category: "" })}
         >
           All
@@ -126,9 +127,7 @@ function Products({ addToCart }) {
                 ? "category-tab active"
                 : "category-tab"
             }
-            onClick={() =>
-              updateParams({ category: item.slug })
-            }
+            onClick={() => updateParams({ category: item.slug })}
           >
             {item.name}
           </button>
@@ -155,11 +154,22 @@ function Products({ addToCart }) {
             <div className="products-pagination">
               <button
                 disabled={currentPage <= 1}
-                onClick={() =>
-                  updateParams({ page: String(currentPage - 1) })
-                }
+                onClick={() => updateParams({ page: String(currentPage - 1) })}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left preview-icon"><path d="m15 18-6-6 6-6" /></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-left preview-icon"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
               </button>
 
               <span>
@@ -168,20 +178,45 @@ function Products({ addToCart }) {
 
               <button
                 disabled={currentPage >= pagination.totalPages}
-                onClick={() =>
-                  updateParams({ page: String(currentPage + 1) })
-                }
+                onClick={() => updateParams({ page: String(currentPage + 1) })}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon"><path d="m9 18 6-6-6-6" /></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right preview-icon"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
               </button>
             </div>
           )}
 
-
-
           {products.length === 0 && (
             <div className="empty-box">
-              <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg></span>
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-search preview-icon"
+                >
+                  <path d="m21 21-4.34-4.34" />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+              </span>
               <h3>No products found</h3>
               <p>Try another product name or category.</p>
             </div>

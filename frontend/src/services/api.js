@@ -1,4 +1,3 @@
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 export async function getProducts({
@@ -20,9 +19,7 @@ export async function getProducts({
     params.set("categorySlug", categorySlug);
   }
 
-  const response = await fetch(
-    `${API_URL}/products?${params.toString()}`
-  );
+  const response = await fetch(`${API_URL}/products?${params.toString()}`);
 
   if (!response.ok) {
     throw new Error("Unable to load products");
@@ -35,13 +32,9 @@ export async function getProducts({
   const formattedProducts = products
     .filter((product) => product.isActive !== false)
     .map((product) => {
-      const available = Number(
-        product.stockConfig?.quantity ?? 0
-      );
+      const available = Number(product.stockConfig?.quantity ?? 0);
 
-      const threshold = Number(
-        product.stockConfig?.lowStockThreshold ?? 5
-      );
+      const threshold = Number(product.stockConfig?.lowStockThreshold ?? 5);
 
       return {
         ...product,
@@ -85,9 +78,7 @@ export async function getProductById(id) {
 
   const available = Number(product.stockConfig?.quantity ?? 0);
 
-  const threshold = Number(
-    product.stockConfig?.lowStockThreshold ?? 5
-  );
+  const threshold = Number(product.stockConfig?.lowStockThreshold ?? 5);
 
   let stock = "In Stock";
 
@@ -124,25 +115,32 @@ export async function getCategories() {
   return Array.isArray(categories) ? categories : [];
 }
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+};
+
 export async function getProfile() {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    const response = await fetch(`${API_URL}/users/profile`, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+  const response = await fetch(`${API_URL}/users/profile`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
 
-    if (!response.ok) {
-        throw new Error("Unable to load profile");
-    }
+  if (!response.ok) {
+    throw new Error("Unable to load profile");
+  }
 
-    const result = await response.json();
+  const result = await response.json();
 
-    console.log("PROFILE API RESPONSE:", result);
+  console.log("PROFILE API RESPONSE:", result);
 
-    return result.user;
+  return result.user;
 }
 
 export async function updateProfile(profileData) {
@@ -150,10 +148,7 @@ export async function updateProfile(profileData) {
 
   const response = await fetch(`${API_URL}/users/profile`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify(profileData),
   });
 
@@ -165,15 +160,6 @@ export async function updateProfile(profileData) {
 
   return result.user;
 }
-
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-};
 
 export const createOrder = async (orderData) => {
   const response = await fetch(`${API_URL}/orders`, {
@@ -241,15 +227,12 @@ export const getOrderById = async (id) => {
   return data;
 };
 
-
 export async function getCart() {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/carts`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const data = await response.json();
@@ -261,17 +244,13 @@ export async function getCart() {
   return data;
 }
 
-
 // ADD TO CART
 export async function addCartItem(productId, quantity = 1) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/carts`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       productId,
       quantity,
@@ -287,20 +266,14 @@ export async function addCartItem(productId, quantity = 1) {
   return data;
 }
 
-
 // UPDATE QUANTITY
 export async function updateCartItem(productId, quantity) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/carts/${productId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      quantity,
-    }),
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ quantity }),
   });
 
   const data = await response.json();
@@ -312,16 +285,13 @@ export async function updateCartItem(productId, quantity) {
   return data;
 }
 
-
 // REMOVE FROM CART
 export async function removeCartItem(productId) {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/carts/${productId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const data = await response.json();
@@ -333,16 +303,13 @@ export async function removeCartItem(productId) {
   return data;
 }
 
-
 // CLEAR CART
 export async function clearCart() {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/carts`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const data = await response.json();
@@ -356,15 +323,12 @@ export async function clearCart() {
 
 // OWNER - ORDERS
 
-
 export const getOrders = async () => {
   const token = localStorage.getItem("token");
 
   const response = await fetch(`${API_URL}/orders`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const text = await response.text();
@@ -377,37 +341,24 @@ export const getOrders = async () => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch orders."
-    );
+    throw new Error(data.message || "Failed to fetch orders.");
   }
 
   return data;
 };
 
-
 // UPDATE ORDER STATUS
 
-
-export const updateOrderStatus = async (
-  orderId,
-  status
-) => {
+export const updateOrderStatus = async (orderId, status) => {
   const token = localStorage.getItem("token");
 
-  const response = await fetch(
-    `${API_URL}/orders/${orderId}/status`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        status,
-      }),
-    }
-  );
+  const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      status,
+    }),
+  });
 
   const text = await response.text();
 
@@ -419,14 +370,11 @@ export const updateOrderStatus = async (
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to update order status."
-    );
+    throw new Error(data.message || "Failed to update order status.");
   }
 
   return data;
 };
-
 
 // ===============================
 // OWNER - STOCK
@@ -437,9 +385,7 @@ export const getStock = async () => {
 
   const response = await fetch(`${API_URL}/stocks`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
   });
 
   const text = await response.text();
@@ -452,9 +398,7 @@ export const getStock = async () => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to fetch stock."
-    );
+    throw new Error(data.message || "Failed to fetch stock.");
   }
 
   return data;
@@ -509,7 +453,6 @@ export const deleteProduct = async (id) => {
   return data;
 };
 
-
 // RECORD STOCK MOVEMENT (OWNER)
 
 export const createStockMovement = async (movementData) => {
@@ -530,9 +473,7 @@ export const createStockMovement = async (movementData) => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to update stock."
-    );
+    throw new Error(data.message || "Failed to update stock.");
   }
 
   return data;
@@ -561,25 +502,19 @@ export const getStockMovements = async (productId) => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to load stock history."
-    );
+    throw new Error(data.message || "Failed to load stock history.");
   }
 
   return data;
 };
 
-
 // OWNER - DELIVERY AGENTS
 
 export const getDeliveryAgents = async () => {
-  const response = await fetch(
-    `${API_URL}/users/delivery-agents`,
-    {
-      method: "GET",
-      headers: getAuthHeaders(),
-    }
-  );
+  const response = await fetch(`${API_URL}/users/delivery-agents`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
 
   const text = await response.text();
 
@@ -592,24 +527,18 @@ export const getDeliveryAgents = async () => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to load delivery agents."
-    );
+    throw new Error(data.message || "Failed to load delivery agents.");
   }
 
   return data.data || [];
 };
 
-
 export const createDeliveryAgent = async (agentData) => {
-  const response = await fetch(
-    `${API_URL}/users/delivery-agents`,
-    {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(agentData),
-    }
-  );
+  const response = await fetch(`${API_URL}/users/delivery-agents`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(agentData),
+  });
 
   const text = await response.text();
 
@@ -622,11 +551,8 @@ export const createDeliveryAgent = async (agentData) => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data.message || "Failed to create delivery agent."
-    );
+    throw new Error(data.message || "Failed to create delivery agent.");
   }
 
   return data;
 };
-

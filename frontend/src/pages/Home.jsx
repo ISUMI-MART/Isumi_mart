@@ -13,31 +13,30 @@ function Home({ addToCart }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-  const loadHomeData = async () => {
-    try {
-      setLoading(true);
-      setError("");
+    const loadHomeData = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-      const [productResult, categoryData] = await Promise.all([
-        getProducts({ page: 1, limit: 50 }),
-        getCategories(),
-      ]);
+        const [productResult, categoryData] = await Promise.all([
+          getProducts({ page: 1, limit: 50 }),
+          getCategories(),
+        ]);
 
-      // Get the products array from the backend response
-      setProducts(productResult.products || []);
+        // Get the products array from the backend response
+        setProducts(productResult.products || []);
 
-      setCategories(categoryData);
+        setCategories(categoryData);
+      } catch (err) {
+        console.error("Home page loading error:", err);
+        setError("Unable to load products. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    } catch (err) {
-      console.error("Home page loading error:", err);
-      setError("Unable to load products. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  loadHomeData();
-}, []);
+    loadHomeData();
+  }, []);
 
   const featuredProducts = products.slice(0, 6);
 
@@ -47,9 +46,7 @@ function Home({ addToCart }) {
     const query = search.trim();
 
     navigate(
-      query
-        ? `/products?search=${encodeURIComponent(query)}`
-        : "/products"
+      query ? `/products?search=${encodeURIComponent(query)}` : "/products",
     );
   };
 
@@ -57,10 +54,8 @@ function Home({ addToCart }) {
     <>
       <div className="home-page">
         <section className="home-container">
-
           {/* Hero Banner */}
           <div className="home-hero">
-
             <div className="home-hero-content">
               <span className="home-hero-label">
                 Fresh picks. Everyday prices.
@@ -87,32 +82,83 @@ function Home({ addToCart }) {
             </div>
 
             <div className="home-hero-image">
-              <img
-                src="/images/hero.jpg"
-                alt="Fresh groceries"
-              />
+              <img src="/images/hero.jpg" alt="Fresh groceries" />
             </div>
-
           </div>
 
           {/* Benefits */}
           <div className="home-benefits">
-
             <div className="home-benefit">
-              <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-truck preview-icon"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg></span>
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-truck preview-icon"
+                >
+                  <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                  <path d="M15 18H9" />
+                  <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                  <circle cx="17" cy="18" r="2" />
+                  <circle cx="7" cy="18" r="2" />
+                </svg>
+              </span>
               Neighborhood delivery
             </div>
 
             <div className="home-benefit">
-              <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-truck preview-icon"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg></span>
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-truck preview-icon"
+                >
+                  <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                  <path d="M15 18H9" />
+                  <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                  <circle cx="17" cy="18" r="2" />
+                  <circle cx="7" cy="18" r="2" />
+                </svg>
+              </span>
               Freshly picked quality
             </div>
 
             <div className="home-benefit">
-              <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-hand-coins preview-icon"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" /><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" /><path d="m2 16 6 6" /><circle cx="16" cy="9" r="2.9" /><circle cx="6" cy="5" r="3" /></svg></span>
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-hand-coins preview-icon"
+                >
+                  <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
+                  <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+                  <path d="m2 16 6 6" />
+                  <circle cx="16" cy="9" r="2.9" />
+                  <circle cx="6" cy="5" r="3" />
+                </svg>
+              </span>
               Cash on Delivery only
             </div>
-
           </div>
         </section>
 
@@ -123,13 +169,32 @@ function Home({ addToCart }) {
               <span className="small-title">Shop by aisle</span>
               <h2>Browse our market</h2>
             </div>
-            <Link to="/products" className="view-link">View everything<span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></Link>
+            <Link to="/products" className="view-link">
+              View everything
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-arrow-right preview-icon"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
           </div>
 
           <div className="category-grid">
             {categories.map((category) => {
               const count = products.filter(
-                (product) => product.categoryId === category.id
+                (product) => product.categoryId === category.id,
               ).length;
 
               return (
@@ -138,7 +203,25 @@ function Home({ addToCart }) {
                   className="category-card"
                   key={category.id}
                 >
-                  <div className="category-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg></div>
+                  <div className="category-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      strokeLinecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-shopping-cart preview-icon"
+                    >
+                      <path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" />
+                      <path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" />
+                      <circle cx="18" cy="20" r="2" />
+                      <circle cx="8" cy="20" r="2" />
+                    </svg>
+                  </div>
 
                   <div>
                     <h3 className="category-name">{category.name}</h3>
@@ -146,7 +229,21 @@ function Home({ addToCart }) {
                   </div>
 
                   <span className="category-arrow">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      class="lucide lucide-arrow-right preview-icon"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
                   </span>
                 </Link>
               );
@@ -161,7 +258,26 @@ function Home({ addToCart }) {
               <span className="small-title">Customer favourites</span>
               <h2>Fresh from the shelves</h2>
             </div>
-            <Link to="/products" className="view-link">View all <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right preview-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></Link>
+            <Link to="/products" className="view-link">
+              View all{" "}
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-arrow-right preview-icon"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </Link>
           </div>
 
           {loading ? (
@@ -182,7 +298,6 @@ function Home({ addToCart }) {
             </div>
           )}
         </section>
-
       </div>
     </>
   );

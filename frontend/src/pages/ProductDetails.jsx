@@ -87,7 +87,7 @@ function ProductDetails({ addToCart }) {
         <Link to="/products">Products</Link> /{" "}
         <Link
           to={`/products?category=${encodeURIComponent(
-            product.categorySlug || product.category
+            product.categorySlug || product.category,
           )}`}
         >
           {product.category}
@@ -111,20 +111,14 @@ function ProductDetails({ addToCart }) {
             {product.category} · {product.unit || ""}
           </p>
 
-          <p className="pd-price">
-            Rs. {product.price.toLocaleString()}
-          </p>
+          <p className="pd-price">Rs. {product.price.toLocaleString()}</p>
 
           <div className="pd-meta">
-            <span className={`stock-pill ${badgeClass}`}>
-              {stock}
-            </span>
+            <span className={`stock-pill ${badgeClass}`}>{stock}</span>
 
             <span>Available: {available}</span>
 
-            {product.expiry && (
-              <span>Expiry: {product.expiry}</span>
-            )}
+            {product.expiry && <span>Expiry: {product.expiry}</span>}
           </div>
 
           <p className="pd-description">
@@ -137,9 +131,7 @@ function ProductDetails({ addToCart }) {
             <div className="qty-control">
               <button
                 type="button"
-                onClick={() =>
-                  setQuantity((q) => Math.max(1, q - 1))
-                }
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 disabled={isOutOfStock || quantity <= 1}
               >
                 −
@@ -149,9 +141,7 @@ function ProductDetails({ addToCart }) {
 
               <button
                 type="button"
-                onClick={() =>
-                  setQuantity((q) => Math.min(available, q + 1))
-                }
+                onClick={() => setQuantity((q) => Math.min(available, q + 1))}
                 disabled={isOutOfStock || quantity >= available}
               >
                 +

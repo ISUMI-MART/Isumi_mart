@@ -1,4 +1,10 @@
-import { Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./App.css";
 
@@ -15,23 +21,29 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import TrackOrder from "./pages/TrackOrder";
 import OrderHistory from "./pages/OrderHistory";
 import Profile from "./pages/Profile";
-import { getCart, addCartItem, updateCartItem, removeCartItem, createOrder, clearCart } from "./services/api";
+import {
+  getCart,
+  addCartItem,
+  updateCartItem,
+  removeCartItem,
+  createOrder,
+  clearCart,
+} from "./services/api";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 //Owner
-import OwnerLayout from "./layouts/OwnerLayouts";
+import OwnerLayout from "./Layouts/OwnerLayouts";
 
 import DeliveryAgents from "./pages/Owner/DeliveryAgents";
 import Inventory from "./pages/Owner/Inventory";
 import Orders from "./pages/Owner/Orders";
 import Overview from "./pages/Owner/Overview";
 //import Products from "./pages/Owner/Products";
-//import Reports from "./pages/Owner/Reports";
+import Reports from "./pages/Owner/Reports";
 import Settings from "./pages/Owner/Settings";
 import WalkInSales from "./pages/Owner/WalkInSales";
-
 
 function App() {
   const location = useLocation();
@@ -43,12 +55,9 @@ function App() {
 
   const [cart, setCart] = useState([]);
 
-
   const hideLayout =
     ["/login", "/register"].includes(location.pathname) ||
     location.pathname.startsWith("/owner");
-
-
 
   useEffect(() => {
     const loadCart = async () => {
@@ -80,16 +89,12 @@ function App() {
             quantity: Number(item.quantity ?? 1),
 
             available: Number(
-              item.available ??
-              product.stock ??
-              product.available ??
-              999999
+              item.available ?? product.stock ?? product.available ?? 999999,
             ),
           };
         });
 
         setCart(formattedCart);
-
       } catch (error) {
         console.error("Failed to load cart:", error);
       }
@@ -98,10 +103,8 @@ function App() {
     loadCart();
   }, [user]);
 
-
   // ADD PRODUCT TO CART
   const addToCart = async (product) => {
-
     const token = localStorage.getItem("token");
 
     if (!token || !user) {
@@ -111,7 +114,6 @@ function App() {
     }
 
     try {
-
       await addCartItem(product.id, 1);
 
       const data = await getCart();
@@ -123,13 +125,10 @@ function App() {
 
         return {
           id: item.productId ?? backendProduct.id ?? item.id,
-          productId:
-            item.productId ?? backendProduct.id ?? item.id,
+          productId: item.productId ?? backendProduct.id ?? item.id,
 
           name: item.name ?? backendProduct.name,
-          price: Number(
-            item.price ?? backendProduct.price ?? 0
-          ),
+          price: Number(item.price ?? backendProduct.price ?? 0),
 
           image: item.image ?? backendProduct.image ?? "",
 
@@ -141,9 +140,9 @@ function App() {
 
           available: Number(
             item.available ??
-            backendProduct.stock ??
-            backendProduct.available ??
-            999999
+              backendProduct.stock ??
+              backendProduct.available ??
+              999999,
           ),
         };
       });
@@ -151,7 +150,6 @@ function App() {
       setCart(formattedCart);
 
       alert(`${product.name} added to cart successfully!`);
-
     } catch (error) {
       console.error("Add to cart error:", error);
       alert(error.message);
@@ -160,13 +158,11 @@ function App() {
 
   // UPDATE PRODUCT QUANTITY
   const updateQuantity = async (productId, quantity) => {
-
     if (quantity < 1) {
       return;
     }
 
     try {
-
       await updateCartItem(productId, quantity);
 
       // Reload cart after update
@@ -182,9 +178,7 @@ function App() {
           productId: item.productId ?? product.id ?? item.id,
 
           name: item.name ?? product.name,
-          price: Number(
-            item.price ?? product.price ?? 0
-          ),
+          price: Number(item.price ?? product.price ?? 0),
 
           image: item.image ?? product.image ?? "",
 
@@ -195,16 +189,12 @@ function App() {
           quantity: Number(item.quantity ?? 1),
 
           available: Number(
-            item.available ??
-            product.stock ??
-            product.available ??
-            999999
+            item.available ?? product.stock ?? product.available ?? 999999,
           ),
         };
       });
 
       setCart(formattedCart);
-
     } catch (error) {
       console.error("Update cart error:", error);
       alert(error.message);
@@ -213,9 +203,7 @@ function App() {
 
   // REMOVE PRODUCT FROM CART
   const removeFromCart = async (productId) => {
-
     try {
-
       await removeCartItem(productId);
 
       // Reload cart after removing
@@ -242,16 +230,12 @@ function App() {
           quantity: Number(item.quantity ?? 1),
 
           available: Number(
-            item.available ??
-            product.stock ??
-            product.available ??
-            999999
+            item.available ?? product.stock ?? product.available ?? 999999,
           ),
         };
       });
 
       setCart(formattedCart);
-
     } catch (error) {
       console.error("Remove cart item error:", error);
       alert(error.message);
@@ -280,24 +264,15 @@ function App() {
         `${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
         user?.userName,
 
-      deliveryAddress: [
-        address.street,
-        address.city,
-        address.postalCode,
-      ]
+      deliveryAddress: [address.street, address.city, address.postalCode]
         .filter(Boolean)
         .join(", "),
 
       area: address.area,
 
-      phoneNumber:
-        address.phone ||
-        address.phoneNumber,
+      phoneNumber: address.phone || address.phoneNumber,
 
-      deliveryNote:
-        address.note ||
-        address.deliveryNote ||
-        "",
+      deliveryNote: address.note || address.deliveryNote || "",
 
       items: cart.map((item) => ({
         productId: Number(item.productId ?? item.id),
@@ -323,10 +298,7 @@ function App() {
     <>
       {!hideLayout && (
         <Navbar
-          cartCount={cart.reduce(
-            (total, item) => total + item.quantity,
-            0
-          )}
+          cartCount={cart.reduce((total, item) => total + item.quantity, 0)}
           user={user}
           onLogout={() => {
             localStorage.removeItem("token");
@@ -345,9 +317,13 @@ function App() {
 
         <Route path="/products" element={<Products addToCart={addToCart} />} />
 
-        <Route path="/products/:id" element={<ProductDetails addToCart={addToCart} />} />
+        <Route
+          path="/products/:id"
+          element={<ProductDetails addToCart={addToCart} />}
+        />
 
-        <Route path="/cart"
+        <Route
+          path="/cart"
           element={
             <Cart
               cart={cart}
@@ -357,9 +333,15 @@ function App() {
           }
         />
 
-        <Route path="/checkout/address" element={<CheckoutAddress cart={cart} />} />
+        <Route
+          path="/checkout/address"
+          element={<CheckoutAddress cart={cart} />}
+        />
 
-        <Route path="/checkout/summary" element={<CheckoutSummary cart={cart} placeOrder={placeOrder} />} />
+        <Route
+          path="/checkout/summary"
+          element={<CheckoutSummary cart={cart} placeOrder={placeOrder} />}
+        />
 
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
 
@@ -370,20 +352,27 @@ function App() {
         <Route path="/profile" element={<Profile />} />
 
         {/* OWNER ROUTES */}
+
         <Route path="/owner" element={<OwnerLayout />}>
           <Route index element={<Navigate to="overview" replace />} />
+
           <Route path="overview" element={<Overview />} />
+
           <Route path="orders" element={<Orders />} />
+
           <Route path="products" element={<Products />} />
+
           <Route path="inventory" element={<Inventory />} />
+
           <Route path="delivery-agents" element={<DeliveryAgents />} />
-          {/* <Route path="reports" element={<Reports />} /> */}
+
+          <Route path="reports" element={<Reports />} />
+
           <Route path="settings" element={<Settings />} />
+
           <Route path="walk-in-sales" element={<WalkInSales />} />
         </Route>
-
       </Routes>
-
 
       {!hideLayout && <Footer />}
     </>

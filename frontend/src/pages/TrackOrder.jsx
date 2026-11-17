@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getOrderById } from "../services/api";
 import "../layouts/TrackOrder.css";
-
 
 function TrackOrder() {
   const { id } = useParams();
@@ -43,9 +41,7 @@ function TrackOrder() {
       <div>
         <h2>Unable to load order</h2>
         <p>{error}</p>
-        <button onClick={() => navigate("/orders")}>
-          Back to Orders
-        </button>
+        <button onClick={() => navigate("/orders")}>Back to Orders</button>
       </div>
     );
   }
@@ -58,11 +54,21 @@ function TrackOrder() {
     <div className="track-order-container">
       <h1>Order Details</h1>
 
-      <p><strong>Order ID:</strong> {order.id}</p>
-      <p><strong>Customer:</strong> {order.deliveryFullName}</p>
-      <p><strong>Address:</strong> {order.deliveryAddress}</p>
-      <p><strong>Area:</strong> {order.area}</p>
-      <p><strong>Phone:</strong> {order.phoneNumber}</p>
+      <p>
+        <strong>Order ID:</strong> {order.id}
+      </p>
+      <p>
+        <strong>Customer:</strong> {order.deliveryFullName}
+      </p>
+      <p>
+        <strong>Address:</strong> {order.deliveryAddress}
+      </p>
+      <p>
+        <strong>Area:</strong> {order.area}
+      </p>
+      <p>
+        <strong>Phone:</strong> {order.phoneNumber}
+      </p>
 
       <p>
         <strong>Order Status:</strong> {order.status}
@@ -92,14 +98,9 @@ function TrackOrder() {
       <p>Delivery Fee: Rs. {Number(order.deliveryFee).toFixed(2)}</p>
       <p>Discount: Rs. {Number(order.discount).toFixed(2)}</p>
 
-      <h3>
-        Total: Rs. {Number(order.totalAmount).toFixed(2)}
-      </h3>
+      <h3>Total: Rs. {Number(order.totalAmount).toFixed(2)}</h3>
 
-      <button
-        className="light-button"
-        onClick={() => navigate("/orders")}
-      >
+      <button className="light-button" onClick={() => navigate("/orders")}>
         Back to Orders
       </button>
     </div>

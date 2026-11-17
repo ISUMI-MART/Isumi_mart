@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
-
 function CheckoutAddress({ cart = [] }) {
   const navigate = useNavigate();
 
@@ -36,30 +35,28 @@ function CheckoutAddress({ cart = [] }) {
           `${API_URL}/addresses/customer-details`,
           {
             headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
 
         const customerResult = await customerResponse.json();
 
         if (!customerResponse.ok) {
           throw new Error(
-            customerResult.message || "Failed to fetch customer details"
+            customerResult.message || "Failed to fetch customer details",
           );
         }
 
         setCustomerName(customerResult.data.name);
 
-        const response = await fetch(`${API_URL}/addresses`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/addresses`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         const result = await response.json();
 
@@ -125,7 +122,7 @@ function CheckoutAddress({ cart = [] }) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(address),
-        }
+        },
       );
 
       const result = await response.json();
@@ -145,7 +142,6 @@ function CheckoutAddress({ cart = [] }) {
     return <p>Loading delivery address...</p>;
   }
 
-
   return (
     <div className="checkout-address-page">
       <div className="checkout-address-container">
@@ -157,38 +153,75 @@ function CheckoutAddress({ cart = [] }) {
 
         <div className="checkout-address-card">
           <form onSubmit={handleSubmit}>
-            {error && (
-              <p className="error message">{error}</p>
-            )}
+            {error && <p className="error message">{error}</p>}
             <div className="address-grid">
               <div className="form-group">
                 <label htmlFor="customerName">Customer Name</label>
-                <input id="customerName"type="text"value={customerName}readOnly/>
+                <input
+                  id="customerName"
+                  type="text"
+                  value={customerName}
+                  readOnly
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="phone">Phone Number</label>
-                <input id="phone" type="tel" name="phone" value={address.phone} onChange={handleChange} required />
+                <input
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  value={address.phone}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="street">Address (House No, Street)</label>
-                <input id="street" type="text" name="street" value={address.street} onChange={handleChange} required />
+                <input
+                  id="street"
+                  type="text"
+                  name="street"
+                  value={address.street}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="area">Area</label>
-                <input id="area" type="text" name="area" value={address.area} onChange={handleChange} required />
+                <input
+                  id="area"
+                  type="text"
+                  name="area"
+                  value={address.area}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="city">City / Town</label>
-                <input id="city" type="text" name="city" value={address.city} onChange={handleChange} required />
+                <input
+                  id="city"
+                  type="text"
+                  name="city"
+                  value={address.city}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="postalCode">Postal Code</label>
-                <input id="postalCode" type="text" name="postalCode" value={address.postalCode} onChange={handleChange} />
+                <input
+                  id="postalCode"
+                  type="text"
+                  name="postalCode"
+                  value={address.postalCode}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
