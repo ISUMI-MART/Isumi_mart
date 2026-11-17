@@ -50,4 +50,39 @@ export class UserRepository {
     select: userProfileSelect,
   });
   }
+
+
+async getDeliveryAgents() {
+  return await prisma.user.findMany({
+    where: {
+      role: "DELIVERY_AGENT",
+    },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      userName: true,
+      phone: true,
+      agentCode: true,
+
+      assignedDeliveries: {
+        where: {
+          status: {
+            notIn: ["DELIVERED", "CANCELLED"],
+          },
+        },
+        select: {
+          id: true,
+          status: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
 }
+
+}
+

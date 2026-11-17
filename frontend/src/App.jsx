@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./App.css";
 
@@ -15,17 +15,22 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import TrackOrder from "./pages/TrackOrder";
 import OrderHistory from "./pages/OrderHistory";
 import Profile from "./pages/Profile";
-import {
-  getCart,
-  addCartItem,
-  updateCartItem,
-  removeCartItem,
-  createOrder,
-  clearCart,
-} from "./services/api";
+import { getCart, addCartItem, updateCartItem, removeCartItem, createOrder, clearCart } from "./services/api";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
+//Owner
+import OwnerLayout from "./layouts/OwnerLayouts";
+
+import DeliveryAgents from "./pages/Owner/DeliveryAgents";
+import Inventory from "./pages/Owner/Inventory";
+import Orders from "./pages/Owner/Orders";
+import Overview from "./pages/Owner/Overview";
+//import Products from "./pages/Owner/Products";
+//import Reports from "./pages/Owner/Reports";
+import Settings from "./pages/Owner/Settings";
+import WalkInSales from "./pages/Owner/WalkInSales";
 
 
 function App() {
@@ -39,15 +44,17 @@ function App() {
   const [cart, setCart] = useState([]);
 
 
-  const hideLayout = ["/login", "/register"].includes(
-    location.pathname
-  );
+  const hideLayout =
+    ["/login", "/register"].includes(location.pathname) ||
+    location.pathname.startsWith("/owner");
+
+
 
   useEffect(() => {
     const loadCart = async () => {
       const token = localStorage.getItem("token");
 
-      if (!token || !user) {
+      if (!token || !user || user.role != "CUSTOMER") {
         setCart([]);
         return;
       }
@@ -124,11 +131,11 @@ function App() {
             item.price ?? backendProduct.price ?? 0
           ),
 
-          image:item.image ??backendProduct.image ??"",
+          image: item.image ?? backendProduct.image ?? "",
 
-          icon:item.icon ??backendProduct.icon ??"",
+          icon: item.icon ?? backendProduct.icon ?? "",
 
-          unit:item.unit ?? backendProduct.unit ??"",
+          unit: item.unit ?? backendProduct.unit ?? "",
 
           quantity: Number(item.quantity ?? 1),
 
@@ -172,18 +179,18 @@ function App() {
 
         return {
           id: item.productId ?? product.id ?? item.id,
-          productId:item.productId ?? product.id ?? item.id,
+          productId: item.productId ?? product.id ?? item.id,
 
           name: item.name ?? product.name,
           price: Number(
             item.price ?? product.price ?? 0
           ),
 
-          image:item.image ??product.image ??"",
+          image: item.image ?? product.image ?? "",
 
-          icon:item.icon ??product.icon ?? "",
+          icon: item.icon ?? product.icon ?? "",
 
-          unit: item.unit ?? product.unit ??"",
+          unit: item.unit ?? product.unit ?? "",
 
           quantity: Number(item.quantity ?? 1),
 
@@ -228,9 +235,9 @@ function App() {
 
           image: item.image ?? product.image ?? "",
 
-          icon:item.icon ?? product.icon ?? "",
+          icon: item.icon ?? product.icon ?? "",
 
-          unit:item.unit ?? product.unit ??  "",
+          unit: item.unit ?? product.unit ?? "",
 
           quantity: Number(item.quantity ?? 1),
 
@@ -362,7 +369,21 @@ function App() {
 
         <Route path="/profile" element={<Profile />} />
 
+        {/* OWNER ROUTES */}
+        <Route path="/owner" element={<OwnerLayout />}>
+          <Route index element={<Navigate to="overview" replace />} />
+          <Route path="overview" element={<Overview />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="products" element={<Products />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="delivery-agents" element={<DeliveryAgents />} />
+          {/* <Route path="reports" element={<Reports />} /> */}
+          <Route path="settings" element={<Settings />} />
+          <Route path="walk-in-sales" element={<WalkInSales />} />
+        </Route>
+
       </Routes>
+
 
       {!hideLayout && <Footer />}
     </>

@@ -38,7 +38,7 @@ export const createProductSchema = z.object({
       .trim()
       .min(1, "Product unit cannot be empty.")
       .max(30, "Product unit cannot exceed 30 characters."),
-      categorySlug: z.string().min(1, "Category slug is required")
+    categorySlug: z.string().min(1, "Category slug is required")
   }),
 });
 
@@ -192,6 +192,8 @@ export const updateProductSchema = z.object({
       .min(1, "Product unit cannot be empty.")
       .max(30, "Product unit cannot exceed 30 characters.")
       .optional(),
+    categorySlug: z.string().min(1, "Category slug is required")
+
 
   }).refine(
     (data) => Object.keys(data).length > 0,

@@ -13,6 +13,6 @@ userRouter.get("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY
 userRouter.put("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),validate(updateUserSchema),userController.updateProfile);
 userRouter.delete("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),userController.deleteProfile)
 userRouter.post("/delivery-agents",requireAuth,requireRole("OWNER"),userController.createDeliveryAgent);
-
+userRouter.get("/delivery-agents",requireAuth,requireRole("OWNER"),userController.getDeliveryAgents);
 
 export default userRouter;

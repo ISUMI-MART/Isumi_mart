@@ -159,7 +159,7 @@ main {
   border: none;
   background: var(--green);
   color: white;
-  padding: 11px 17px;
+  padding: 11px 16px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 700;
@@ -1609,6 +1609,18 @@ a.product-image {
 .pd-actions button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Product Details Buttons */
+.pd-actions .primary-button,
+.pd-actions .secondary-button {
+  width: 140px;
+  height: 54px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .pd-added {

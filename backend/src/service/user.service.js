@@ -101,4 +101,26 @@ async createDeliveryAgent({
       throw error;
     }
   }
+
+async getDeliveryAgents() {
+  const agents = await userRepository.getDeliveryAgents();
+
+  return agents.map((agent) => {
+    const assignedOrders = agent.assignedDeliveries.length;
+
+    return {
+      id: agent.id,
+      agentCode: agent.agentCode,
+      name:
+        [agent.firstName, agent.lastName]
+          .filter(Boolean)
+          .join(" ") || agent.userName,
+      email: agent.email,
+      phone: agent.phone,
+      assignedOrders,
+      status: assignedOrders > 0 ? "On delivery" : "Available",
+    };
+  });
+}
+
 }

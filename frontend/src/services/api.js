@@ -117,8 +117,6 @@ export async function getCategories() {
 
   const result = await response.json();
 
-  console.log("Categories API response:", result);
-
   const categories = Array.isArray(result)
     ? result
     : result.data || result.categories || [];
@@ -355,3 +353,280 @@ export async function clearCart() {
 
   return data;
 }
+
+// OWNER - ORDERS
+
+
+export const getOrders = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/orders`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const text = await response.text();
+
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid orders response from server.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to fetch orders."
+    );
+  }
+
+  return data;
+};
+
+
+// UPDATE ORDER STATUS
+
+
+export const updateOrderStatus = async (
+  orderId,
+  status
+) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `${API_URL}/orders/${orderId}/status`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        status,
+      }),
+    }
+  );
+
+  const text = await response.text();
+
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid order update response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to update order status."
+    );
+  }
+
+  return data;
+};
+
+
+// ===============================
+// OWNER - STOCK
+// ===============================
+
+export const getStock = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/stocks`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const text = await response.text();
+
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid stock response from server.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to fetch stock."
+    );
+  }
+
+  return data;
+};
+
+// OWNER - PRODUCT MANAGEMENT
+
+export const createProduct = async (productData) => {
+  const response = await fetch(`${API_URL}/products`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(productData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create product");
+  }
+
+  return data;
+};
+
+export const updateProduct = async (id, productData) => {
+  const response = await fetch(`${API_URL}/products/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(productData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update product");
+  }
+
+  return data;
+};
+
+export const deleteProduct = async (id) => {
+  const response = await fetch(`${API_URL}/products/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to delete product");
+  }
+
+  return data;
+};
+
+
+// RECORD STOCK MOVEMENT (OWNER)
+
+export const createStockMovement = async (movementData) => {
+  const response = await fetch(`${API_URL}/stock-movements`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(movementData),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid stock movement response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to update stock."
+    );
+  }
+
+  return data;
+};
+
+// GET STOCK MOVEMENT HISTORY
+
+export const getStockMovements = async (productId) => {
+  const endpoint = productId
+    ? `${API_URL}/stock-movements/product/${productId}`
+    : `${API_URL}/stock-movements`;
+
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid stock history response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load stock history."
+    );
+  }
+
+  return data;
+};
+
+
+// OWNER - DELIVERY AGENTS
+
+export const getDeliveryAgents = async () => {
+  const response = await fetch(
+    `${API_URL}/users/delivery-agents`,
+    {
+      method: "GET",
+      headers: getAuthHeaders(),
+    }
+  );
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid delivery agents response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to load delivery agents."
+    );
+  }
+
+  return data.data || [];
+};
+
+
+export const createDeliveryAgent = async (agentData) => {
+  const response = await fetch(
+    `${API_URL}/users/delivery-agents`,
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(agentData),
+    }
+  );
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid create-agent response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to create delivery agent."
+    );
+  }
+
+  return data;
+};
+

@@ -10,12 +10,7 @@ export const createOrderSchema = z.object({
             .min(9, "Phone number is too short.")
             .max(15, "Phone number is too long."),
         deliveryNote: z.string().trim().optional().nullable(),
-
-        // Order amounts
-        // subtotal: z.number().positive("Subtotal must be positive."),
-        // deliveryFee: z.number().nonnegative().default(0),
-        // discount: z.number().nonnegative().default(0),
-        // totalAmount: z.number().positive("Total amount must be positive."),
+        totalAmount: z.number().positive("Total amount must be positive."),
 
         //Order Items (Array of items)
         items: z.array(
@@ -25,28 +20,28 @@ export const createOrderSchema = z.object({
                 //price: z.number().positive("Price must be positive.")
             })
         ).min(1, "Order must have at least one item.")
-        .superRefine((items,ctx)=>{
-            const ids= items.map((item)=>item.productId);
-            const uniqueIds = new Set(ids);
-            if(uniqueIds.size !=ids.length){
-                ctx.addIssue({
-                    code:"custom",
-                    message:"Duplicate products are not allowed"
-                })
-            }
-        })
-        
+            .superRefine((items, ctx) => {
+                const ids = items.map((item) => item.productId);
+                const uniqueIds = new Set(ids);
+                if (uniqueIds.size != ids.length) {
+                    ctx.addIssue({
+                        code: "custom",
+                        message: "Duplicate products are not allowed"
+                    })
+                }
+            })
+
     })
 });
 
 // updating the Order Status (PATCH)
 export const updateOrderStatusSchema = z.object({
     params: z.object({
-        id: z.string().min(1, "Order ID is required.") 
+        id: z.string().min(1, "Order ID is required.")
     }),
     body: z.object({
         status: z.enum([
-            'ORDER_PLACED', 'CONFIRMED', 'PREPARING', 'ASSIGNED', 
+            'ORDER_PLACED', 'CONFIRMED', 'PREPARING', 'ASSIGNED',
             'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED', 'DELIVERY_FAILED', 'CANCELLED'
         ])
     })
