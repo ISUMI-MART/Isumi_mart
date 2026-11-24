@@ -45,6 +45,10 @@ import Reports from "./pages/Owner/Reports";
 import Settings from "./pages/Owner/Settings";
 import WalkInSales from "./pages/Owner/WalkInSales";
 
+// Delivery
+import DeliveryLayout from "./layouts/DeliveryLayout";
+import Dashboard from "./pages/Delivery/Dashboard";
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,12 +56,14 @@ function App() {
   const [user, setUser] = useState(() => {
     return JSON.parse(localStorage.getItem("user") || "null");
   });
+  const activeUser =
+  user || JSON.parse(localStorage.getItem("user") || "null");
 
   const [cart, setCart] = useState([]);
 
   const hideLayout =
     ["/login", "/register"].includes(location.pathname) ||
-    location.pathname.startsWith("/owner");
+    location.pathname.startsWith("/owner") || location.pathname.startsWith("/delivery");
 
   useEffect(() => {
     const loadCart = async () => {
@@ -81,7 +87,14 @@ function App() {
             name: item.name ?? product.name,
             price: Number(item.price ?? product.price ?? 0),
 
-            image: item.image ?? product.image ?? "",
+            image:
+              item.imageUrl ||
+              item.image ||
+              item.product?.imageUrl ||
+              item.product?.image ||
+              product.imageUrl ||
+              product.image ||
+              "",
             icon: item.icon ?? product.icon ?? "",
 
             unit: item.unit ?? product.unit ?? "",
@@ -114,7 +127,11 @@ function App() {
     }
 
     try {
-      await addCartItem(product.id, 1);
+      const initialQuantity = /kg|kilogram/i.test(product.unit || "")
+        ? 0.25
+        : 1;
+
+      await addCartItem(product.id, initialQuantity);
 
       const data = await getCart();
 
@@ -130,8 +147,14 @@ function App() {
           name: item.name ?? backendProduct.name,
           price: Number(item.price ?? backendProduct.price ?? 0),
 
-          image: item.image ?? backendProduct.image ?? "",
-
+          image:
+            item.imageUrl ||
+            item.image ||
+            item.product?.imageUrl ||
+            item.product?.image ||
+            product.imageUrl ||
+            product.image ||
+            "",
           icon: item.icon ?? backendProduct.icon ?? "",
 
           unit: item.unit ?? backendProduct.unit ?? "",
@@ -140,9 +163,9 @@ function App() {
 
           available: Number(
             item.available ??
-              backendProduct.stock ??
-              backendProduct.available ??
-              999999,
+            backendProduct.stock ??
+            backendProduct.available ??
+            999999,
           ),
         };
       });
@@ -158,10 +181,24 @@ function App() {
 
   // UPDATE PRODUCT QUANTITY
   const updateQuantity = async (productId, quantity) => {
-    if (quantity < 1) {
+    const existingItem = cart.find((item) => item.productId === productId);
+
+    if (!existingItem) return;
+
+    const isWeightProduct = /kg|kilogram/i.test(existingItem.unit || "");
+
+    const minimumQuantity = isWeightProduct ? 0.25 : 1;
+
+    quantity = Number(Number(quantity).toFixed(2));
+
+    if (quantity < minimumQuantity) {
       return;
     }
 
+    if (quantity > existingItem.available) {
+      alert("Not enough stock available.");
+      return;
+    }
     try {
       await updateCartItem(productId, quantity);
 
@@ -180,8 +217,14 @@ function App() {
           name: item.name ?? product.name,
           price: Number(item.price ?? product.price ?? 0),
 
-          image: item.image ?? product.image ?? "",
-
+          image:
+            item.imageUrl ||
+            item.image ||
+            item.product?.imageUrl ||
+            item.product?.image ||
+            product.imageUrl ||
+            product.image ||
+            "",
           icon: item.icon ?? product.icon ?? "",
 
           unit: item.unit ?? product.unit ?? "",
@@ -221,8 +264,14 @@ function App() {
           name: item.name ?? product.name,
           price: Number(item.price ?? product.price ?? 0),
 
-          image: item.image ?? product.image ?? "",
-
+          image:
+            item.imageUrl ||
+            item.image ||
+            item.product?.imageUrl ||
+            item.product?.image ||
+            product.imageUrl ||
+            product.image ||
+            "",
           icon: item.icon ?? product.icon ?? "",
 
           unit: item.unit ?? product.unit ?? "",
@@ -298,7 +347,7 @@ function App() {
     <>
       {!hideLayout && (
         <Navbar
-          cartCount={cart.reduce((total, item) => total + item.quantity, 0)}
+          cartCount={cart.length}
           user={user}
           onLogout={() => {
             localStorage.removeItem("token");
@@ -371,6 +420,48 @@ function App() {
           <Route path="settings" element={<Settings />} />
 
           <Route path="walk-in-sales" element={<WalkInSales />} />
+
+          <Route path="profile" element={<Profile />} />
+        </Route>
+        {/* DELIVERY AGENT ROUTES */}
+
+        <Route
+          path="/delivery"
+          element={
+            activeUser?.role === "DELIVERY_AGENT" ? (
+              <DeliveryLayout
+                agentId={activeUser.userName || "Delivery Agent"}
+                onLogout={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
+                  setUser(null);
+                  setCart([]);
+                  navigate("/login");
+                }}
+              />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        >
+          <Route
+            index
+            element={
+              <Dashboard
+                agentId={activeUser?.userName || "Delivery Agent"}
+              />
+            }
+          />
+
+          <Route
+            path="completed"
+            element={
+              <Dashboard
+                showCompleted={true}
+                agentId={activeUser?.userName || "Delivery Agent"}
+              />
+            }
+          />
         </Route>
       </Routes>
 

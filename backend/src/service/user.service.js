@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { UserRepository } from "../repository/user.repository.js";
 import { NotFoundError } from "../errors/appError.js";
+import { prisma } from "../config/Prisma.js";
 
 
 const userRepository = new UserRepository();
@@ -121,6 +122,36 @@ async getDeliveryAgents() {
       status: assignedOrders > 0 ? "On delivery" : "Available",
     };
   });
+}
+async deleteDeliveryAgent(agentId) {
+    const id = Number(agentId);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        throw new BadRequestError("Invalid delivery agent ID");
+    }
+
+    const agent = await userRepository.findById(id);
+
+    if (!agent || agent.role !== "DELIVERY_AGENT") {
+        throw new NotFoundError("Delivery agent not found");
+    }
+
+    const activeOrders = await prisma.order.count({
+        where: {
+            deliveryAgentId: id,
+            status: {
+                notIn: ["DELIVERED", "CANCELLED", "DELIVERY_FAILED"],
+            },
+        },
+    });
+
+    if (activeOrders > 0) {
+        throw new ConflictError(
+            "Please reassign or complete this agent's active orders before deleting the account."
+        );
+    }
+
+    return await userRepository.deleteDeliveryAgent(id);
 }
 
 }

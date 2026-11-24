@@ -1,50 +1,116 @@
 import { useEffect, useState } from "react";
-import { getOrders, updateOrderStatus } from "../../services/api";
+import TableOrders from "../../components/Owner/TableOrders";
+import {
+  getOrders,
+  updateOrderStatus,
+  getDeliveryAgents,
+  assignDeliveryAgent,
+} from "../../services/api";
+
+const statusLabels = {
+  ORDER_PLACED: "Pending",
+  CONFIRMED: "Confirmed",
+  PREPARING: "Preparing",
+  ASSIGNED: "Assigned",
+  PICKED_UP: "Picked Up",
+  OUT_FOR_DELIVERY: "Out for Delivery",
+  DELIVERED: "Delivered",
+  DELIVERY_FAILED: "Not Delivered",
+  CANCELLED: "Cancelled",
+};
+
+const statusOptions = [
+  "ORDER_PLACED",
+  "CONFIRMED",
+  "PREPARING",
+  "ASSIGNED",
+  "PICKED_UP",
+  "OUT_FOR_DELIVERY",
+  "DELIVERED",
+  "DELIVERY_FAILED",
+  "CANCELLED",
+];
 
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [agents, setAgents] = useState([]);
+
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // FETCH ORDERS FROM BACKEND
-  const fetchOrders = async () => {
+  const [assigningOrder, setAssigningOrder] = useState(null);
+  const [updatingOrder, setUpdatingOrder] = useState(null);
+
+  // FETCH ORDERS AND DELIVERY AGENTS
+  const fetchData = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const ordersResponse = await getOrders();
-
-      console.log("Orders:", ordersResponse);
+      const [ordersResponse, agentsResponse] = await Promise.all([
+        getOrders(),
+        getDeliveryAgents(),
+      ]);
 
       const ordersData = Array.isArray(ordersResponse)
         ? ordersResponse
-        : ordersResponse?.orders || ordersResponse?.data || [];
+        : ordersResponse?.data?.orders ||
+          ordersResponse?.data ||
+          ordersResponse?.orders ||
+          [];
+
+      const agentsData = Array.isArray(agentsResponse)
+        ? agentsResponse
+        : agentsResponse?.data || [];
 
       setOrders(ordersData);
-
+      setAgents(agentsData);
     } catch (err) {
       console.error("Orders loading error:", err);
-      setError(err.message || "Failed to load orders");
-
+      setError(err.message || "Failed to load orders.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchData();
   }, []);
 
   // UPDATE ORDER STATUS
   const handleUpdateOrder = async (orderId, status) => {
     try {
+      setUpdatingOrder(orderId);
+
       await updateOrderStatus(orderId, status);
 
-      await fetchOrders();
+      await fetchData();
     } catch (err) {
-      alert(err.message || "Failed to update order");
+      alert(err.message || "Failed to update order.");
+    } finally {
+      setUpdatingOrder(null);
+    }
+  };
+
+  // ASSIGN DELIVERY AGENT
+  const handleAssignAgent = async (orderId, agentId) => {
+    if (!agentId) return;
+
+    try {
+      setAssigningOrder(orderId);
+
+      await assignDeliveryAgent(orderId, agentId);
+
+      alert("Delivery agent assigned successfully!");
+
+      await fetchData();
+    } catch (err) {
+      alert(err.message || "Failed to assign delivery agent.");
+    } finally {
+      setAssigningOrder(null);
     }
   };
 
@@ -55,11 +121,12 @@ function Orders() {
     const matchesSearch = [
       order.id,
       order.deliveryFullName,
-      order.deliveryPhone,
+      order.phoneNumber,
       order.deliveryAddress,
       order.area,
-      order.deliveryFailureReason,
-      order.deliveryFailureNote,
+      order.deliveryAgent?.firstName,
+      order.deliveryAgent?.lastName,
+      order.deliveryAgent?.agentCode,
     ]
       .filter(Boolean)
       .join(" ")
@@ -68,6 +135,7 @@ function Orders() {
 
     return matchesStatus && matchesSearch;
   });
+
   return (
     <section className="content">
       <div className="eyebrow">ORDER MANAGEMENT</div>
@@ -88,7 +156,7 @@ function Orders() {
           <div className="filters">
             <input
               className="field search"
-              placeholder="Search order or customer..."
+              placeholder="Search order, customer or agent..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -98,17 +166,11 @@ function Orders() {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
-              {[
-                "All",
-                "Pending",
-                "Processing",
-                "Out for Delivery",
-                "Delivered",
-                "Not Delivered",
-                "Cancelled",
-              ].map((status) => (
+              <option value="All">All Statuses</option>
+
+              {statusOptions.map((status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {statusLabels[status]}
                 </option>
               ))}
             </select>
@@ -123,67 +185,14 @@ function Orders() {
           <p>No orders found.</p>
         ) : (
           <div className="table-responsive">
-            <table className="orders-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Phone</th>
-                  <th>Address</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Update Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.orderNumber || order.id}</td>
-
-                    <td>{order.deliveryFullName || "N/A"}</td>
-
-                    <td>{order.phoneNumber || "N/A"}</td>
-
-                    <td>
-                      {[
-                        order.deliveryAddress,
-                        order.area,
-                      ]
-                        .filter(Boolean)
-                        .join(", ") || "N/A"}
-                    </td>
-
-                    <td>Rs. {Number(order.totalAmount || 0).toFixed(2)}</td>
-
-                    <td>{order.status}</td>
-
-                    <td>
-                      <select
-                        className="field"
-                        value={order.status}
-                        onChange={(e) =>
-                          handleUpdateOrder(order.id, e.target.value)
-                        }
-                      >
-                        {[
-                          "Pending",
-                          "Processing",
-                          "Out for Delivery",
-                          "Delivered",
-                          "Not Delivered",
-                          "Cancelled",
-                        ].map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <TableOrders
+              orders={filteredOrders}
+              deliveryAgents={agents}
+              updateOrder={handleUpdateOrder}
+              assignDeliveryAgent={handleAssignAgent}
+              assigningOrder={assigningOrder}
+              updatingOrder={updatingOrder}
+            />
           </div>
         )}
       </div>

@@ -5,16 +5,9 @@ const productRepository = new ProductRepository();
 
 export class ProductService {
     async createProduct(data) {
-        // const product = await productRepository.findById(id);
-
-        // if (product) {
-        //     throw new NotFoundError("Product id already exists");
-        // }
         return await productRepository.createProduct(data);
     }
-    // async getAllProduct() {
-    //     return await productRepository.getAll();
-    // }
+
     async getAllProduct(filters = {}) {
         return await productRepository.getAll(filters);
     }

@@ -1,45 +1,118 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getProducts, createWalkInSale } from "../../services/api";
 
-function WalkInSales({ products, saveProducts, sales, saveSales }) {
+function WalkInSales() {
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+
   const [search, setSearch] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [customerName, setCustomerName] = useState("Walk-in Customer");
+
   const [completedSale, setCompletedSale] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   const [error, setError] = useState("");
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) &&
-      product.stock > 0
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  async function loadProducts() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const result = await getProducts({
+        page: 1,
+        limit: 100,
+      });
+
+      setProducts(result.products || []);
+    } catch (err) {
+      setError(err.message || "Failed to load products.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  const filteredProducts = products.filter((product) => {
+    const available = Number(product.available ?? 0);
+
+    return (
+      product.name?.toLowerCase().includes(search.toLowerCase()) &&
+      available > 0
+    );
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const startIndex = (currentPage - 1) * productsPerPage;
+
+  const currentProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + productsPerPage,
   );
 
   const subtotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
+    (total, item) => total + Number(item.price) * Number(item.quantity),
+    0,
   );
+
+
+  function isWeightProduct(product) {
+    return ["kg", "kilogram", "kilograms"].includes(
+      product.unit?.trim().toLowerCase(),
+    );
+  }
+
 
   function addToCart(product) {
     setError("");
 
-    setCart((currentCart) => {
-      const existing = currentCart.find(
-        (item) => item.id === product.id
-      );
+    const available = Number(product.available ?? 0);
 
+    const weightProduct = isWeightProduct(product);
+
+    setCart((currentCart) => {
+      const existing = currentCart.find((item) => item.id === product.id);
+
+      // Product already in cart
       if (existing) {
-        if (existing.quantity >= product.stock) {
-          setError("Not enough stock available.");
+        const increment = weightProduct ? 0.25 : 1;
+
+        const newQuantity = Number(
+          (Number(existing.quantity) + increment).toFixed(3),
+        );
+
+        if (newQuantity > available) {
+          setError(
+            `Only ${available} ${
+              product.unit || "units"
+            } of ${product.name} are available.`,
+          );
+
           return currentCart;
         }
 
         return currentCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+            ? {
+                ...item,
+                quantity: newQuantity,
+              }
+            : item,
         );
       }
 
+      // Add new product
       return [
         ...currentCart,
         {
@@ -47,27 +120,101 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
           name: product.name,
           price: Number(product.price),
           unit: product.unit,
-          emoji: product.emoji,
+          image: product.imageUrl || "",
           quantity: 1,
+          available,
         },
       ];
     });
   }
 
+  // CHANGE QUANTITY
+ 
   function changeQuantity(productId, newQuantity) {
     const product = products.find((p) => p.id === productId);
 
-    if (!product) return;
-
-    if (newQuantity <= 0) {
-      setCart((currentCart) =>
-        currentCart.filter((item) => item.id !== productId)
-      );
+    if (!product) {
       return;
     }
 
-    if (newQuantity > product.stock) {
-      setError(`Only ${product.stock} units of ${product.name} are available.`);
+    const quantity = Number(newQuantity);
+
+    const available = Number(product.available ?? 0);
+
+    // Invalid number
+    if (!Number.isFinite(quantity)) {
+      return;
+    }
+
+    // Remove item
+    if (quantity <= 0) {
+      setCart((currentCart) =>
+        currentCart.filter((item) => item.id !== productId),
+      );
+
+      setError("");
+      return;
+    }
+
+    // Check stock
+    if (quantity > available) {
+      setError(
+        `Only ${available} ${product.unit || "units"} of ${
+          product.name
+        } are available.`,
+      );
+
+      return;
+    }
+
+    // Weight product
+    if (isWeightProduct(product)) {
+      // Weight products must be sold in 250g increments
+      if (isWeightProduct(product)) {
+        const isValid250g = Math.round(quantity * 4) === quantity * 4;
+
+        if (!isValid250g) {
+          setError(`${product.name} must be sold in increments of 250g.`);
+
+          return;
+        }
+
+        setError("");
+
+        setCart((currentCart) =>
+          currentCart.map((item) =>
+            item.id === productId
+              ? {
+                  ...item,
+                  quantity: Number(quantity.toFixed(2)),
+                }
+              : item,
+          ),
+        );
+
+        return;
+      }
+
+      setError("");
+
+      setCart((currentCart) =>
+        currentCart.map((item) =>
+          item.id === productId
+            ? {
+                ...item,
+                quantity: Number(quantity.toFixed(3)),
+              }
+            : item,
+        ),
+      );
+
+      return;
+    }
+
+    // Normal product
+    if (!Number.isInteger(quantity)) {
+      setError(`${product.name} must be sold in whole quantities.`);
+
       return;
     }
 
@@ -76,13 +223,49 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
     setCart((currentCart) =>
       currentCart.map((item) =>
         item.id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
+          ? {
+              ...item,
+              quantity,
+            }
+          : item,
+      ),
     );
   }
 
-  function completeSale() {
+  // ===============================
+  // REMOVE ITEM
+  // ===============================
+
+  function removeFromCart(productId) {
+    setCart((currentCart) =>
+      currentCart.filter((item) => item.id !== productId),
+    );
+
+    setError("");
+  }
+
+  // ===============================
+  // COMPLETE SALE
+  // ===============================
+
+  function formatWeight(quantity, unit) {
+    const normalizedUnit = unit?.trim().toLowerCase();
+
+    if (["kg", "kilogram", "kilograms"].includes(normalizedUnit)) {
+      const grams = Number(quantity) * 1000;
+
+      if (grams < 1000) {
+        return `${grams} g`;
+      }
+
+      return `${Number(quantity).toFixed(2)} kg`;
+    }
+
+    return `${quantity} ${unit || "unit"}`;
+  }
+
+  async function completeSale() {
+    setCurrentPage(1);
     setError("");
 
     if (cart.length === 0) {
@@ -90,60 +273,61 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
       return;
     }
 
-    // Check stock again before completing the sale.
-    for (const item of cart) {
-      const product = products.find((p) => p.id === item.id);
+    try {
+      setSaving(true);
 
-      if (!product || product.stock < item.quantity) {
-        setError(`Insufficient stock for ${item.name}.`);
-        return;
-      }
-    }
+      const saleData = {
+        customerName: customerName.trim() || "Walk-in Customer",
 
-    const updatedProducts = products.map((product) => {
-      const soldItem = cart.find((item) => item.id === product.id);
+        paymentStatus: "PAID",
 
-      if (!soldItem) return product;
+        items: cart.map((item) => ({
+          productId: Number(item.id),
 
-      const newStock = product.stock - soldItem.quantity;
-
-      return {
-        ...product,
-        stock: newStock,
-        status:
-          newStock === 0
-            ? "Out of Stock"
-            : newStock <= 10
-            ? "Low Stock"
-            : "In Stock",
+          quantity: Number(item.quantity),
+        })),
       };
-    });
 
-    const sale = {
-      id: `BILL-${Date.now()}`,
-      date: new Date().toISOString(),
-      customerName: customerName.trim() || "Walk-in Customer",
-      paymentMethod,
-      items: cart.map((item) => ({ ...item })),
-      subtotal,
-      total: subtotal,
-      type: "WALK_IN",
-    };
+      const sale = await createWalkInSale(saleData);
 
-    saveProducts(updatedProducts);
-    saveSales([sale, ...sales]);
+      setCompletedSale({
+        ...sale,
+        paymentMethod,
+      });
 
-    setCompletedSale(sale);
-    setCart([]);
-    setCustomerName("Walk-in Customer");
+      setCart([]);
+
+      setCustomerName("Walk-in Customer");
+
+      setSearch("");
+
+      // Get fresh stock
+      await loadProducts();
+    } catch (err) {
+      setError(err.message || "Failed to complete walk-in sale.");
+    } finally {
+      setSaving(false);
+    }
   }
+
+  // ===============================
+  // START NEW SALE
+  // ===============================
 
   function startNewSale() {
     setCompletedSale(null);
     setCart([]);
     setSearch("");
     setError("");
+    setPaymentMethod("Cash");
+    setCustomerName("Walk-in Customer");
+
+    loadProducts();
   }
+
+  // ===============================
+  // RECEIPT
+  // ===============================
 
   if (completedSale) {
     return (
@@ -151,48 +335,68 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
         <div className="panel receipt">
           <div className="receipt-header">
             <h2>Isumi Mart</h2>
+
             <p>Walk-in Sales Receipt</p>
+
             <span className="pill">Payment recorded</span>
           </div>
 
           <hr />
 
-          <p><b>Bill No:</b> {completedSale.id}</p>
           <p>
-            <b>Date:</b>{" "}
-            {new Date(completedSale.date).toLocaleString()}
+            <b>Bill No:</b> {completedSale.billNumber}
           </p>
-          <p><b>Customer:</b> {completedSale.customerName}</p>
-          <p><b>Payment:</b> {completedSale.paymentMethod}</p>
+
+          <p>
+            <b>Date:</b> {new Date(completedSale.createdAt).toLocaleString()}
+          </p>
+
+          <p>
+            <b>Customer:</b> {completedSale.customerName || "Walk-in Customer"}
+          </p>
+
+          <p>
+            <b>Payment:</b> {completedSale.paymentMethod || paymentMethod}
+          </p>
 
           <div className="tablewrap">
             <table>
               <thead>
                 <tr>
                   <th>Product</th>
+
                   <th>Qty</th>
+
                   <th>Price</th>
+
                   <th>Total</th>
                 </tr>
               </thead>
 
               <tbody>
-                {completedSale.items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>Rs. {item.price.toFixed(2)}</td>
-                    <td>
-                      Rs. {(item.price * item.quantity).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
+                {completedSale.items?.map((item) => {
+                  const price = Number(item.price);
+
+                  const quantity = Number(item.quantity);
+
+                  return (
+                    <tr key={item.id}>
+                      <td>{item.product?.name || "Product"}</td>
+
+                      <td>{formatWeight(quantity, item.product?.unit)}</td>
+
+                      <td>Rs. {price.toFixed(2)}</td>
+
+                      <td>Rs. {(price * quantity).toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
 
           <h3 className="receipt-total">
-            Total: Rs. {completedSale.total.toFixed(2)}
+            Total: Rs. {Number(completedSale.totalAmount).toFixed(2)}
           </h3>
 
           <p className="receipt-thanks">
@@ -213,18 +417,25 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
     );
   }
 
+  // ===============================
+  // POS SCREEN
+  // ===============================
+
   return (
     <section className="content">
       <div className="eyebrow">POINT OF SALE</div>
 
       <h1 className="heading">Walk-in Sales</h1>
-      <p className="sub">
-        Sell products to customers visiting the shop.
-      </p>
+
+      <p className="sub">Sell products to customers visiting the shop.</p>
 
       {error && <p className="sale-error">{error}</p>}
 
       <div className="pos-layout">
+        {/* ==========================
+            AVAILABLE PRODUCTS
+        ========================== */}
+
         <div className="panel">
           <div className="panelhead">
             <h3>Available products</h3>
@@ -234,31 +445,86 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
             className="field search"
             placeholder="Search products..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
           />
 
-          <div className="pos-products">
-            {filteredProducts.map((product) => (
-              <button
-                className="pos-product"
-                key={product.id}
-                onClick={() => addToCart(product)}
-              >
-                <span className="pos-emoji">{product.emoji || "🛒"}</span>
-                <b>{product.name}</b>
-                <span>Rs. {Number(product.price).toFixed(2)}</span>
-                <small>{product.stock} {product.unit} available</small>
-              </button>
-            ))}
+          {loading ? (
+            <p className="empty">Loading products...</p>
+          ) : (
+            <>
+              <div className="pos-products">
+                {currentProducts.map((product) => (
+                  <button
+                    className="pos-product"
+                    key={product.id}
+                    onClick={() => addToCart(product)}
+                  >
+                    <span className="pos-emoji">
+                      {product.imageUrl ? (
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="product-image"
+                        />
+                      ) : (
+                        "🛒"
+                      )}
+                    </span>
 
-            {filteredProducts.length === 0 && (
-              <p className="empty">No available products found.</p>
-            )}
-          </div>
+                    <b>{product.name}</b>
+
+                    <span>Rs. {Number(product.price).toFixed(2)}</span>
+
+                    <small>
+                      {product.available} {product.unit || "units"} available
+                    </small>
+                  </button>
+                ))}
+
+                {filteredProducts.length === 0 && (
+                  <p className="empty">No available products found.</p>
+                )}
+              </div>
+
+              {/* PAGINATION */}
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button
+                    className="btn light"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                  >
+                    Previous
+                  </button>
+
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+
+                  <button
+                    className="btn light"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
+
+        {/* ==========================
+            CURRENT BILL
+        ========================== */}
 
         <div className="panel">
           <h3>Current bill</h3>
+
+          {/* CUSTOMER */}
 
           <label className="pos-label">
             Customer name
@@ -270,60 +536,107 @@ function WalkInSales({ products, saveProducts, sales, saveSales }) {
             />
           </label>
 
+          {/* PAYMENT METHOD */}
+
+          <label className="pos-label">
+            Payment method
+            <select
+              className="field"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              <option value="Cash">Cash</option>
+            </select>
+          </label>
+
+          {/* CART */}
+
           <div className="cart-items">
-            {cart.map((item) => (
-              <div className="cart-item" key={item.id}>
-                <div>
-                  <b>{item.name}</b>
-                  <small>
-                    Rs. {item.price.toFixed(2)} each
-                  </small>
-                </div>
+            {cart.map((item) => {
+              const weightProduct = ["kg", "kilogram", "kilograms"].includes(
+                item.unit?.trim().toLowerCase(),
+              );
 
-                <div className="quantity-control">
+              const step = weightProduct ? 0.25 : 1;
+
+              return (
+                <div className="cart-item" key={item.id}>
+                  <div>
+                    <b>{item.name}</b>
+
+                    <small>
+                      Rs. {item.price.toFixed(2)} per {item.unit || "unit"}
+                    </small>
+                  </div>
+
+                  {/* QUANTITY */}
+
+                  <div className="quantity-control">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        changeQuantity(item.id, Number(item.quantity) - step)
+                      }
+                    >
+                      −
+                    </button>
+
+                    <input
+                      type="number"
+                      min="0"
+                      step={weightProduct ? "0.25" : "1"}
+                      value={item.quantity}
+                      onChange={(e) => changeQuantity(item.id, e.target.value)}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        changeQuantity(item.id, Number(item.quantity) + step)
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* ITEM TOTAL */}
+
+                  <b>Rs. {(item.price * item.quantity).toFixed(2)}</b>
+
+                  {/* REMOVE */}
+
                   <button
-                    onClick={() =>
-                      changeQuantity(item.id, item.quantity - 1)
-                    }
+                    type="button"
+                    className="remove-item"
+                    onClick={() => removeFromCart(item.id)}
                   >
-                    −
-                  </button>
-
-                  <span>{item.quantity}</span>
-
-                  <button
-                    onClick={() =>
-                      changeQuantity(item.id, item.quantity + 1)
-                    }
-                  >
-                    +
+                    ×
                   </button>
                 </div>
-
-                <b>
-                  Rs. {(item.price * item.quantity).toFixed(2)}
-                </b>
-              </div>
-            ))}
+              );
+            })}
 
             {cart.length === 0 && (
               <p className="empty">Select products to start a bill.</p>
             )}
           </div>
 
+          {/* TOTAL */}
+
           <div className="pos-total">
             <span>Total amount</span>
+
             <strong>Rs. {subtotal.toFixed(2)}</strong>
           </div>
 
-          
+          {/* COMPLETE SALE */}
 
           <button
             className="btn complete-sale"
-            disabled={cart.length === 0}
+            disabled={cart.length === 0 || saving}
             onClick={completeSale}
           >
-            Complete sale & generate bill
+            {saving ? "Completing sale..." : "Complete sale & generate bill"}
           </button>
         </div>
       </div>

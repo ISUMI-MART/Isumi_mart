@@ -28,6 +28,9 @@ function Inventory() {
   const [stockNote, setStockNote] = useState("");
   const [stockSaving, setStockSaving] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
   const emptyForm = {
     name: "",
     description: "",
@@ -49,6 +52,9 @@ function Inventory() {
         page: 1,
         limit: 50,
       });
+
+      console.log("Products API response:", result);
+      console.log("First product:", result.products?.[0]);
 
       setProducts(result.products || []);
     } catch (err) {
@@ -179,6 +185,16 @@ function Inventory() {
     (product) => product.available > 0 && product.stock === "Low Stock",
   );
 
+  // PAGINATION
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  const startIndex = (currentPage - 1) * productsPerPage;
+
+  const currentProducts = products.slice(
+    startIndex,
+    startIndex + productsPerPage,
+  );
+
   const outOfStock = products.filter((product) => product.available <= 0);
 
   // OPEN STOCK UPDATE FORM
@@ -231,6 +247,9 @@ function Inventory() {
       setStockSaving(false);
     }
   };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [products.length]);
 
   return (
     <section className="content">
@@ -288,14 +307,7 @@ function Inventory() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div
-              className="inventory-form"
-            // style={{
-            //   display: "grid",
-            //   gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            //   gap: "16px",
-            // }}
-            >
+            <div className="inventory-form">
               <div>
                 <label>Product Name *</label>
 
@@ -365,8 +377,6 @@ function Inventory() {
                   ))}
                 </select>
               </div>
-
-
 
               <div>
                 <label>Image URL</label>
@@ -604,13 +614,13 @@ function Inventory() {
                   </thead>
 
                   <tbody>
-                    {products.map((product) => (
+                    {currentProducts.map((product) => (
                       <tr key={product.id}>
                         <td>
                           <div className="productcell">
-                            {product.image && (
+                            {(product.imageUrl || product.image) && (
                               <img
-                                src={product.image}
+                                src={product.imageUrl || product.image}
                                 alt={product.name}
                                 style={{
                                   width: "42px",
@@ -636,12 +646,13 @@ function Inventory() {
 
                         <td>
                           <span
-                            className={`pill ${product.stock === "Out of Stock"
-                              ? "red"
-                              : product.stock === "Low Stock"
-                                ? "orange"
-                                : ""
-                              }`}
+                            className={`pill ${
+                              product.stock === "Out of Stock"
+                                ? "red"
+                                : product.stock === "Low Stock"
+                                  ? "orange"
+                                  : ""
+                            }`}
                           >
                             {product.stock}
                           </span>
@@ -687,6 +698,31 @@ function Inventory() {
                     ))}
                   </tbody>
                 </table>
+                {totalPages > 1 && (
+                  <div className="pagination">
+                    <button
+                      type="button"
+                      className="btn light"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((prev) => prev - 1)}
+                    >
+                      Previous
+                    </button>
+
+                    <span>
+                      Page {currentPage} of {totalPages}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="btn light"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((prev) => prev + 1)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

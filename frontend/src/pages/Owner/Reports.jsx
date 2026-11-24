@@ -1,38 +1,134 @@
-//import { money } from "../../data/ownerData";
 
-function Reports({ orders = [], products = [], walkInSales = [] }) {
+import { useEffect, useState } from "react";
+import {
+  getOrders,
+  getProducts,
+  getWalkInSales,
+} from "../../services/api";
 
-  // Online sales
+function Reports() {
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [walkInSales, setWalkInSales] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // ===============================
+  // FORMAT MONEY
+  // ===============================
+
+  function money(amount) {
+    return `Rs. ${Number(amount || 0).toLocaleString("en-LK", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
+
+  // ===============================
+  // LOAD REPORT DATA FROM BACKEND
+  // ===============================
+
+  useEffect(() => {
+    loadReportData();
+  }, []);
+
+  async function loadReportData() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const [ordersResult, productsResult, salesResult] =
+        await Promise.all([
+          getOrders(),
+          getProducts({ page: 1, limit: 100 }),
+          getWalkInSales(),
+        ]);
+
+      // Normalize online orders response
+      const ordersList = Array.isArray(ordersResult)
+        ? ordersResult
+        : ordersResult.orders ||
+          ordersResult.data?.orders ||
+          ordersResult.data ||
+          [];
+
+      // Products API already returns a formatted products array
+      const productsList = productsResult.products || [];
+
+      // Walk-in sales API already returns an array
+      const salesList = Array.isArray(salesResult)
+        ? salesResult
+        : [];
+
+      setOrders(ordersList);
+      setProducts(productsList);
+      setWalkInSales(salesList);
+    } catch (err) {
+      console.error("Reports loading error:", err);
+      setError(err.message || "Failed to load reports.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ===============================
+  // ONLINE SALES
+  // ===============================
+
   const deliveredOrders = orders.filter(
-    (order) => order.status === "Delivered"
+    (order) => order.status?.toUpperCase() === "DELIVERED"
   );
 
   const onlineRevenue = deliveredOrders.reduce(
-    (total, order) => total + Number(order.total || 0),
+    (total, order) =>
+      total + Number(order.totalAmount ?? order.total ?? 0),
     0
   );
 
-  // Walk-in sales
+  // ===============================
+  // WALK-IN SALES
+  // ===============================
+
   const walkInRevenue = walkInSales.reduce(
-    (total, sale) => total + Number(sale.total || 0),
+    (total, sale) =>
+      total + Number(sale.totalAmount ?? sale.total ?? 0),
     0
   );
 
-  // Overall sales
+  // ===============================
+  // OVERALL SALES
+  // ===============================
+
   const totalRevenue = onlineRevenue + walkInRevenue;
 
   const totalSales = orders.length + walkInSales.length;
 
-  // Other order information
+  // ===============================
+  // OTHER ORDER INFORMATION
+  // ===============================
+
   const pendingOrders = orders.filter(
-    (order) => order.status !== "Delivered"
+    (order) => order.status?.toUpperCase() !== "DELIVERED"
   );
 
-  // Low stock products
-  const lowStockProducts = products.filter(
-    (product) =>
-      Number(product.stock) <= Number(product.lowStockThreshold)
-  );
+  // ===============================
+  // LOW STOCK PRODUCTS
+  // ===============================
+
+  const lowStockProducts = products.filter((product) => {
+    const available = Number(product.available ?? 0);
+
+    const threshold = Number(
+      product.stockConfig?.lowStockThreshold ?? 5
+    );
+
+    return available <= threshold;
+  });
+
+  // ===============================
+  // REPORT STATISTICS
+  // ===============================
 
   const reports = [
     ["Total Sales", totalSales],
@@ -40,10 +136,47 @@ function Reports({ orders = [], products = [], walkInSales = [] }) {
     ["Online Revenue", money(onlineRevenue)],
     ["Walk-in Revenue", money(walkInRevenue)],
     ["Delivered Orders", deliveredOrders.length],
-    ["Pending Orders", pendingOrders.length],
+    ["Other Online Orders", pendingOrders.length],
     ["Total Products", products.length],
     ["Low Stock Products", lowStockProducts.length],
   ];
+
+  // ===============================
+  // LOADING
+  // ===============================
+
+  if (loading) {
+    return (
+      <section className="content">
+        <div className="eyebrow">BUSINESS REPORTS</div>
+        <h1 className="heading">Reports</h1>
+        <p className="empty">Loading reports...</p>
+      </section>
+    );
+  }
+
+  // ===============================
+  // ERROR
+  // ===============================
+
+  if (error) {
+    return (
+      <section className="content">
+        <div className="eyebrow">BUSINESS REPORTS</div>
+        <h1 className="heading">Reports</h1>
+
+        <p className="sale-error">{error}</p>
+
+        <button className="btn" onClick={loadReportData}>
+          Try again
+        </button>
+      </section>
+    );
+  }
+
+  // ===============================
+  // REPORT SCREEN
+  // ===============================
 
   return (
     <section className="content">
@@ -55,7 +188,8 @@ function Reports({ orders = [], products = [], walkInSales = [] }) {
         Review your grocery shop performance.
       </p>
 
-      {/* Business statistics */}
+      {/* BUSINESS STATISTICS */}
+
       <div className="stats">
         {reports.map(([label, value]) => (
           <div className="stat" key={label}>
@@ -65,7 +199,8 @@ function Reports({ orders = [], products = [], walkInSales = [] }) {
         ))}
       </div>
 
-      {/* Revenue summary */}
+      {/* REVENUE SUMMARY */}
+
       <div className="panel">
         <div className="panelhead">
           <h3>Sales Summary</h3>
@@ -82,7 +217,8 @@ function Reports({ orders = [], products = [], walkInSales = [] }) {
         </p>
       </div>
 
-      {/* Order summary */}
+      {/* ORDER SUMMARY */}
+
       <div className="panel">
         <div className="panelhead">
           <h3>Order Summary</h3>
@@ -92,11 +228,31 @@ function Reports({ orders = [], products = [], walkInSales = [] }) {
 
         <p>Delivered orders: {deliveredOrders.length}</p>
 
-        <p>Other orders: {pendingOrders.length}</p>
+        <p>Other online orders: {pendingOrders.length}</p>
 
         <p>Total walk-in sales: {walkInSales.length}</p>
       </div>
 
+      {/* INVENTORY SUMMARY */}
+
+      <div className="panel">
+        <div className="panelhead">
+          <h3>Inventory Summary</h3>
+        </div>
+
+        <p>Total products: {products.length}</p>
+
+        <p>Low stock products: {lowStockProducts.length}</p>
+
+        <p>
+          Out of stock products:{" "}
+          {
+            products.filter(
+              (product) => Number(product.available ?? 0) <= 0
+            ).length
+          }
+        </p>
+      </div>
     </section>
   );
 }

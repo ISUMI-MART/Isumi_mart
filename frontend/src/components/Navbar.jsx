@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import MobileNav from "./MobileNav";
 
 
 
@@ -23,7 +24,7 @@ function Navbar({ cartCount = 0, user, onLogout }) {
       <header className="navbar">
         <div className="navbar-inner">
           <Link to="/" className="logo">
-            <img src="logo-isumi mart.jpeg" alt="Isumi Mart Logo" className="logo-mark" />
+            <img src="/logo-isumi mart.jpeg" alt="brandMark" className="logo-mark"/>
             Isumi&nbsp;<em>Mart</em>
           </Link>
 
@@ -97,12 +98,13 @@ function Navbar({ cartCount = 0, user, onLogout }) {
       </header>
 
       {/* Mobile tab bar  */}
-      <nav className="bottom-nav">
+      {/* <nav className="bottom-nav">
         <NavLink to="/" end>🏠<span>Home</span></NavLink>
         <NavLink to="/products">🛍️<span>Products</span></NavLink>
         <NavLink to="/cart">🛒<span>Cart</span></NavLink>
         <NavLink to="/orders">📦<span>Orders</span></NavLink>
-      </nav>
+      </nav> */}
+      <MobileNav/>
     </>
   );
 }

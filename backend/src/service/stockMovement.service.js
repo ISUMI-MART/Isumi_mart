@@ -1,6 +1,82 @@
 
-import { StockMovementRepository } from "../repository/stockMovement.repository.js";
+// import { StockMovementRepository } from "../repository/stockMovement.repository.js";
 
+// import {
+//   NotFoundError,
+//   BadRequestError,
+// } from "../errors/appError.js";
+
+// const stockMovementRepository = new StockMovementRepository();
+
+// export class StockMovementService {
+
+
+//   async getAllMovements() {
+//     return await stockMovementRepository.getAllMovements();
+//   }
+
+//   async getMovementsByProduct(productId) {
+
+//     if (!Number.isInteger(productId) || productId <= 0) {
+//       throw new BadRequestError("Invalid product ID");
+//     }
+
+//     const product = await stockMovementRepository.findProduct(productId);
+
+//     if (!product) {
+//       throw new NotFoundError("Product not found");
+//     }
+
+//     return await stockMovementRepository.getMovementsByProduct(productId);
+//   }
+
+//   async createMovement(data) {
+
+//     const { productId, quantity, note } = data;
+
+//     if (!Number.isInteger(productId) || productId <= 0) {
+//       throw new BadRequestError("Invalid product ID");
+//     }
+
+//     if (!Number.isInteger(quantity) || quantity === 0) {
+//       throw new BadRequestError(
+//         "Quantity must be a non-zero integer"
+//       );
+//     }
+
+//     const product = await stockMovementRepository.findProduct(productId);
+
+//     if (!product) {
+//       throw new NotFoundError("Product not found");
+//     }
+
+//     if (!product.isActive) {
+//       throw new BadRequestError(
+//         "Cannot update stock for an inactive product"
+//       );
+//     }
+
+//     try {
+//       return await stockMovementRepository.createMovement({
+//         productId,
+//         quantity,
+//         note: note?.trim() || null,
+//       });
+//     } catch (error) {
+
+//       if (error.code === "INSUFFICIENT_STOCK") {
+//         throw new BadRequestError(
+//           "Stock quantity cannot become negative"
+//         );
+//       }
+
+//       throw error;
+//     }
+//   }
+// }
+
+
+import { StockMovementRepository } from "../repository/stockMovement.repository.js";
 import {
   NotFoundError,
   BadRequestError,
@@ -8,43 +84,62 @@ import {
 
 const stockMovementRepository = new StockMovementRepository();
 
+const WEIGHT_UNITS = ["kg", "kilogram", "kilograms"];
+
+function validateMovementQuantity(product, quantity) {
+  if (!Number.isFinite(quantity) || quantity === 0) {
+    throw new BadRequestError(
+      "Quantity must be a non-zero number"
+    );
+  }
+
+  const unit = product.unit?.trim().toLowerCase();
+  const isWeightProduct = WEIGHT_UNITS.includes(unit);
+
+  if (isWeightProduct) {
+    if (Math.round(quantity * 1000) !== quantity * 1000) {
+      throw new BadRequestError(
+        "Weight quantity must be in increments of 1 gram"
+      );
+    }
+  } else if (!Number.isInteger(quantity)) {
+    throw new BadRequestError(
+      "This product requires a whole-number quantity"
+    );
+  }
+}
+
 export class StockMovementService {
-
-
   async getAllMovements() {
     return await stockMovementRepository.getAllMovements();
   }
 
   async getMovementsByProduct(productId) {
-
     if (!Number.isInteger(productId) || productId <= 0) {
       throw new BadRequestError("Invalid product ID");
     }
 
-    const product = await stockMovementRepository.findProduct(productId);
+    const product =
+      await stockMovementRepository.findProduct(productId);
 
     if (!product) {
       throw new NotFoundError("Product not found");
     }
 
-    return await stockMovementRepository.getMovementsByProduct(productId);
+    return await stockMovementRepository.getMovementsByProduct(
+      productId
+    );
   }
 
   async createMovement(data) {
-
     const { productId, quantity, note } = data;
 
     if (!Number.isInteger(productId) || productId <= 0) {
       throw new BadRequestError("Invalid product ID");
     }
 
-    if (!Number.isInteger(quantity) || quantity === 0) {
-      throw new BadRequestError(
-        "Quantity must be a non-zero integer"
-      );
-    }
-
-    const product = await stockMovementRepository.findProduct(productId);
+    const product =
+      await stockMovementRepository.findProduct(productId);
 
     if (!product) {
       throw new NotFoundError("Product not found");
@@ -56,6 +151,8 @@ export class StockMovementService {
       );
     }
 
+    validateMovementQuantity(product, quantity);
+
     try {
       return await stockMovementRepository.createMovement({
         productId,
@@ -63,7 +160,6 @@ export class StockMovementService {
         note: note?.trim() || null,
       });
     } catch (error) {
-
       if (error.code === "INSUFFICIENT_STOCK") {
         throw new BadRequestError(
           "Stock quantity cannot become negative"

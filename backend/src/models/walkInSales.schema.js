@@ -12,7 +12,7 @@ export const createWalkInSaleSchema = z.object({
       .array(
         z.object({
           productId: z.number().int().positive(),
-          quantity: z.number().int().positive(),
+          quantity: z.number().positive(),
         })
       )
       .min(1, "At least one product is required"),

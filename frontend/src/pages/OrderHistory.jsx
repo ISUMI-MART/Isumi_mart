@@ -10,6 +10,20 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
+
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   // Fetch customer orders from backend
   useEffect(() => {
     const fetchOrders = async () => {
@@ -79,134 +93,158 @@ const OrderHistory = () => {
         <div className="orders-card">
           <h2 className="card-title">Current & past orders</h2>
 
-          <table className="orders-table">
-            <thead>
-              <tr>
-                <th>Order</th>
-                <th>Placed on</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Payment</th>
-                <th>Order status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          {!orders.length && (
+            <div className="orders-empty">
+              You haven't placed any orders yet.
+            </div>
+          )}
 
-            <tbody>
-              {orders.map((order) => {
-                const failed =
-                  order.status === "Not Delivered" ||
-                  order.status === "DELIVERY_FAILED";
+          <div className="orders-list">
+            {currentOrders.map((order) => {
+              const failed =
+                order.status === "Not Delivered" ||
+                order.status === "DELIVERY_FAILED";
 
-                const cancelled =
-                  order.status === "Cancelled" || order.status === "CANCELLED";
+              const cancelled =
+                order.status === "Cancelled" || order.status === "CANCELLED";
 
-                const itemCount = Array.isArray(order.items)
-                  ? order.items.reduce(
-                      (total, item) => total + Number(item.quantity || 1),
-                      0,
-                    )
-                  : "-";
+              const itemCount = Array.isArray(order.items)
+                ? order.items.length
+                : "-";
 
-                const payment =
-                  order.paymentStatus || order.payment || "Pending";
+              const payment = order.paymentStatus || order.payment || "Pending";
 
-                const total = order.totalAmount ?? order.total ?? 0;
+              const total = order.totalAmount ?? order.total ?? 0;
+              const date = order.createdAt || order.date;
 
-                const date = order.createdAt || order.date;
+              return (
+                <article
+                  key={order.id}
+                  className={`order-card ${
+                    failed || cancelled ? "order-card-alert" : ""
+                  }`}
+                >
+                  <div className="order-card-top">
+                    <div>
+                      <span className="order-label">Order</span>
+                      <h3 className="order-id">{order.id}</h3>
+                    </div>
 
-                return (
-                  <React.Fragment key={order.id}>
-                    <tr className={failed || cancelled ? "row-cancelled" : ""}>
-                      <td className="order-id">{order.id}</td>
+                    <span
+                      className={`badge-status ${order.status
+                        ?.toLowerCase()
+                        .replace(/_/g, "-")
+                        .replace(/\s+/g, "-")}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
 
-                      <td>
+                  <div className="order-details">
+                    <div className="order-detail">
+                      <span className="order-label">Placed on</span>
+                      <strong>
                         {date
                           ? new Date(date).toLocaleDateString("en-LK")
                           : "-"}
-                      </td>
+                      </strong>
+                    </div>
 
-                      <td>
+                    <div className="order-detail">
+                      <span className="order-label">Items</span>
+                      <strong>
                         {typeof itemCount === "number"
                           ? `${itemCount} items`
                           : itemCount}
-                      </td>
+                      </strong>
+                    </div>
 
-                      <td>{formatMoney(total)}</td>
+                    <div className="order-detail">
+                      <span className="order-label">Total</span>
+                      <strong>{formatMoney(total)}</strong>
+                    </div>
 
-                      <td>
-                        <span
-                          className={`badge-payment ${payment.toLowerCase()}`}
-                        >
-                          {payment}
-                        </span>
-                      </td>
+                    <div className="order-detail">
+                      <span className="order-label">Payment</span>
+                      <span
+                        className={`badge-payment ${payment.toLowerCase()}`}
+                      >
+                        {payment}
+                      </span>
+                    </div>
+                  </div>
 
-                      <td>
-                        <span
-                          className={`badge-status ${order.status
-                            ?.toLowerCase()
-                            .replace(/_/g, "-")
-                            .replace(/\s+/g, "-")}`}
-                        >
-                          {order.status}
-                        </span>
-                      </td>
+                  {failed && (
+                    <div className="cancelled-note">
+                      <strong>Delivery Unsuccessful</strong>
 
-                      <td>
-                        <button
-                          className="action-btn"
-                          onClick={() => navigate(`/orders/${order.id}`)}
-                        >
-                          View details →
-                        </button>
-                      </td>
-                    </tr>
+                      <p>
+                        Reason:{" "}
+                        {order.deliveryFailureReason || "No reason provided"}
+                      </p>
 
-                    {failed && (
-                      <tr className="note-row">
-                        <td colSpan="7" className="cancelled-note">
-                          <strong>Delivery Unsuccessful</strong>
+                      {order.deliveryFailureNote && (
+                        <p>Additional details: {order.deliveryFailureNote}</p>
+                      )}
+                    </div>
+                  )}
 
-                          <p>
-                            Reason:{" "}
-                            {order.deliveryFailureReason ||
-                              "No reason provided"}
-                          </p>
+                  {cancelled && (
+                    <div className="cancelled-note">
+                      This order has been cancelled.
+                    </div>
+                  )}
 
-                          {order.deliveryFailureNote && (
-                            <p>
-                              Additional details: {order.deliveryFailureNote}
-                            </p>
-                          )}
-                        </td>
-                      </tr>
-                    )}
-
-                    {cancelled && (
-                      <tr className="note-row">
-                        <td colSpan="7" className="cancelled-note">
-                          This order has been cancelled.
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-
-              {!orders.length && (
-                <tr>
-                  <td colSpan="7" className="empty">
-                    You haven't placed any orders yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                  <button
+                    className="action-btn"
+                    onClick={() => navigate(`/orders/${order.id}`)}
+                  >
+                    View details →
+                  </button>
+                </article>
+              );
+            })}
+          </div>
         </div>
 
         <div className="table-footer">
-          <span className="results-count">Showing {orders.length} orders</span>
+          <span className="results-count">
+            Showing {orders.length === 0 ? 0 : indexOfFirstOrder + 1}-
+            {Math.min(indexOfLastOrder, orders.length)} of {orders.length}{" "}
+            orders
+          </span>
+
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`pagination-btn ${
+                    currentPage === index + 1 ? "active" : ""
+                  }`}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
+              <button
+                className="pagination-btn"
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
 
           <button className="back-btn" onClick={() => navigate("/products")}>
             Back to shopping

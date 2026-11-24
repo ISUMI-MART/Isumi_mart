@@ -1,15 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getOrderById } from "../services/api";
+import { getOrderById, cancelOrder } from "../services/api";
 import "../layouts/TrackOrder.css";
 
 function TrackOrder() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelMessage, setCancelMessage] = useState("");
+
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const handleCancelOrder = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this order?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setCancelling(true);
+      setCancelMessage("");
+
+      await cancelOrder(order.id);
+
+      setOrder((prevOrder) => ({
+        ...prevOrder,
+        status: "CANCELLED",
+      }));
+
+      setCancelMessage("Your order has been cancelled successfully.");
+    } catch (err) {
+      setCancelMessage(err.message || "Failed to cancel the order.");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -73,6 +102,21 @@ function TrackOrder() {
       <p>
         <strong>Order Status:</strong> {order.status}
       </p>
+      {["ORDER_PLACED", "ASSIGNED"].includes(order.status) && (
+        <button
+          className="profile-cancel-btn"
+          disabled={cancelling}
+          onClick={handleCancelOrder}
+          style={{
+            background: "#dc3545",
+            color: "white",
+          }}
+        >
+          {cancelling ? "Cancelling..." : "Cancel Order"}
+        </button>
+      )}
+
+      {cancelMessage && <p>{cancelMessage}</p>}
 
       <p>
         <strong>Payment Status:</strong> {order.paymentStatus}

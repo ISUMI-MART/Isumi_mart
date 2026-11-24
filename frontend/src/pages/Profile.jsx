@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, updateProfile } from "../services/api";
+import { getProfile, updateProfile, deleteProfile } from "../services/api";
 
 function Profile() {
   const navigate = useNavigate();
@@ -92,6 +92,31 @@ function Profile() {
     } catch (err) {
       console.error("Profile update error:", err);
       setError(err.message || "Unable to update profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setSaving(true);
+      setError("");
+      setSuccess("");
+
+      await deleteProfile();
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      navigate("/login");
+    } catch (err) {
+      console.error("Profile deletion error:", err);
+      setError(err.message || "Unable to delete account.");
     } finally {
       setSaving(false);
     }
@@ -230,6 +255,13 @@ function Profile() {
               Edit Profile
             </button>
           )}
+          <button
+            className="profile-delete-btn"
+            onClick={handleDelete}
+            disabled={saving}
+          >
+            Delete Account
+          </button>
         </div>
       </div>
     </div>

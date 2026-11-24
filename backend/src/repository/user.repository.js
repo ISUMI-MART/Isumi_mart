@@ -25,15 +25,14 @@ export class UserRepository {
     return await prisma.user.findUnique({
       where: { id },
       select: userProfileSelect,
-
     });
   }
-  
+
   async createUser(data) {
-    return await prisma.user.create({ 
-      data ,
-    select: userProfileSelect,
-  });
+    return await prisma.user.create({
+      data,
+      select: userProfileSelect,
+    });
   }
 
   async updateUser(id, data) {
@@ -45,44 +44,50 @@ export class UserRepository {
   }
 
   async deleteUser(id) {
-    return await prisma.user.delete({ 
-      where: { id } ,
-    select: userProfileSelect,
-  });
+    return await prisma.user.delete({
+      where: { id },
+      select: userProfileSelect,
+    });
   }
 
+  async getDeliveryAgents() {
+    return await prisma.user.findMany({
+      where: {
+        role: "DELIVERY_AGENT",
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        phone: true,
+        agentCode: true,
 
-async getDeliveryAgents() {
-  return await prisma.user.findMany({
-    where: {
-      role: "DELIVERY_AGENT",
-    },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      userName: true,
-      phone: true,
-      agentCode: true,
-
-      assignedDeliveries: {
-        where: {
-          status: {
-            notIn: ["DELIVERED", "CANCELLED"],
+        assignedDeliveries: {
+          where: {
+            status: {
+              notIn: ["DELIVERED", "CANCELLED"],
+            },
+          },
+          select: {
+            id: true,
+            status: true,
           },
         },
-        select: {
-          id: true,
-          status: true,
-        },
       },
-    },
-    orderBy: {
-      id: "asc",
-    },
-  });
+      orderBy: {
+        id: "asc",
+      },
+    });
+  }
+  async deleteDeliveryAgent(agentId) {
+    return await prisma.user.delete({
+      where: {
+        id: Number(agentId),
+        role: "DELIVERY_AGENT",
+      },
+      select: userProfileSelect,
+    });
+  }
 }
-
-}
-

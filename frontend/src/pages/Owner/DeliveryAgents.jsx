@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
-import { getDeliveryAgents, createDeliveryAgent } from "../../services/api";
+import {
+  getDeliveryAgents,
+  createDeliveryAgent,
+  deleteDeliveryAgent,
+} from "../../services/api";
 
 function DeliveryAgents() {
   const [agents, setAgents] = useState([]);
+  const [deletingId, setDeletingId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [creating, setCreating] = useState(false);
@@ -16,16 +22,27 @@ function DeliveryAgents() {
     password: "",
   });
 
+  // Fetch delivery agents
   const loadAgents = async () => {
     try {
       setLoading(true);
-      setError("");
+      setLoadError("");
 
       const data = await getDeliveryAgents();
 
-      setAgents(data);
+      const agentsData = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.data)
+          ? data.data
+          : Array.isArray(data?.data?.agents)
+            ? data.data.agents
+            : Array.isArray(data?.agents)
+              ? data.agents
+              : [];
+
+      setAgents(agentsData);
     } catch (err) {
-      setError(err.message || "Failed to load delivery agents.");
+      setLoadError(err.message || "Failed to load delivery agents.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +74,7 @@ function DeliveryAgents() {
 
       await createDeliveryAgent(formData);
 
-      setSuccess("Delivery agent account created successfully!");
+      setSuccess("Delivery agent created successfully!");
 
       setFormData({
         firstName: "",
@@ -72,6 +89,36 @@ function DeliveryAgents() {
       setError(err.message || "Failed to create delivery agent.");
     } finally {
       setCreating(false);
+    }
+  };
+  const handleDelete = async (agent) => {
+    const agentName =
+      agent.name ||
+      [agent.firstName, agent.lastName].filter(Boolean).join(" ") ||
+      agent.userName ||
+      "this delivery agent";
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${agentName}'s account?`,
+    );
+
+    if (!confirmed) return;
+
+    setError("");
+    setSuccess("");
+
+    try {
+      setDeletingId(agent.id);
+
+      await deleteDeliveryAgent(agent.id);
+
+      setSuccess(`${agentName}'s account deleted successfully!`);
+
+      await loadAgents();
+    } catch (err) {
+      setError(err.message || "Failed to delete delivery agent.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -188,8 +235,8 @@ function DeliveryAgents() {
 
         {loading ? (
           <p className="muted">Loading delivery agents...</p>
-        ) : error && agents.length === 0 ? (
-          <p className="error-message">{error}</p>
+        ) : loadError ? (
+          <p className="error-message">{loadError}</p>
         ) : agents.length === 0 ? (
           <p className="muted">
             No delivery agents found. Create your first delivery agent above.
@@ -199,27 +246,46 @@ function DeliveryAgents() {
             <table>
               <thead>
                 <tr>
-                  <th>Agent</th>
-                  <th>Agent ID</th>
+                  <th>Delivery agent</th>
                   <th>Email</th>
                   <th>Assigned orders</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
               <tbody>
                 {agents.map((agent) => (
                   <tr key={agent.id}>
-                    <td className="strong">{agent.name}</td>
+                    <td className="strong">
+                      {agent.name ||
+                        [agent.firstName, agent.lastName]
+                          .filter(Boolean)
+                          .join(" ") ||
+                        agent.userName ||
+                        "Unnamed agent"}
+                    </td>
 
-                    <td>{agent.agentCode || "Not assigned"}</td>
+                    <td>{agent.email || "—"}</td>
 
-                    <td>{agent.email}</td>
-
-                    <td>{agent.assignedOrders}</td>
+                    <td>{agent.assignedOrders ?? 0}</td>
 
                     <td>
-                      <span className="pill">{agent.status}</span>
+                      <span className="pill">{agent.status || "-"}</span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn"
+                        disabled={deletingId === agent.id}
+                        onClick={() => handleDelete(agent)}
+                        style={{
+                          background: "#dc3545",
+                          color: "white",
+                        }}
+                      >
+                        {deletingId === agent.id ? "Deleting..." : "Delete"}
+                      </button>
                     </td>
                   </tr>
                 ))}

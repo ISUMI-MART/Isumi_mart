@@ -12,21 +12,18 @@ export const createStockSchema = z.object({
 
         quantity: z.coerce
             .number()
-            .int("Quantity must be an integer.")
             .min(0, "Quantity cannot be negative.")
             .optional()
             .default(0),
 
         lowStockThreshold: z.coerce
             .number()
-            .int()
             .min(0, "Threshold cannot be negative.")
             .optional()
             .default(5),
 
         reorderQuantity: z.coerce
             .number()
-            .int()
             .positive("Reorder quantity must be greater than 0.")
             .optional()
             .default(50)
@@ -47,19 +44,16 @@ export const updateStockSchema = z.object({
     body: z.object({
         quantity: z.coerce
             .number()
-            .int()
             .min(0, "Quantity cannot be negative.")
             .optional(),
 
         lowStockThreshold: z.coerce
             .number()
-            .int()
             .min(0, "Threshold cannot be negative.")
             .optional(),
 
         reorderQuantity: z.coerce
             .number()
-            .int()
             .positive("Reorder quantity must be greater than 0.")
             .optional()
     }).refine(

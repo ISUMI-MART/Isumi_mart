@@ -35,3 +35,9 @@ export class ConflictError extends AppError {
         super(message, 409);
     }
 }
+
+// export class createOrderError extends AppError {
+//     constructor(message = "Order Not Created") {
+//         super(message, 400);
+//     }
+// }

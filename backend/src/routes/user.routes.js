@@ -6,6 +6,7 @@ import { validate } from "../middleware/validation.middleware.js";
 import { requireAuth} from "../middleware/auth.middleware.js";
 import { updateUserSchema } from "../models/user.schema.js";
 
+
 const userRouter = Router();
 const userController = new UserController();
 
@@ -14,5 +15,6 @@ userRouter.put("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY
 userRouter.delete("/profile",requireAuth,requireRole("OWNER", "CUSTOMER", "DELIVERY_AGENT"),userController.deleteProfile)
 userRouter.post("/delivery-agents",requireAuth,requireRole("OWNER"),userController.createDeliveryAgent);
 userRouter.get("/delivery-agents",requireAuth,requireRole("OWNER"),userController.getDeliveryAgents);
+userRouter.delete( "/delivery-agents/:id",requireAuth,requireRole("OWNER"),userController.deleteDeliveryAgent);
 
 export default userRouter;

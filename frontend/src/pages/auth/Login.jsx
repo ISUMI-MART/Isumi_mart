@@ -45,7 +45,7 @@ function Login() {
           break;
 
         case "DELIVERY_AGENT":
-          navigate("/delivery/dashboard");
+          navigate("/delivery");
           break;
 
         default:

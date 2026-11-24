@@ -1,6 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+const isWeightProduct = (item) => /kg|kilogram/i.test(item.unit || "");
+
+const getQuantityStep = (item) => (isWeightProduct(item) ? 0.25 : 1);
+
+const formatQuantity = (item) => {
+  if (isWeightProduct(item)) {
+    const grams = item.quantity * 1000;
+
+    if (grams < 1000) {
+      return `${grams.toFixed(0)}g`;
+    }
+
+    return `${item.quantity.toFixed(2).replace(/\.?0+$/, "")}kg`;
+  }
+
+  return item.quantity;
+};
+
 function Cart({ cart = [], removeFromCart, updateQuantity }) {
   const subtotal = cart.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -45,9 +63,19 @@ function Cart({ cart = [], removeFromCart, updateQuantity }) {
               <div className="cart-row" key={item.id}>
                 <div className="cart-thumb">
                   {item.image ? (
-                    <img src={item.image} alt={item.name} />
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      onError={(e) => {
+                        console.log(
+                          "Image failed to load:",
+                          e.currentTarget.src,
+                        );
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
                   ) : (
-                    item.icon
+                    <span>{item.icon}</span>
                   )}
                 </div>
 
@@ -61,7 +89,15 @@ function Cart({ cart = [], removeFromCart, updateQuantity }) {
                 <div className="qty-control">
                   <button
                     type="button"
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    onClick={() =>
+                      updateQuantity(
+                        item.id,
+                        Number(
+                          (item.quantity - getQuantityStep(item)).toFixed(2),
+                        ),
+                      )
+                    }
+                    disabled={item.quantity <= 0}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -70,18 +106,26 @@ function Cart({ cart = [], removeFromCart, updateQuantity }) {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-minus preview-icon"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M5 12h14" />
                     </svg>
                   </button>
-                  <span>{item.quantity}</span>
+
+                  <span>{formatQuantity(item)}</span>
+
                   <button
                     type="button"
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    onClick={() =>
+                      updateQuantity(
+                        item.id,
+                        Number(
+                          (item.quantity + getQuantityStep(item)).toFixed(2),
+                        ),
+                      )
+                    }
                     disabled={item.quantity >= item.available}
                   >
                     <svg
@@ -91,10 +135,9 @@ function Cart({ cart = [], removeFromCart, updateQuantity }) {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-plus preview-icon"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M5 12h14" />
                       <path d="M12 5v14" />

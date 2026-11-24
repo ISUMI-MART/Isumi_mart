@@ -6,8 +6,7 @@ export const addToCartSchema = z.object({
     productId: z.number().int().positive(),
 
     quantity: z.number()
-      .int()
-      .positive()
+      .positive("Quantity must be greater than 0")
       .default(1),
   }),
 });
@@ -15,7 +14,6 @@ export const addToCartSchema = z.object({
 export const updateCartSchema = z.object({
   body: z.object({
     quantity: z.number()
-      .int()
-      .positive(),
+      .positive("Quantity must be greater than 0"),
   }),
 });

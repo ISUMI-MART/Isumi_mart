@@ -1,4 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap");
+
+/* =========================================
+   1. GLOBAL STYLES
+========================================= */
+
 :root {
   font-family: "DM Sans", sans-serif;
   color: #1d2b22;
@@ -6,148 +11,67 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
+
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
 }
+
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
+
 button {
   cursor: pointer;
   border: 0;
 }
+
+/* =========================================
+   2. MAIN LAYOUT
+========================================= */
+
 .shell {
   display: flex;
   min-height: 100vh;
 }
+
 .sidebar {
   width: 248px;
-  background: #173c2b;
-  color: #eaf4ec;
+  flex-shrink: 0;
   padding: 25px 17px;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 0 10px 30px;
-}
-.brandmark {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  border-radius: 12px;
-  background: #d8f1d9;
-  color: #17482f;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  flex-shrink: 0;
+  background: #173c2b;
+  color: #eaf4ec;
 }
 
-.brandmark img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  border-radius: 12px;
-}
-.brand strong {
-  font: 800 19px Manrope;
-}
-.brand small {
-  display: block;
-  color: #a9c6b1;
-  font-size: 11px;
-  margin-top: 2px;
-}
-.navlabel {
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  color: #8eae98;
-  padding: 8px 12px 10px;
-  font-weight: 700;
-}
-.nav {
-  display: grid;
-  gap: 5px;
-}
-.nav a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 13px;
-  border-radius: 10px;
-  background: transparent;
-  color: #c9ddce;
-  text-align: left;
-  font-size: 13px;
-  text-decoration: none;
-}
-
-.nav a:visited {
-  color: #c9ddce;
-}
-
-.nav a.active,
-.nav a:hover {
-  background: #28543c;
-  color: #fff;
-}
-.nav .ico {
-  width: 19px;
-  text-align: center;
-  font-size: 16px;
-}
-.sidebottom {
-  margin-top: auto;
-  border-top: 1px solid #315640;
-  padding: 17px 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #d7ead9;
-  color: #205338;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-}
-.sidebottom b {
-  font-size: 12px;
-}
-.sidebottom small {
-  display: block;
-  color: #9db9a5;
-  font-size: 11px;
-  margin-top: 2px;
-}
 .main {
   flex: 1;
   min-width: 0;
   background: #f6f8f5;
 }
+
+.content {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
 .topbar {
   height: 68px;
-  background: #ffffff;
-  border-bottom: 1px solid #e8eee8;
+  padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  background: #fff;
+  border-bottom: 1px solid #e8eee8;
 }
 
 .crumb {
@@ -162,48 +86,180 @@ button {
   font-size: 12px;
   color: #64736a;
 }
+
 .online {
+  display: inline-block;
   width: 8px;
   height: 8px;
-  background: #45a56c;
-  border-radius: 50%;
-  display: inline-block;
   margin-right: 6px;
+  border-radius: 50%;
+  background: #45a56c;
 }
-.content {
+
+/* =========================================
+   3. BRAND & NAVIGATION
+========================================= */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 10px 30px;
+}
+
+.brandmark {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #d8f1d9;
+  color: #17482f;
+}
+
+.brandmark img {
   width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 30px 32px 40px;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: inherit;
 }
-.eyebrow {
-  color: #5d956d;
+
+.brand strong {
+  font: 800 19px Manrope, sans-serif;
+}
+
+.brand small {
+  display: block;
+  margin-top: 2px;
+  color: #a9c6b1;
+  font-size: 11px;
+}
+
+.navlabel {
+  padding: 8px 12px 10px;
+  color: #8eae98;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 1.5px;
+}
+
+.nav {
+  display: grid;
+  gap: 5px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: transparent;
+  color: #c9ddce;
+  font-size: 13px;
+  text-align: left;
+  text-decoration: none;
+}
+
+.nav a:visited {
+  color: #c9ddce;
+}
+
+.nav a.active,
+.nav a:hover {
+  background: #28543c;
+  color: #fff;
+}
+
+.nav .ico {
+  width: 19px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.sidebottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 17px 8px 0;
+  border-top: 1px solid #315640;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #d7ead9;
+  color: #205338;
+  font-weight: 800;
+}
+
+.sidebottom b {
+  font-size: 12px;
+}
+
+.sidebottom small {
+  display: block;
+  margin-top: 2px;
+  color: #9db9a5;
+  font-size: 11px;
+}
+
+/* =========================================
+   4. HEADINGS & TEXT
+========================================= */
+
+.eyebrow {
+  margin-bottom: 4px;
+  color: #5c7a64;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .heading {
-  font:
-    800 25px Manrope,
-    sans-serif;
-  margin: 5px 0 4px;
-  letter-spacing: -0.6px;
-  color: #16261d;
+  margin: 0 0 6px;
+  color: #1f2e24;
+  font: 800 26px Manrope, sans-serif;
+  letter-spacing: -0.4px;
 }
 
 .sub {
-  color: #849087;
-  font-size: 12px;
-  margin: 0 0 22px;
+  margin: 0 0 20px;
+  color: #6b7a70;
+  font-size: 14px;
 }
+
+.muted {
+  color: #8a968e;
+  font-size: 12px;
+}
+
+.strong {
+  color: #25372b;
+  font-weight: 700;
+}
+
 .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
 }
+
+/* =========================================
+   5. DASHBOARD STATISTICS
+========================================= */
+
 .stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -212,14 +268,12 @@ button {
 }
 
 .stat {
-  background: #ffffff;
+  min-width: 0;
+  padding: 17px 18px;
   border: 1px solid #e5ece6;
   border-radius: 14px;
-  padding: 17px 18px;
-  min-width: 0;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  background: #fff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat:hover {
@@ -229,8 +283,8 @@ button {
 
 .stat-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   color: #849087;
   font-size: 11px;
 }
@@ -238,112 +292,191 @@ button {
 .stat-icon {
   width: 32px;
   height: 32px;
-  border-radius: 9px;
-  background: #edf7ee;
   display: grid;
   place-items: center;
+  border-radius: 9px;
+  background: #edf7ee;
   font-size: 16px;
 }
 
 .stat strong {
-  font:
-    800 24px Manrope,
-    sans-serif;
   display: block;
   margin: 12px 0 3px;
   color: #17251c;
+  font: 800 24px Manrope, sans-serif;
 }
 
 .stat small {
-  font-size: 10px;
   color: #8a968e;
+  font-size: 10px;
 }
+
+/* =========================================
+   6. PANELS & GRIDS
+========================================= */
+
 .panel {
-  background: #ffffff;
-  border: 1px solid #e5ece6;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 18px;
   min-width: 0;
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid #e8eee8;
+  border-radius: 16px;
+  background: #fff;
 }
 
 .panelhead {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 .panel h3 {
-  font:
-    800 14px Manrope,
-    sans-serif;
   margin: 0;
-  color: #1b2b21;
+  color: #25372b;
+  font: 700 17px Manrope, sans-serif;
 }
-.muted {
-  color: #8a968e;
-  font-size: 12px;
+
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+  align-items: start;
+  gap: 18px;
+  width: 100%;
 }
+
+.grid2 > * {
+  min-width: 0;
+}
+
+.grid2 > .panel:last-child .panelhead {
+  align-items: flex-start;
+}
+
+.grid2 > .panel:last-child .productcell {
+  min-width: 0;
+}
+
+.quickgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quick {
+  padding: 15px;
+  border: 1px solid #e9f0e8;
+  border-radius: 12px;
+  background: #f7faf6;
+}
+
+.quick b {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 13px;
+}
+
+.quick small {
+  color: #87948b;
+  font-size: 11px;
+}
+
+/* =========================================
+   7. BUTTONS
+========================================= */
+
 .btn {
-  background: #24663e;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #28613c;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s ease;
 }
-.btn:hover {
-  background: #174c2d;
+
+.btn:hover:not(:disabled) {
+  background: #1f4d2f;
 }
 
 .btn.light {
-  background: #edf5ed;
-  color: #28613c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
-  border-radius: 8px;
+  padding: 10px 13px;
   border: none;
-  font-weight: 600;
+  border-radius: 8px;
+  background: #edf5ed;
+  color: #28613c;
   line-height: 1;
   text-decoration: none;
-  cursor: pointer;
+}
+
+.btn.light:hover {
+  background: #dcebdd;
 }
 
 .btn.outline {
-  background: white;
   border: 1px solid #dce7dc;
+  background: #fff;
   color: #385444;
 }
+
 .btn.danger {
   background: #fff0ed;
   color: #b34b3c;
 }
-.filters {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-  flex-wrap: wrap;
+
+.complete-sale {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
 }
+
+.complete-sale:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   8. INPUTS & FILTERS
+========================================= */
+
 .field {
-  border: 1px solid #e0e8e0;
-  background: #fff;
-  border-radius: 9px;
+  width: 100%;
+  min-width: 0;
   padding: 10px 12px;
-  font-size: 12px;
-  color: #39483e;
+  border: 1px solid #dce5dd;
+  border-radius: 10px;
   outline: none;
+  background: #fbfdfb;
+  color: #25372b;
+  font-size: 13px;
 }
+
 .field:focus {
   border-color: #78ad83;
+  background: #fff;
 }
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
 .search {
   min-width: 220px;
 }
+
+/* =========================================
+   9. TABLES
+========================================= */
+
 .tablewrap {
   width: 100%;
   overflow-x: auto;
@@ -357,21 +490,21 @@ table {
 }
 
 th {
-  text-align: left;
-  color: #89948c;
-  font-size: 9px;
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
   padding: 10px 9px;
   border-bottom: 1px solid #edf1ed;
+  color: #89948c;
+  font-size: 9px;
   font-weight: 800;
+  letter-spacing: 0.7px;
+  text-align: left;
+  text-transform: uppercase;
 }
 
 td {
   padding: 12px 9px;
   border-bottom: 1px solid #f0f3f0;
-  font-size: 11px;
   color: #405047;
+  font-size: 11px;
   vertical-align: middle;
 }
 
@@ -379,18 +512,14 @@ tr:last-child td {
   border-bottom: 0;
 }
 
-.strong {
-  font-weight: 700;
-  color: #25372b;
-}
-td:nth-child(2) {
-  max-width: 190px;
-  white-space: normal;
-  line-height: 1.35;
-}
-
 td:nth-child(1) {
   max-width: 175px;
+}
+
+td:nth-child(2) {
+  max-width: 190px;
+  line-height: 1.35;
+  white-space: normal;
 }
 
 td:nth-child(3) {
@@ -406,31 +535,44 @@ td:nth-child(6) {
   min-width: 115px;
 }
 
+/* =========================================
+   10. STATUS LABELS
+========================================= */
+
 .pill {
   display: inline-flex;
   padding: 5px 9px;
   border-radius: 20px;
-  font-size: 10px;
-  font-weight: 700;
   background: #edf5ed;
   color: #39734a;
+  font-size: 10px;
+  font-weight: 700;
 }
+
 .pill.orange {
   background: #fff4e5;
   color: #a66a1d;
 }
+
 .pill.red {
   background: #fff0ed;
   color: #b54e42;
 }
+
 .pill.blue {
   background: #edf4ff;
   color: #4c70a7;
 }
+
 .pill.gray {
   background: #f0f2f0;
   color: #727d75;
 }
+
+/* =========================================
+   11. PRODUCT CELLS & IMAGES
+========================================= */
+
 .productcell {
   display: flex;
   align-items: center;
@@ -452,165 +594,151 @@ td:nth-child(6) {
   width: 40px;
   height: 40px;
   min-width: 40px;
-  border-radius: 10px;
-  background: #f0f6ed;
   display: grid;
   place-items: center;
-  font-size: 20px;
   overflow: hidden;
+  border-radius: 10px;
+  background: #f0f6ed;
+  font-size: 20px;
 }
 
 .thumb img {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
-  display: block;
 }
+
 .empty {
+  padding: 24px 0;
+  color: #89948c;
+  font-size: 13px;
   text-align: center;
-  padding: 35px;
-  color: #87948b;
-  font-size: 13px;
-}
-.grid2 {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(300px, 0.8fr);
-  gap: 18px;
-  width: 100%;
-  align-items: start;
 }
 
-.grid2 > * {
-  min-width: 0;
-}
-.grid2 > .panel:last-child {
-  min-width: 0;
-}
+/* =========================================
+   12. MODALS
+========================================= */
 
-.grid2 > .panel:last-child .panelhead {
-  align-items: flex-start;
-}
-
-.grid2 > .panel:last-child .productcell {
-  min-width: 0;
-}
-.quickgrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-.quick {
-  background: #f7faf6;
-  border: 1px solid #e9f0e8;
-  border-radius: 12px;
-  padding: 15px;
-}
-.quick b {
-  font-size: 13px;
-  display: block;
-  margin: 8px 0 4px;
-}
-.quick small {
-  font-size: 11px;
-  color: #87948b;
-}
 .modalback {
   position: fixed;
   inset: 0;
-  background: #14271c80;
+  z-index: 5;
   display: grid;
   place-items: center;
   padding: 20px;
-  z-index: 5;
+  background: #14271c80;
 }
+
 .modal {
-  background: #fff;
   width: min(480px, 100%);
-  border-radius: 16px;
   padding: 24px;
+  border-radius: 16px;
+  background: #fff;
   box-shadow: 0 20px 70px #10281935;
 }
+
 .modal h3 {
-  font: 800 18px Manrope;
   margin: 0 0 18px;
+  font: 800 18px Manrope, sans-serif;
 }
+
 .formgrid {
   display: grid;
   gap: 12px;
 }
+
 .formgrid label {
-  font-size: 11px;
-  color: #78867c;
   display: grid;
   gap: 6px;
+  color: #78867c;
+  font-size: 11px;
 }
+
 .modalfoot {
   display: flex;
   justify-content: flex-end;
   gap: 9px;
   margin-top: 20px;
 }
+
+/* =========================================
+   13. LOGIN PAGE
+========================================= */
+
 .loginpage {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #eaf4e8, #f7f8f3);
   padding: 20px;
+  background: linear-gradient(135deg, #eaf4e8, #f7f8f3);
 }
+
 .loginbox {
-  background: #fff;
+  width: min(420px, 100%);
+  padding: 34px;
   border: 1px solid #e6eee5;
   border-radius: 20px;
-  padding: 34px;
-  width: min(420px, 100%);
+  background: #fff;
   box-shadow: 0 18px 55px #23442a12;
 }
+
 .loginbrand {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 28px;
 }
+
 .loginbox h1 {
-  text-align: center;
-  font: 800 23px Manrope;
   margin: 0 0 7px;
-}
-.loginbox p {
+  font: 800 23px Manrope, sans-serif;
   text-align: center;
+}
+
+.loginbox p {
+  margin: 0 0 25px;
   color: #87948b;
   font-size: 12px;
-  margin: 0 0 25px;
+  text-align: center;
 }
+
 .loginbox label {
-  font-size: 11px;
-  color: #728076;
   display: grid;
   gap: 7px;
   margin: 14px 0;
+  color: #728076;
+  font-size: 11px;
 }
+
 .loginbox .btn {
   width: 100%;
-  padding: 13px;
   margin-top: 8px;
+  padding: 13px;
 }
+
 .hint {
+  margin-top: 16px !important;
+  padding: 11px;
+  border-radius: 10px;
+  background: #f4f8f2;
+  color: #738378 !important;
   font-size: 11px !important;
   line-height: 1.6;
-  background: #f4f8f2;
-  border-radius: 10px;
-  padding: 11px;
-  color: #738378 !important;
-  margin-top: 16px !important;
 }
+
+/* =========================================
+   14. DELIVERY FAILURE
+========================================= */
+
 .delivery-failure {
-  background: #fff4f0;
-  border: 1px solid #f2c6b8;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
   min-width: 160px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #f2c6b8;
+  border-radius: 8px;
+  background: #fff4f0;
 }
 
 .delivery-failure strong {
@@ -619,10 +747,15 @@ td:nth-child(6) {
 }
 
 .delivery-failure p {
-  font-size: 12px;
   margin: 6px 0 0;
+  font-size: 12px;
   white-space: normal;
 }
+
+/* =========================================
+   15. INVENTORY
+========================================= */
+
 .inventory-item {
   display: flex;
   align-items: center;
@@ -658,15 +791,15 @@ td:nth-child(6) {
 
 .inventory-name strong {
   display: block;
-  font-size: 12px;
   color: #25372b;
+  font-size: 12px;
 }
 
 .inventory-name small {
   display: block;
-  font-size: 10px;
-  color: #89948c;
   margin-top: 2px;
+  color: #89948c;
+  font-size: 10px;
 }
 
 .stock-count {
@@ -680,13 +813,146 @@ td:nth-child(6) {
   text-align: center;
 }
 
-/* Walk-in Sales / POS */
+/* Inventory add/edit form */
+
+.inventory-add-btn {
+  padding: 11px 18px;
+  border-radius: 9px;
+  background: #24663e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.2s ease;
+}
+
+.inventory-add-btn:hover {
+  background: #174c2d;
+}
+
+.inventory-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.inventory-form > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.inventory-form label {
+  display: block;
+  margin-bottom: 7px;
+  color: #405047;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.inventory-form input,
+.inventory-form select,
+.inventory-form textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 13px;
+  border: 1px solid #dfe8df;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #25372b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inventory-form input::placeholder,
+.inventory-form textarea::placeholder {
+  color: #a0aaa2;
+  font-size: 11px;
+}
+
+.inventory-form input:focus,
+.inventory-form select:focus,
+.inventory-form textarea:focus {
+  border-color: #68a77a;
+  box-shadow: 0 0 0 3px rgba(104, 167, 122, 0.12);
+}
+
+.inventory-form select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.inventory-form textarea {
+  min-height: 85px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.inventory-form select:disabled {
+  background: #f2f5f2;
+  color: #89948c;
+  cursor: not-allowed;
+}
+
+.inventory-form small {
+  margin-top: 6px;
+  color: #89948c;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.inventory-form + .sale-error {
+  margin-top: 16px;
+}
+
+.inventory-form button,
+.inventory-form + div button {
+  border-radius: 9px;
+}
+
+.stock-update-panel {
+  margin-bottom: 24px;
+}
+
+.current-stock-info {
+  margin-bottom: 20px;
+  padding: 12px 15px;
+  border-radius: 9px;
+  background: #f0f7f1;
+  color: #405047;
+  font-size: 13px;
+}
+
+.current-stock-info strong {
+  color: #176b45;
+}
+
+.stock-preview {
+  margin-top: 14px;
+  color: #405047;
+  font-size: 13px;
+}
+
+.stock-update-btn {
+  background: #e8f3eb;
+  color: #176b45;
+}
+
+.stock-update-btn:hover {
+  background: #d5eadd;
+}
+
+/* =========================================
+   16. WALK-IN SALES / POS
+========================================= */
 
 .pos-layout {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
-  gap: 18px;
   align-items: start;
+  gap: 18px;
 }
 
 .pos-products {
@@ -700,11 +966,12 @@ td:nth-child(6) {
   display: grid;
   gap: 7px;
   padding: 14px;
-  background: #f7faf6;
   border: 1px solid #e8eee8;
   border-radius: 12px;
-  text-align: left;
+  background: #f7faf6;
   color: #25372b;
+  text-align: left;
+  transition: all 0.15s ease;
 }
 
 .pos-product:hover {
@@ -713,7 +980,18 @@ td:nth-child(6) {
 }
 
 .pos-emoji {
+  height: 50px;
+  display: flex;
+  align-items: center;
   font-size: 28px;
+  line-height: 1;
+}
+
+.product-image {
+  width: 50px;
+  height: 50px;
+  display: block;
+  object-fit: contain;
 }
 
 .pos-product small,
@@ -722,13 +1000,18 @@ td:nth-child(6) {
   font-size: 11px;
 }
 
+/* POS labels */
+
 .pos-label {
   display: grid;
   gap: 7px;
   margin-top: 16px;
   color: #728076;
   font-size: 12px;
+  font-weight: 600;
 }
+
+/* POS cart */
 
 .cart-items {
   margin-top: 20px;
@@ -736,64 +1019,96 @@ td:nth-child(6) {
 
 .cart-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 13px 0;
   border-bottom: 1px solid #edf1ed;
+  color: #25372b;
   font-size: 12px;
 }
 
 .cart-item > div:first-child {
   display: grid;
+  flex: 1;
   gap: 4px;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 6px;
 }
 
 .quantity-control button {
   width: 26px;
   height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   background: #edf5ed;
   color: #28613c;
+  font-weight: 700;
 }
+
+.quantity-control button:hover {
+  background: #dcebdd;
+}
+
+.quantity-control input {
+  width: 54px;
+  padding: 4px 6px;
+  border: 1px solid #dce5dd;
+  border-radius: 6px;
+  color: #25372b;
+  font-size: 12px;
+  text-align: center;
+}
+
+.remove-item {
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: transparent;
+  color: #b54e42;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.remove-item:hover {
+  background: #fff0ed;
+}
+
+/* POS total */
 
 .pos-total {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #e8eee8;
-  padding-top: 18px;
+  justify-content: space-between;
   margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e8eee8;
+  color: #25372b;
 }
 
 .pos-total strong {
-  font: 800 22px Manrope;
+  font: 800 22px Manrope, sans-serif;
 }
 
-.complete-sale {
-  width: 100%;
-  margin-top: 18px;
-  padding: 13px;
-}
-
-.complete-sale:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* POS errors */
 
 .sale-error {
-  background: #fff0ed;
-  color: #b54e42;
+  margin-bottom: 16px;
   padding: 12px;
   border-radius: 9px;
+  background: #fff0ed;
+  color: #b54e42;
   font-size: 13px;
 }
+
+/* =========================================
+   17. RECEIPT
+========================================= */
 
 .receipt {
   max-width: 650px;
@@ -801,26 +1116,260 @@ td:nth-child(6) {
 }
 
 .receipt-header {
+  margin-bottom: 16px;
   text-align: center;
 }
 
 .receipt-header h2 {
-  font: 800 24px Manrope;
   margin: 0 0 5px;
+  color: #1f2e24;
+  font: 800 24px Manrope, sans-serif;
+}
+
+.receipt-header p {
+  margin: 0 0 10px;
+  color: #6b7a70;
+  font-size: 13px;
+}
+
+.receipt hr {
+  margin: 16px 0;
+  border: none;
+  border-top: 1px dashed #dce5dd;
+}
+
+.receipt > p {
+  margin: 6px 0;
+  color: #25372b;
+  font-size: 13px;
 }
 
 .receipt-total {
-  text-align: right;
   margin-top: 20px;
+  color: #1f2e24;
+  font-family: Manrope, sans-serif;
+  text-align: right;
 }
 
 .receipt-thanks {
-  text-align: center;
-  color: #64736a;
   margin-top: 25px;
+  color: #64736a;
+  font-size: 13px;
+  text-align: center;
 }
 
-/* ---------- TABLET / SMALL LAPTOP ---------- */
+/* =========================================
+   18. DELIVERY AGENTS
+========================================= */
+
+.delivery-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.delivery-form-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.delivery-form-grid label {
+  color: #34483b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delivery-form-grid input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #dce5dd;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.delivery-form-grid input:focus {
+  border-color: #176b45;
+  box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.1);
+}
+
+.success-message,
+.error-message {
+  margin: 15px 0;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.success-message {
+  background: #e9f7ee;
+  color: #176b45;
+}
+
+.error-message {
+  background: #fff0f0;
+  color: #c0392b;
+}
+
+/* =========================================
+   19. ORDER DELIVERY AGENT ASSIGNMENT
+========================================= */
+
+.agent-assignment {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 190px;
+  max-width: 220px;
+}
+
+.agent-info-space {
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.assigned-agent {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.agent-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f3eb;
+  color: #176b45;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.agent-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.agent-details strong {
+  overflow: hidden;
+  color: #25372b;
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-details small {
+  color: #89948c;
+  font-size: 10px;
+}
+
+.unassigned-label {
+  display: inline-flex;
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 20px;
+  background: #fff4e5;
+  color: #a66a1d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.agent-select {
+  width: 100%;
+  min-width: 190px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #dce7dc;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #25372b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.agent-select:focus {
+  border-color: #68a77a;
+  box-shadow: 0 0 0 3px rgba(104, 167, 122, 0.1);
+}
+
+.agent-select:disabled {
+  background: #f0f2f0;
+  color: #89948c;
+  cursor: not-allowed;
+}
+
+.agent-select option {
+  padding: 8px;
+  background: #fff;
+  color: #25372b;
+  font-size: 12px;
+}
+
+.assigning-text {
+  color: #5d956d;
+  font-size: 10px;
+}
+
+.status-cell {
+  padding-top: 54px !important;
+  vertical-align: top;
+}
+
+.status-select {
+  width: 100%;
+  min-width: 160px;
+  height: 42px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #405047;
+  white-space: nowrap;
+}
+
+.pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 400px) {
+  .pagination {
+    gap: 8px;
+  }
+
+  .pagination span {
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   20. RESPONSIVE: SMALL LAPTOP
+========================================= */
+
 @media (max-width: 1100px) {
   .sidebar {
     width: 200px;
@@ -841,10 +1390,8 @@ td:nth-child(6) {
 
   .grid2 {
     grid-template-columns: 1fr;
-    gap: 14px;
   }
 
-  /* POS */
   .pos-layout {
     grid-template-columns: 1fr;
   }
@@ -853,30 +1400,15 @@ td:nth-child(6) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  /* Tables */
-  .tablewrap {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
+  .tablewrap table {
     min-width: 760px;
   }
 }
 
-/* Large desktop */
-@media (max-width: 1200px) {
-  .content {
-    padding: 28px 24px;
-  }
+/* =========================================
+   21. RESPONSIVE: TABLET
+========================================= */
 
-  .grid2 {
-    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
-  }
-}
-
-/* ---------- TABLET ---------- */
 @media (max-width: 900px) {
   .sidebar {
     width: 185px;
@@ -884,8 +1416,8 @@ td:nth-child(6) {
   }
 
   .brand {
-    padding-left: 7px;
     padding-right: 7px;
+    padding-left: 7px;
   }
 
   .brand strong {
@@ -893,9 +1425,9 @@ td:nth-child(6) {
   }
 
   .nav a {
+    gap: 9px;
     padding: 10px 11px;
     font-size: 12px;
-    gap: 9px;
   }
 
   .content {
@@ -903,28 +1435,17 @@ td:nth-child(6) {
   }
 
   .topbar {
-    height: 68px;
     padding: 0 18px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 
   .stat {
     padding: 16px;
   }
 
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
-
   .quickgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* POS */
   .pos-layout {
     grid-template-columns: 1fr;
   }
@@ -933,7 +1454,14 @@ td:nth-child(6) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* Filters */
+  .inventory-form {
+    gap: 14px;
+  }
+
+  .delivery-form-grid {
+    gap: 14px;
+  }
+
   .filters {
     flex-wrap: wrap;
   }
@@ -941,50 +1469,29 @@ td:nth-child(6) {
   .search {
     min-width: 180px;
   }
-  .sidebar {
-    width: 185px;
-  }
-
-  .pos-layout {
-    grid-template-columns: 1fr;
-  }
-  .inventory-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .inventory-form input,
-  .inventory-form select,
-  .inventory-form textarea {
-    padding: 10px 11px;
-  }
-  .sidebar {
-    width: 205px;
-  }
-  .content {
-    padding: 24px 20px;
-  }
 }
 
+/* =========================================
+   22. RESPONSIVE: MOBILE
+========================================= */
+
 @media (max-width: 650px) {
-  /* ---------- MAIN LAYOUT ---------- */
+
+  /* Main layout */
 
   .shell {
     display: block;
-    min-height: 100vh;
   }
 
-  /* ---------- SIDEBAR -> MOBILE NAV ---------- */
-
   .sidebar {
+    display: block;
     width: 100%;
     padding: 12px;
-    display: block;
   }
 
   .brand {
-    padding: 0 5px 12px;
     gap: 10px;
+    padding: 0 5px 12px;
   }
 
   .brandmark {
@@ -996,9 +1503,6 @@ td:nth-child(6) {
   }
 
   .brandmark img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
     border-radius: 9px;
   }
 
@@ -1016,14 +1520,14 @@ td:nth-child(6) {
   }
 
   /* Horizontal navigation */
+
   .nav {
     display: flex;
-    gap: 6px;
     width: 100%;
+    gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
     padding-bottom: 3px;
-
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -1034,18 +1538,18 @@ td:nth-child(6) {
 
   .nav a {
     flex: 0 0 auto;
-    white-space: nowrap;
     padding: 9px 12px;
-    font-size: 12px;
     border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
   }
 
   .nav .ico {
-    font-size: 14px;
     width: auto;
+    font-size: 14px;
   }
 
-  /* ---------- TOP BAR ---------- */
+  /* Topbar */
 
   .topbar {
     height: 56px;
@@ -1067,7 +1571,7 @@ td:nth-child(6) {
     margin-right: 4px;
   }
 
-  /* ---------- CONTENT ---------- */
+  /* Content */
 
   .content {
     width: 100%;
@@ -1082,16 +1586,15 @@ td:nth-child(6) {
   .heading {
     font-size: 22px;
     line-height: 1.2;
-    letter-spacing: -0.4px;
   }
 
   .sub {
+    margin-bottom: 20px;
     font-size: 12px;
     line-height: 1.5;
-    margin-bottom: 20px;
   }
 
-  /* ---------- ROWS ---------- */
+  /* Rows */
 
   .row {
     flex-direction: column;
@@ -1103,7 +1606,7 @@ td:nth-child(6) {
     width: 100%;
   }
 
-  /* ---------- STATS ---------- */
+  /* Statistics */
 
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1127,25 +1630,22 @@ td:nth-child(6) {
   }
 
   .stat strong {
-    font-size: 20px;
     margin: 10px 0 3px;
+    font-size: 20px;
   }
 
-  .stat small {
-    font-size: 10px;
-  }
-
-  /* ---------- PANELS ---------- */
+  /* Panels */
 
   .panel {
+    margin-bottom: 14px;
     padding: 15px;
     border-radius: 12px;
-    margin-bottom: 14px;
   }
 
   .panelhead {
-    gap: 10px;
+    align-items: flex-start;
     flex-wrap: wrap;
+    gap: 10px;
   }
 
   .panel h3 {
@@ -1156,7 +1656,7 @@ td:nth-child(6) {
     font-size: 11px;
   }
 
-  /* ---------- BUTTONS ---------- */
+  /* Buttons */
 
   .btn {
     padding: 9px 12px;
@@ -1168,10 +1668,9 @@ td:nth-child(6) {
     font-size: 11px;
   }
 
-  /* ---------- FILTERS ---------- */
+  /* Filters */
 
   .filters {
-    display: flex;
     flex-direction: column;
     align-items: stretch;
     width: 100%;
@@ -1186,60 +1685,56 @@ td:nth-child(6) {
   }
 
   .field {
-    width: 100%;
     padding: 10px;
     font-size: 12px;
   }
 
-  /* ---------- TABLE ---------- */
+  /* Tables */
 
   .tablewrap {
-    width: 100%;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
-  table {
+  .tablewrap table {
     width: max-content;
-    min-width: 700px;
+    min-width: 760px;
   }
 
   th {
-    font-size: 9px;
     padding: 10px 8px;
+    font-size: 9px;
   }
 
   td {
-    font-size: 11px;
     padding: 11px 8px;
+    font-size: 11px;
   }
 
-  /* ---------- PRODUCT CELL ---------- */
+  /* Product cells */
 
   .thumb {
     width: 32px;
     height: 32px;
-    font-size: 18px;
     flex-shrink: 0;
+    font-size: 18px;
   }
 
   .productcell {
     gap: 7px;
   }
 
-  /* ---------- QUICK GRID ---------- */
+  /* Quick grid */
 
   .quickgrid {
     grid-template-columns: 1fr;
     gap: 9px;
   }
 
-  /* POS / WALK-IN SALES  */
+  /* POS */
 
   .pos-layout {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 14px;
   }
@@ -1264,11 +1759,11 @@ td:nth-child(6) {
   }
 
   .pos-label {
-    font-size: 11px;
     margin-top: 13px;
+    font-size: 11px;
   }
 
-  /* ---------- CART ---------- */
+  /* POS cart */
 
   .cart-items {
     margin-top: 15px;
@@ -1282,8 +1777,8 @@ td:nth-child(6) {
   }
 
   .cart-item > div:first-child {
-    min-width: 0;
     flex: 1;
+    min-width: 0;
   }
 
   .quantity-control {
@@ -1308,7 +1803,90 @@ td:nth-child(6) {
     padding: 12px;
   }
 
-  /* ---------- MODAL ---------- */
+  /* Inventory forms */
+
+  .inventory-form {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .inventory-form label {
+    font-size: 12px;
+  }
+
+  .inventory-form input,
+  .inventory-form select,
+  .inventory-form textarea {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .inventory-form input::placeholder,
+  .inventory-form textarea::placeholder {
+    font-size: 12px;
+  }
+
+  .inventory-form textarea {
+    min-height: 90px;
+  }
+
+  .inventory-add-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .panel form > div:last-child {
+    margin-top: 16px !important;
+  }
+
+  .panel form > div:last-child button {
+    width: 100%;
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  /* Delivery agent forms */
+
+  .delivery-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .delivery-form-grid input {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  /* Agent assignment */
+
+  .agent-assignment {
+    min-width: 180px;
+  }
+
+  .agent-select {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  /* Delivery failure */
+
+  .delivery-failure {
+    width: 100%;
+    min-width: 0;
+    padding: 9px;
+  }
+
+  .delivery-failure strong {
+    font-size: 11px;
+  }
+
+  .delivery-failure p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  /* Modal */
 
   .modalback {
     padding: 12px;
@@ -1334,7 +1912,7 @@ td:nth-child(6) {
     width: 100%;
   }
 
-  /* ---------- LOGIN ---------- */
+  /* Login */
 
   .loginpage {
     min-height: 100dvh;
@@ -1352,24 +1930,7 @@ td:nth-child(6) {
     font-size: 21px;
   }
 
-  /* ---------- DELIVERY FAILURE ---------- */
-
-  .delivery-failure {
-    min-width: 0;
-    width: 100%;
-    padding: 9px;
-  }
-
-  .delivery-failure strong {
-    font-size: 11px;
-  }
-
-  .delivery-failure p {
-    font-size: 11px;
-    line-height: 1.5;
-  }
-
-  /* ---------- RECEIPT ---------- */
+  /* Receipt */
 
   .receipt {
     width: 100%;
@@ -1379,86 +1940,15 @@ td:nth-child(6) {
   .receipt-header h2 {
     font-size: 21px;
   }
-  .shell {
-    display: block;
-  }
-
-  .sidebar {
-    width: 100%;
-    padding: 12px;
-  }
-
-  .nav {
-    display: flex;
-    overflow-x: auto;
-    gap: 6px;
-    scrollbar-width: none;
-  }
-
-  .nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .nav a {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  .sidebottom,
-  .navlabel {
-    display: none;
-  }
-
-  .topbar {
-    height: 56px;
-    padding: 0 14px;
-  }
-
-  .content {
-    padding: 18px 14px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 9px;
-  }
-
-  .row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .row > * {
-    width: 100%;
-  }
-
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filters .field,
-  .filters .search {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .tablewrap {
-    overflow-x: auto;
-  }
-
-  table {
-    min-width: 760px;
-  }
-
-  .pos-products {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
+
+/* =========================================
+   23. RESPONSIVE: VERY SMALL PHONES
+========================================= */
 
 @media (max-width: 400px) {
   .content {
-    padding: 18px 12px;
+    padding: 16px 12px;
   }
 
   .topbar {
@@ -1466,8 +1956,8 @@ td:nth-child(6) {
   }
 
   .topright {
-    font-size: 9px;
     gap: 5px;
+    font-size: 9px;
   }
 
   .heading {
@@ -1513,31 +2003,29 @@ td:nth-child(6) {
   }
 
   .btn {
-    font-size: 10px;
     padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .inventory-form {
+    gap: 12px;
+  }
+
+  .inventory-form input,
+  .inventory-form select,
+  .inventory-form textarea {
+    padding: 11px;
+    font-size: 12px;
   }
 
   .loginbox {
     padding: 22px 15px;
   }
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .heading {
-    font-size: 20px;
-  }
-
-  .content {
-    padding: 16px 12px;
-  }
-
-  .pos-products {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
-/* PRINT */
+/* =========================================
+   24. PRINT RECEIPT
+========================================= */
 
 @media print {
   body * {
@@ -1551,11 +2039,11 @@ td:nth-child(6) {
 
   .receipt {
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     max-width: none;
-    border: 0;
+    border: none;
     box-shadow: none;
   }
 
@@ -1564,317 +2052,15 @@ td:nth-child(6) {
   }
 }
 
-/*   INVENTORY ADD / EDIT PRODUCT FORM */
-
-.inventory-add-btn {
-  background: #24663e;
-  color: #ffffff;
-  padding: 11px 18px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 700;
-  transition: background 0.2s ease;
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
 }
 
-.inventory-add-btn:hover {
-  background: #174c2d;
-}
-
-/* Form container */
-
-.inventory-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  width: 100%;
-}
-
-/* Form field wrapper */
-
-.inventory-form > div {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-/* Labels */
-
-.inventory-form label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: #405047;
-  margin-bottom: 7px;
-}
-
-/* Inputs, select and textarea */
-
-.inventory-form input,
-.inventory-form select,
-.inventory-form textarea {
-  width: 100%;
-  min-width: 0;
-  padding: 11px 13px;
-  border: 1px solid #dfe8df;
-  border-radius: 9px;
-  background: #ffffff;
-  color: #25372b;
-  font-family: "DM Sans", sans-serif;
-  font-size: 12px;
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-/* Placeholder */
-
-.inventory-form input::placeholder,
-.inventory-form textarea::placeholder {
-  color: #a0aaa2;
-  font-size: 11px;
-}
-
-/* Focus effect */
-
-.inventory-form input:focus,
-.inventory-form select:focus,
-.inventory-form textarea:focus {
-  border-color: #68a77a;
-  box-shadow: 0 0 0 3px rgba(104, 167, 122, 0.12);
-}
-
-/* Select */
-
-.inventory-form select {
-  cursor: pointer;
-  appearance: auto;
-}
-
-/* Textarea */
-
-.inventory-form textarea {
-  resize: vertical;
-  min-height: 85px;
-  line-height: 1.5;
-}
-
-/* Disabled category field */
-
-.inventory-form select:disabled {
-  background: #f2f5f2;
-  color: #89948c;
-  cursor: not-allowed;
-}
-
-/* Edit category note */
-
-.inventory-form small {
-  margin-top: 6px;
-  color: #89948c;
-  font-size: 10px;
-  line-height: 1.5;
-}
-
-/* Form buttons */
-
-.inventory-form + .sale-error {
-  margin-top: 16px;
-}
-
-.inventory-form button,
-.inventory-form + div button {
-  border-radius: 9px;
-}
-
-/* Form header */
-
-.panelhead {
-  align-items: center;
-}
-
-.stock-update-panel {
-  margin-bottom: 24px;
-}
-
-.current-stock-info {
-  padding: 12px 15px;
-  margin-bottom: 20px;
-  background: #f0f7f1;
-  border-radius: 9px;
-  color: #405047;
-  font-size: 13px;
-}
-
-.current-stock-info strong {
-  color: #176b45;
-}
-
-.stock-preview {
-  margin-top: 14px;
-  color: #405047;
-  font-size: 13px;
-}
-
-.stock-update-btn {
-  background: #e8f3eb;
-  color: #176b45;
-}
-
-.stock-update-btn:hover {
-  background: #d5eadd;
-}
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 650px) {
-  .inventory-form {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .inventory-form label {
-    font-size: 12px;
-  }
-
-  .inventory-form input,
-  .inventory-form select,
-  .inventory-form textarea {
-    padding: 12px;
-    font-size: 13px;
-    border-radius: 8px;
-  }
-
-  .inventory-form input::placeholder,
-  .inventory-form textarea::placeholder {
-    font-size: 12px;
-  }
-
-  .inventory-form textarea {
-    min-height: 90px;
-  }
-
-  .inventory-add-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 12px;
-  }
-
-  .panelhead {
-    align-items: flex-start;
-  }
-
-  /* Form action buttons */
-
-  .panel form > div:last-child {
-    margin-top: 16px !important;
-  }
-
-  .panel form > div:last-child button {
-    width: 100%;
-    padding: 12px;
-    font-size: 12px;
-  }
-}
-
-/* =========================================
-   VERY SMALL PHONES
-========================================= */
-
-@media (max-width: 400px) {
-  .inventory-form {
-    gap: 12px;
-  }
-
-  .inventory-form input,
-  .inventory-form select,
-  .inventory-form textarea {
-    padding: 11px;
-    font-size: 12px;
-  }
-
-  .inventory-add-btn {
-    width: 100%;
-  }
-}
-
-/* DELIVERY AGENTS */
-
-.delivery-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin: 20px 0;
-}
-
-.delivery-form-grid .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.delivery-form-grid label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #34483b;
-}
-
-.delivery-form-grid input {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid #dce5dd;
-  border-radius: 9px;
-  background: #fff;
-  font-size: 14px;
-  outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-}
-
-.delivery-form-grid input:focus {
-  border-color: #176b45;
-  box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.1);
-}
-
-.success-message {
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 8px;
-  background: #e9f7ee;
-  color: #176b45;
-  font-size: 14px;
-}
-
-.error-message {
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 8px;
-  background: #fff0f0;
-  color: #c0392b;
-  font-size: 14px;
-}
-
-@media (max-width: 650px) {
-  .delivery-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .panelhead {
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .tablewrap {
-    overflow-x: auto;
-  }
-
-  .tablewrap table {
-    min-width: 650px;
-  }
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

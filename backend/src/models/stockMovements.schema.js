@@ -9,7 +9,6 @@ export const createStockMovementSchema = z.object({
       .positive(),
 
     quantity: z.number()
-      .int()
       .refine((value) => value !== 0, {
         message: "Quantity cannot be zero",
       }),

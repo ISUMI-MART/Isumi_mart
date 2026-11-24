@@ -160,6 +160,27 @@ export async function updateProfile(profileData) {
 
   return result.user;
 }
+export async function deleteProfile() {
+  const response = await fetch(`${API_URL}/users/profile`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid delete profile response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to delete account.");
+  }
+
+  return data;
+}
 
 export const createOrder = async (orderData) => {
   const response = await fetch(`${API_URL}/orders`, {
@@ -348,21 +369,20 @@ export const getOrders = async () => {
 };
 
 // UPDATE ORDER STATUS
-
-export const updateOrderStatus = async (orderId, status) => {
-  const token = localStorage.getItem("token");
-
+export const updateOrderStatus = async (orderId, status, extraData = {}) => {
   const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify({
       status,
+      ...extraData,
     }),
   });
 
   const text = await response.text();
 
   let data;
+
   try {
     data = text ? JSON.parse(text) : {};
   } catch {
@@ -374,6 +394,9 @@ export const updateOrderStatus = async (orderId, status) => {
   }
 
   return data;
+}; // CUSTOMER - CANCEL ORDER
+export const cancelOrder = async (orderId) => {
+  return await updateOrderStatus(orderId, "CANCELLED");
 };
 
 // ===============================
@@ -552,6 +575,153 @@ export const createDeliveryAgent = async (agentData) => {
 
   if (!response.ok) {
     throw new Error(data.message || "Failed to create delivery agent.");
+  }
+
+  return data;
+};
+
+// ASSIGN DELIVERY AGENT TO ORDER
+
+export const assignDeliveryAgent = async (orderId, deliveryAgentId) => {
+  const response = await fetch(`${API_URL}/orders/${orderId}/assign-agent`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      deliveryAgentId: Number(deliveryAgentId),
+    }),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid agent assignment response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to assign delivery agent.");
+  }
+
+  return data;
+};
+// ===============================
+// OWNER - WALK-IN SALES
+// ===============================
+
+export const getWalkInSales = async () => {
+  const response = await fetch(`${API_URL}/walk-in-sales`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid walk-in sales response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load walk-in sales.");
+  }
+
+  return data.sales || [];
+};
+
+export const createWalkInSale = async (saleData) => {
+  const response = await fetch(`${API_URL}/walk-in-sales`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(saleData),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid create sale response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to complete walk-in sale.");
+  }
+
+  return data.sale;
+};
+
+export const getWalkInSaleById = async (id) => {
+  const response = await fetch(`${API_URL}/walk-in-sales/${id}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid walk-in sale response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load walk-in sale.");
+  }
+
+  return data.sale;
+};
+
+export const getWalkInSaleItems = async (saleId) => {
+  const response = await fetch(`${API_URL}/walk-in-sale-items/sale/${saleId}`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid walk-in sale items response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to load sale items.");
+  }
+
+  return data.items || [];
+};
+
+export const deleteDeliveryAgent = async (id) => {
+  const response = await fetch(`${API_URL}/users/delivery-agents/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid delete-agent response.");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to delete delivery agent.");
   }
 
   return data;

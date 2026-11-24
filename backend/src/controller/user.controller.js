@@ -65,4 +65,17 @@ export class UserController {
       data: agents,
     });
   });
+
+  deleteDeliveryAgent = catchAsync(async (req, res) => {
+  const agentId = req.params.id;
+
+  const deletedAgent = await userService.deleteDeliveryAgent(agentId);
+
+  res.status(200).json({
+    success: true,
+    message: "Delivery agent deleted successfully",
+    user: deletedAgent,
+  });
+});
 }
+
