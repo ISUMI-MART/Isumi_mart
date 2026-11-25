@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getOrderById, cancelOrder } from "../services/api";
-import "../layouts/TrackOrder.css";
+import "../Layouts/TrackOrder.css";
 
 function TrackOrder() {
   const { id } = useParams();
