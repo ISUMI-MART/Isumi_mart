@@ -11,6 +11,8 @@ import "./App.css";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
+import ProtectedRoute from "./components/ProtecterRoute";
+
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
@@ -21,14 +23,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import TrackOrder from "./pages/TrackOrder";
 import OrderHistory from "./pages/OrderHistory";
 import Profile from "./pages/Profile";
-import {
-  getCart,
-  addCartItem,
-  updateCartItem,
-  removeCartItem,
-  createOrder,
-  clearCart,
-} from "./services/api";
+import {getCart,addCartItem,updateCartItem,removeCartItem,createOrder,clearCart,} from "./services/api";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -46,7 +41,7 @@ import Settings from "./pages/Owner/Settings";
 import WalkInSales from "./pages/Owner/WalkInSales";
 
 // Delivery
-import DeliveryLayout from "./layouts/DeliveryLayout";
+import DeliveryLayout from "./Layouts/DeliveryLayout";
 import Dashboard from "./pages/Delivery/Dashboard";
 
 function App() {
@@ -61,6 +56,7 @@ function App() {
 
   const [cart, setCart] = useState([]);
 
+  //Hide customer components from login, registor, owner, delivery portals
   const hideLayout =
     ["/login", "/register"].includes(location.pathname) ||
     location.pathname.startsWith("/owner") || location.pathname.startsWith("/delivery");
@@ -81,6 +77,9 @@ function App() {
           const product = item.product || {};
 
           return {
+
+            //cart actions
+
             id: item.productId ?? product.id ?? item.id,
             productId: item.productId ?? product.id ?? item.id,
 
@@ -358,77 +357,61 @@ function App() {
         />
       )}
 
+      {/* Login , Register routes */}
+
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* customer routes */}
 
         <Route path="/" element={<Home addToCart={addToCart} />} />
 
         <Route path="/products" element={<Products addToCart={addToCart} />} />
 
-        <Route
-          path="/products/:id"
-          element={<ProductDetails addToCart={addToCart} />}
-        />
+        <Route path="/products/:id" element={<ProductDetails addToCart={addToCart} />}/>
 
-        <Route
-          path="/cart"
-          element={
-            <Cart
-              cart={cart}
-              removeFromCart={removeFromCart}
-              updateQuantity={updateQuantity}
-            />
-          }
-        />
+        <Route path="/cart" element={ <ProtectedRoute><Cart cart={cart} removeFromCart={removeFromCart}updateQuantity={updateQuantity}/></ProtectedRoute>}/>
 
-        <Route
-          path="/checkout/address"
-          element={<CheckoutAddress cart={cart} />}
-        />
+        <Route path="/checkout/address" element={<ProtectedRoute><CheckoutAddress cart={cart} /></ProtectedRoute>} />
 
-        <Route
-          path="/checkout/summary"
-          element={<CheckoutSummary cart={cart} placeOrder={placeOrder} />}
-        />
+        <Route path="/checkout/summary" element={<ProtectedRoute><CheckoutSummary cart={cart} placeOrder={placeOrder} /></ProtectedRoute>}/>
 
-        <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+        <Route path="/order-confirmation/:id" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
 
         <Route path="/orders" element={<OrderHistory />} />
 
-        <Route path="/orders/:id" element={<TrackOrder />} />
+        <Route path="/orders/:id" element={<ProtectedRoute><TrackOrder /></ProtectedRoute>} />
 
         <Route path="/profile" element={<Profile />} />
 
         {/* OWNER ROUTES */}
 
         <Route path="/owner" element={<OwnerLayout />}>
-          <Route index element={<Navigate to="overview" replace />} />
+          <Route index element={<ProtectedRoute><Navigate to="overview" replace /></ProtectedRoute>} />
 
-          <Route path="overview" element={<Overview />} />
+          <Route path="overview" element={<ProtectedRoute><Overview /></ProtectedRoute>} />
 
-          <Route path="orders" element={<Orders />} />
+          <Route path="orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
 
-          <Route path="products" element={<Products />} />
+          <Route path="products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
 
-          <Route path="inventory" element={<Inventory />} />
+          <Route path="inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
 
-          <Route path="delivery-agents" element={<DeliveryAgents />} />
+          <Route path="delivery-agents" element={<ProtectedRoute><DeliveryAgents /></ProtectedRoute>} />
 
-          <Route path="reports" element={<Reports />} />
+          <Route path="reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
 
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-          <Route path="walk-in-sales" element={<WalkInSales />} />
+          <Route path="walk-in-sales" element={<ProtectedRoute><WalkInSales /></ProtectedRoute>} />
 
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Route>
+
         {/* DELIVERY AGENT ROUTES */}
 
-        <Route
-          path="/delivery"
-          element={
-            activeUser?.role === "DELIVERY_AGENT" ? (
+        <Route path="/delivery" element={activeUser?.role === "DELIVERY_AGENT" ? (
               <DeliveryLayout
                 agentId={activeUser.userName || "Delivery Agent"}
                 onLogout={() => {
@@ -441,28 +424,12 @@ function App() {
               />
             ) : (
               <Navigate to="/login" replace />
-            )
-          }
-        >
-          <Route
-            index
-            element={
-              <Dashboard
-                agentId={activeUser?.userName || "Delivery Agent"}
-              />
-            }
-          />
+            )}>
 
-          <Route
-            path="completed"
-            element={
-              <Dashboard
-                showCompleted={true}
-                agentId={activeUser?.userName || "Delivery Agent"}
-              />
-            }
-          />
-        </Route>
+          <Route index element={ <Dashboard agentId={activeUser?.userName || "Delivery Agent"} /> } />
+
+          <Route path="completed"  element={ <Dashboard showCompleted={true} agentId={activeUser?.userName || "Delivery Agent"}  />  } /></Route>
+
       </Routes>
 
       {!hideLayout && <Footer />}

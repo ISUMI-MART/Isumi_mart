@@ -4,8 +4,49 @@ function DeliveryLayout({ agentId, onLogout }) {
   const navigate = useNavigate();
 
   const nav = [
-    { name: "My deliveries", path: "/delivery", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-chart-gantt preview-icon"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 8h7" /><path d="M8 12h6" /><path d="M11 16h5" /></svg> },
-    { name: "Completed", path: "/delivery/completed", icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check preview-icon"><path d="M20 6 9 17l-5-5" /></svg> },
+    {
+      name: "My deliveries",
+      path: "/delivery",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-square-chart-gantt preview-icon"
+        >
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M9 8h7" />
+          <path d="M8 12h6" />
+          <path d="M11 16h5" />
+        </svg>
+      ),
+    },
+    {
+      name: "Completed",
+      path: "/delivery/completed",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-check preview-icon"
+        >
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      ),
+    },
   ];
 
   const handleLogout = () => {
@@ -45,9 +86,7 @@ function DeliveryLayout({ agentId, onLogout }) {
         </nav>
 
         <div className="sidebottom">
-          <div className="avatar">
-            {agentId.charAt(0).toUpperCase()}
-          </div>
+          <div className="avatar">{agentId.charAt(0).toUpperCase()}</div>
 
           <div>
             <b>Delivery Partner</b>
@@ -58,9 +97,7 @@ function DeliveryLayout({ agentId, onLogout }) {
 
       <main className="main">
         <header className="topbar">
-          <span className="crumb">
-            Isumi Mart / Delivery workspace
-          </span>
+          <span className="crumb">Isumi Mart / Delivery workspace</span>
 
           <span className="topright">
             <span>
@@ -68,10 +105,7 @@ function DeliveryLayout({ agentId, onLogout }) {
               On duty
             </span>
 
-            <button
-              className="btn outline"
-              onClick={handleLogout}
-            >
+            <button className="btn outline" onClick={handleLogout}>
               Sign out
             </button>
           </span>

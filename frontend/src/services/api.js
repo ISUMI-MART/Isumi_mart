@@ -1,5 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+//get Products
+
 export async function getProducts({
   page = 1,
   limit = 10,
@@ -58,6 +60,8 @@ export async function getProducts({
   };
 }
 
+//get Product By Id
+
 export async function getProductById(id) {
   const response = await fetch(`${API_URL}/products/${id}`);
 
@@ -99,6 +103,8 @@ export async function getProductById(id) {
   };
 }
 
+//get Categories
+
 export async function getCategories() {
   const response = await fetch(`${API_URL}/categories`);
 
@@ -115,6 +121,8 @@ export async function getCategories() {
   return Array.isArray(categories) ? categories : [];
 }
 
+//get Auth Headers
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
 
@@ -123,6 +131,8 @@ const getAuthHeaders = () => {
     Authorization: `Bearer ${token}`,
   };
 };
+
+//get Profile
 
 export async function getProfile() {
   const token = localStorage.getItem("token");
@@ -143,6 +153,8 @@ export async function getProfile() {
   return result.user;
 }
 
+//update Profile
+
 export async function updateProfile(profileData) {
   const token = localStorage.getItem("token");
 
@@ -160,6 +172,8 @@ export async function updateProfile(profileData) {
 
   return result.user;
 }
+//delete Profile
+
 export async function deleteProfile() {
   const response = await fetch(`${API_URL}/users/profile`, {
     method: "DELETE",
@@ -182,6 +196,8 @@ export async function deleteProfile() {
   return data;
 }
 
+//create Order
+
 export const createOrder = async (orderData) => {
   const response = await fetch(`${API_URL}/orders`, {
     method: "POST",
@@ -197,6 +213,8 @@ export const createOrder = async (orderData) => {
 
   return data;
 };
+
+//create order item
 
 export const createOrderItem = async (itemData) => {
   const response = await fetch(`${API_URL}/order-items`, {
@@ -214,6 +232,8 @@ export const createOrderItem = async (itemData) => {
   return data;
 };
 
+//get my orders
+
 export const getMyOrders = async () => {
   const response = await fetch(`${API_URL}/orders`, {
     method: "GET",
@@ -228,6 +248,8 @@ export const getMyOrders = async () => {
 
   return data;
 };
+
+//get order by ID
 
 export const getOrderById = async (id) => {
   if (!id) {
@@ -248,6 +270,8 @@ export const getOrderById = async (id) => {
   return data;
 };
 
+//get Cart
+
 export async function getCart() {
   const token = localStorage.getItem("token");
 
@@ -266,6 +290,7 @@ export async function getCart() {
 }
 
 // ADD TO CART
+
 export async function addCartItem(productId, quantity = 1) {
   const token = localStorage.getItem("token");
 
@@ -288,6 +313,7 @@ export async function addCartItem(productId, quantity = 1) {
 }
 
 // UPDATE QUANTITY
+
 export async function updateCartItem(productId, quantity) {
   const token = localStorage.getItem("token");
 
@@ -307,6 +333,7 @@ export async function updateCartItem(productId, quantity) {
 }
 
 // REMOVE FROM CART
+
 export async function removeCartItem(productId) {
   const token = localStorage.getItem("token");
 
@@ -325,6 +352,7 @@ export async function removeCartItem(productId) {
 }
 
 // CLEAR CART
+
 export async function clearCart() {
   const token = localStorage.getItem("token");
 
@@ -369,6 +397,7 @@ export const getOrders = async () => {
 };
 
 // UPDATE ORDER STATUS
+
 export const updateOrderStatus = async (orderId, status, extraData = {}) => {
   const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
     method: "PUT",
@@ -394,14 +423,17 @@ export const updateOrderStatus = async (orderId, status, extraData = {}) => {
   }
 
   return data;
+
 }; // CUSTOMER - CANCEL ORDER
+
 export const cancelOrder = async (orderId) => {
   return await updateOrderStatus(orderId, "CANCELLED");
 };
 
-// ===============================
+
 // OWNER - STOCK
-// ===============================
+
+//get stocks
 
 export const getStock = async () => {
   const token = localStorage.getItem("token");
@@ -429,6 +461,8 @@ export const getStock = async () => {
 
 // OWNER - PRODUCT MANAGEMENT
 
+//create Product
+
 export const createProduct = async (productData) => {
   const response = await fetch(`${API_URL}/products`, {
     method: "POST",
@@ -444,6 +478,8 @@ export const createProduct = async (productData) => {
 
   return data;
 };
+
+//update Product
 
 export const updateProduct = async (id, productData) => {
   const response = await fetch(`${API_URL}/products/${id}`, {
@@ -461,6 +497,8 @@ export const updateProduct = async (id, productData) => {
   return data;
 };
 
+//delete Product
+
 export const deleteProduct = async (id) => {
   const response = await fetch(`${API_URL}/products/${id}`, {
     method: "DELETE",
@@ -477,6 +515,8 @@ export const deleteProduct = async (id) => {
 };
 
 // RECORD STOCK MOVEMENT (OWNER)
+
+//create Stock Movement
 
 export const createStockMovement = async (movementData) => {
   const response = await fetch(`${API_URL}/stock-movements`, {
@@ -533,6 +573,8 @@ export const getStockMovements = async (productId) => {
 
 // OWNER - DELIVERY AGENTS
 
+//get Delivery Agents
+
 export const getDeliveryAgents = async () => {
   const response = await fetch(`${API_URL}/users/delivery-agents`, {
     method: "GET",
@@ -555,6 +597,8 @@ export const getDeliveryAgents = async () => {
 
   return data.data || [];
 };
+
+//create Delivery Agent
 
 export const createDeliveryAgent = async (agentData) => {
   const response = await fetch(`${API_URL}/users/delivery-agents`, {
@@ -607,9 +651,9 @@ export const assignDeliveryAgent = async (orderId, deliveryAgentId) => {
 
   return data;
 };
-// ===============================
+
 // OWNER - WALK-IN SALES
-// ===============================
+
 
 export const getWalkInSales = async () => {
   const response = await fetch(`${API_URL}/walk-in-sales`, {
@@ -633,6 +677,8 @@ export const getWalkInSales = async () => {
 
   return data.sales || [];
 };
+
+//create Walk In Sale
 
 export const createWalkInSale = async (saleData) => {
   const response = await fetch(`${API_URL}/walk-in-sales`, {
@@ -658,6 +704,8 @@ export const createWalkInSale = async (saleData) => {
   return data.sale;
 };
 
+//get Walk In Sale by Id
+
 export const getWalkInSaleById = async (id) => {
   const response = await fetch(`${API_URL}/walk-in-sales/${id}`, {
     method: "GET",
@@ -681,6 +729,8 @@ export const getWalkInSaleById = async (id) => {
   return data.sale;
 };
 
+//get Walk In Sale items
+
 export const getWalkInSaleItems = async (saleId) => {
   const response = await fetch(`${API_URL}/walk-in-sale-items/sale/${saleId}`, {
     method: "GET",
@@ -703,6 +753,8 @@ export const getWalkInSaleItems = async (saleId) => {
 
   return data.items || [];
 };
+
+//delete Delivery Agent
 
 export const deleteDeliveryAgent = async (id) => {
   const response = await fetch(`${API_URL}/users/delivery-agents/${id}`, {

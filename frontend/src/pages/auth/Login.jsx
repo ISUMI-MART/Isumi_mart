@@ -53,7 +53,6 @@ function Login() {
           localStorage.removeItem("user");
           setError("Invalid user role.");
       }
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -67,25 +66,20 @@ function Login() {
       <div className="auth-left-panel">
         <div className="auth-brand-header">
           <h2 className="auth-logo">isumi mart.</h2>
-          <span className="auth-tagline">
-            YOUR NEIGHBORHOOD, NOW ONLINE
-          </span>
+          <span className="auth-tagline">YOUR NEIGHBORHOOD, NOW ONLINE</span>
         </div>
 
         <div className="auth-hero-text">
           <h1>Good food.</h1>
           <h1>A little closer to home.</h1>
           <p>
-            Shop fresh produce and everyday essentials
-            from the grocery shop you know and trust.
+            Shop fresh produce and everyday essentials from the grocery shop you
+            know and trust.
           </p>
         </div>
 
         <div className="auth-image-container">
-          <img
-            src="grocery-table.jpg"
-            alt="Fresh fruits and vegetables"
-          />
+          <img src="grocery-table.jpg" alt="Fresh fruits and vegetables" />
         </div>
 
         <div className="auth-brand-footer">
@@ -104,13 +98,9 @@ function Login() {
             Sign in to shop fresh with Isumi Mart.
           </p>
 
-          {message && (
-            <div className="auth-success">{message}</div>
-          )}
+          {message && <div className="auth-success">{message}</div>}
 
-          {error && (
-            <div className="auth-error">{error}</div>
-          )}
+          {error && <div className="auth-error">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="auth-field">
@@ -143,24 +133,53 @@ function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye preview-icon"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg> : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off preview-icon"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>}
+                  {showPassword ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-eye preview-icon"
+                    >
+                      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-eye-off preview-icon"
+                    >
+                      <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                      <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                      <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                      <path d="m2 2 20 20" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="auth-submit"
-              disabled={loading}
-            >
+            <button type="submit" className="auth-submit" disabled={loading}>
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
           <div className="auth-form-footer">
             <p>
-              New to Isumi Mart?{" "}
-              <Link to="/register">Create an account</Link>
+              New to Isumi Mart? <Link to="/register">Create an account</Link>
             </p>
 
             <div className="auth-divider"></div>

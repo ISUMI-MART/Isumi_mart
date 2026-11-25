@@ -14,9 +14,8 @@ function Reports() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ===============================
   // FORMAT MONEY
-  // ===============================
+
 
   function money(amount) {
     return `Rs. ${Number(amount || 0).toLocaleString("en-LK", {
@@ -25,9 +24,7 @@ function Reports() {
     })}`;
   }
 
-  // ===============================
   // LOAD REPORT DATA FROM BACKEND
-  // ===============================
 
   useEffect(() => {
     loadReportData();
@@ -72,9 +69,7 @@ function Reports() {
     }
   }
 
-  // ===============================
   // ONLINE SALES
-  // ===============================
 
   const deliveredOrders = orders.filter(
     (order) => order.status?.toUpperCase() === "DELIVERED"
@@ -86,9 +81,7 @@ function Reports() {
     0
   );
 
-  // ===============================
   // WALK-IN SALES
-  // ===============================
 
   const walkInRevenue = walkInSales.reduce(
     (total, sale) =>
@@ -96,25 +89,19 @@ function Reports() {
     0
   );
 
-  // ===============================
   // OVERALL SALES
-  // ===============================
 
   const totalRevenue = onlineRevenue + walkInRevenue;
 
   const totalSales = orders.length + walkInSales.length;
 
-  // ===============================
   // OTHER ORDER INFORMATION
-  // ===============================
-
+  
   const pendingOrders = orders.filter(
     (order) => order.status?.toUpperCase() !== "DELIVERED"
   );
 
-  // ===============================
   // LOW STOCK PRODUCTS
-  // ===============================
 
   const lowStockProducts = products.filter((product) => {
     const available = Number(product.available ?? 0);
@@ -126,9 +113,9 @@ function Reports() {
     return available <= threshold;
   });
 
-  // ===============================
+  
   // REPORT STATISTICS
-  // ===============================
+  
 
   const reports = [
     ["Total Sales", totalSales],
@@ -141,10 +128,6 @@ function Reports() {
     ["Low Stock Products", lowStockProducts.length],
   ];
 
-  // ===============================
-  // LOADING
-  // ===============================
-
   if (loading) {
     return (
       <section className="content">
@@ -154,10 +137,6 @@ function Reports() {
       </section>
     );
   }
-
-  // ===============================
-  // ERROR
-  // ===============================
 
   if (error) {
     return (
@@ -173,10 +152,6 @@ function Reports() {
       </section>
     );
   }
-
-  // ===============================
-  // REPORT SCREEN
-  // ===============================
 
   return (
     <section className="content">

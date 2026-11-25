@@ -94,10 +94,10 @@ function Products({ addToCart }) {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-search preview-icon"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-search preview-icon"
           >
             <path d="m21 21-4.34-4.34" />
             <circle cx="11" cy="11" r="8" />
@@ -150,51 +150,50 @@ function Products({ addToCart }) {
             ))}
           </div>
 
-          {pagination.totalPages > 0 && (
-            <div className="products-pagination">
-              <button
-                disabled={currentPage <= 1}
-                onClick={() => updateParams({ page: String(currentPage - 1) })}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-chevron-left preview-icon"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-              </button>
-
-              <span>
-                Page {currentPage} of {pagination.totalPages}
+          {pagination.totalPages > 1 && (
+            <div className="table-footer">
+              <span className="results-count">
+                Showing{" "}
+                {products.length === 0
+                  ? 0
+                  : (currentPage - 1) * pagination.limit + 1}
+                -{Math.min(currentPage * pagination.limit, pagination.total)} of{" "}
+                {pagination.total} products
               </span>
 
-              <button
-                disabled={currentPage >= pagination.totalPages}
-                onClick={() => updateParams({ page: String(currentPage + 1) })}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-chevron-right preview-icon"
+              <div className="pagination">
+                <button
+                  className="pagination-btn"
+                  disabled={currentPage === 1}
+                  onClick={() =>
+                    updateParams({ page: String(currentPage - 1) })
+                  }
                 >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </button>
+                  Previous
+                </button>
+
+                {Array.from({ length: pagination.totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    className={`pagination-btn ${
+                      currentPage === index + 1 ? "active" : ""
+                    }`}
+                    onClick={() => updateParams({ page: String(index + 1) })}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+
+                <button
+                  className="pagination-btn"
+                  disabled={currentPage === pagination.totalPages}
+                  onClick={() =>
+                    updateParams({ page: String(currentPage + 1) })
+                  }
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
 
@@ -208,10 +207,10 @@ function Products({ addToCart }) {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-search preview-icon"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-search preview-icon"
                 >
                   <path d="m21 21-4.34-4.34" />
                   <circle cx="11" cy="11" r="8" />

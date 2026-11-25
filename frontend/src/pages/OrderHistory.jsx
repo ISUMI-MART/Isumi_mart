@@ -68,13 +68,19 @@ const OrderHistory = () => {
   // Error state
   if (error) {
     return (
-      <div className="page-container">
-        <main className="main-content">
-          <h2>Unable to load orders</h2>
-          <p>{error}</p>
-
-          <button className="back-btn" onClick={() => window.location.reload()}>
-            Try Again
+      <div className="page-container" >
+        <main className="main-content"
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center",
+      gap: "12px",
+    }}>
+          <h2>PLEASE LOG IN TO LOAD ORDERS</h2>
+          <button className="back-btn" onClick={() => navigate("/login")} style={{background:"red",color:"white"}}>
+           LOGIN
           </button>
         </main>
       </div>

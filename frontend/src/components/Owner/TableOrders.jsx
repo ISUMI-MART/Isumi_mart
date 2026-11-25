@@ -18,7 +18,6 @@ function TableOrders({
   assigningOrder,
   updatingOrder,
 }) {
-  // const finalStatuses = ["DELIVERED"];
 
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -32,7 +32,7 @@ function Navbar({ cartCount = 0, user, onLogout }) {
           <nav className="nav-links">
             <NavLink to="/" end>Home</NavLink>
             <NavLink to="/products">Products</NavLink>
-            <NavLink to="/orders">Orders</NavLink>
+           {user && <NavLink to="/orders">Orders</NavLink>}
             {user && <NavLink to="/profile">Profile</NavLink>}
           </nav>
 
@@ -96,14 +96,6 @@ function Navbar({ cartCount = 0, user, onLogout }) {
           </div>
         </div>
       </header>
-
-      {/* Mobile tab bar  */}
-      {/* <nav className="bottom-nav">
-        <NavLink to="/" end>🏠<span>Home</span></NavLink>
-        <NavLink to="/products">🛍️<span>Products</span></NavLink>
-        <NavLink to="/cart">🛒<span>Cart</span></NavLink>
-        <NavLink to="/orders">📦<span>Orders</span></NavLink>
-      </nav> */}
       <MobileNav/>
     </>
   );

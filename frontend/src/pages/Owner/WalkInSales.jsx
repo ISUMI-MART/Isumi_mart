@@ -19,7 +19,6 @@ function WalkInSales() {
 
   const [error, setError] = useState("");
 
-
   useEffect(() => {
     loadProducts();
   }, []);
@@ -41,7 +40,6 @@ function WalkInSales() {
       setLoading(false);
     }
   }
-
 
   const filteredProducts = products.filter((product) => {
     const available = Number(product.available ?? 0);
@@ -66,13 +64,11 @@ function WalkInSales() {
     0,
   );
 
-
   function isWeightProduct(product) {
     return ["kg", "kilogram", "kilograms"].includes(
       product.unit?.trim().toLowerCase(),
     );
   }
-
 
   function addToCart(product) {
     setError("");
@@ -129,7 +125,7 @@ function WalkInSales() {
   }
 
   // CHANGE QUANTITY
- 
+
   function changeQuantity(productId, newQuantity) {
     const product = products.find((p) => p.id === productId);
 
@@ -232,9 +228,7 @@ function WalkInSales() {
     );
   }
 
-  // ===============================
   // REMOVE ITEM
-  // ===============================
 
   function removeFromCart(productId) {
     setCart((currentCart) =>
@@ -244,9 +238,7 @@ function WalkInSales() {
     setError("");
   }
 
-  // ===============================
   // COMPLETE SALE
-  // ===============================
 
   function formatWeight(quantity, unit) {
     const normalizedUnit = unit?.trim().toLowerCase();
@@ -310,9 +302,7 @@ function WalkInSales() {
     }
   }
 
-  // ===============================
   // START NEW SALE
-  // ===============================
 
   function startNewSale() {
     setCompletedSale(null);
@@ -325,9 +315,7 @@ function WalkInSales() {
     loadProducts();
   }
 
-  // ===============================
   // RECEIPT
-  // ===============================
 
   if (completedSale) {
     return (
@@ -364,11 +352,8 @@ function WalkInSales() {
               <thead>
                 <tr>
                   <th>Product</th>
-
                   <th>Qty</th>
-
                   <th>Price</th>
-
                   <th>Total</th>
                 </tr>
               </thead>
@@ -382,11 +367,8 @@ function WalkInSales() {
                   return (
                     <tr key={item.id}>
                       <td>{item.product?.name || "Product"}</td>
-
                       <td>{formatWeight(quantity, item.product?.unit)}</td>
-
                       <td>Rs. {price.toFixed(2)}</td>
-
                       <td>Rs. {(price * quantity).toFixed(2)}</td>
                     </tr>
                   );
@@ -417,9 +399,7 @@ function WalkInSales() {
     );
   }
 
-  // ===============================
   // POS SCREEN
-  // ===============================
 
   return (
     <section className="content">
@@ -432,9 +412,6 @@ function WalkInSales() {
       {error && <p className="sale-error">{error}</p>}
 
       <div className="pos-layout">
-        {/* ==========================
-            AVAILABLE PRODUCTS
-        ========================== */}
 
         <div className="panel">
           <div className="panelhead">
@@ -470,7 +447,7 @@ function WalkInSales() {
                           className="product-image"
                         />
                       ) : (
-                        "🛒"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18"/><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25"/><circle cx="18" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg>
                       )}
                     </span>
 
@@ -517,14 +494,8 @@ function WalkInSales() {
           )}
         </div>
 
-        {/* ==========================
-            CURRENT BILL
-        ========================== */}
-
         <div className="panel">
           <h3>Current bill</h3>
-
-          {/* CUSTOMER */}
 
           <label className="pos-label">
             Customer name
@@ -536,8 +507,6 @@ function WalkInSales() {
             />
           </label>
 
-          {/* PAYMENT METHOD */}
-
           <label className="pos-label">
             Payment method
             <select
@@ -548,8 +517,6 @@ function WalkInSales() {
               <option value="Cash">Cash</option>
             </select>
           </label>
-
-          {/* CART */}
 
           <div className="cart-items">
             {cart.map((item) => {
@@ -568,8 +535,6 @@ function WalkInSales() {
                       Rs. {item.price.toFixed(2)} per {item.unit || "unit"}
                     </small>
                   </div>
-
-                  {/* QUANTITY */}
 
                   <div className="quantity-control">
                     <button
@@ -599,11 +564,7 @@ function WalkInSales() {
                     </button>
                   </div>
 
-                  {/* ITEM TOTAL */}
-
                   <b>Rs. {(item.price * item.quantity).toFixed(2)}</b>
-
-                  {/* REMOVE */}
 
                   <button
                     type="button"
@@ -621,15 +582,12 @@ function WalkInSales() {
             )}
           </div>
 
-          {/* TOTAL */}
 
           <div className="pos-total">
             <span>Total amount</span>
 
             <strong>Rs. {subtotal.toFixed(2)}</strong>
           </div>
-
-          {/* COMPLETE SALE */}
 
           <button
             className="btn complete-sale"
