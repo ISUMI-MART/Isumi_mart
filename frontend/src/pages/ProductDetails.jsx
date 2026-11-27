@@ -108,7 +108,7 @@ function ProductDetails({ addToCart }) {
           <h1>{product.name}</h1>
 
           <p className="pd-sub">
-            {product.category} · {product.unit || ""}
+            {product.category}
           </p>
 
           <p className="pd-price">Rs. {product.price.toLocaleString()}</p>
@@ -116,7 +116,7 @@ function ProductDetails({ addToCart }) {
           <div className="pd-meta">
             <span className={`stock-pill ${badgeClass}`}>{stock}</span>
 
-            <span>Available: {available}</span>
+            <span>Available: {available}  {product.unit || ""}</span>
 
             {product.expiry && <span>Expiry: {product.expiry}</span>}
           </div>

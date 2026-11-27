@@ -259,7 +259,7 @@ function Overview() {
                   </div>
                 </div>
 
-                <span className="pill orange">{quantity} left</span>
+                <span className="pill orange">{quantity} {product.unit} left</span>
               </div>
             );
           })}

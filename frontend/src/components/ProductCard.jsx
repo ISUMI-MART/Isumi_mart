@@ -12,6 +12,7 @@ function ProductCard({ product, addToCart }) {
       : "out-stock";
 
   return (
+    
     <div className="product-card">
       {/* Clicking the picture opens the Product Details page */}
       <Link to={`/products/${product.id}`} className="product-image">
@@ -30,10 +31,11 @@ function ProductCard({ product, addToCart }) {
           </Link>
         </h3>
 
-        <p className="product-unit">{product.unit}</p>
+        <p className="product-unit">{product.stockConfig?.quantity} {product.unit}</p>
 
         <div className="product-bottom">
           <strong>Rs. {product.price.toLocaleString()}</strong>
+          
 
           <button
             className="add-button"
@@ -42,7 +44,9 @@ function ProductCard({ product, addToCart }) {
           >
             {isOutOfStock ? "Out of Stock" : "Add to Cart"}
           </button>
+          
         </div>
+        
       </div>
     </div>
   );
