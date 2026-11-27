@@ -1,5 +1,7 @@
 # Isumi Mart
 
+https://isumi-mart.vercel.app/
+
 A web-based grocery management system developed for **Isumi Mart**. The system helps replace manual, paper-based shop operations with a centralized digital platform for managing grocery products, inventory, customer orders, deliveries, walk-in sales, suppliers, and Cash on Delivery payments.
 
 Customers can browse products and place online grocery orders, while the Owner manages products, stock, online orders, physical shop sales, deliveries, and reports. Delivery Agents can view assigned deliveries and update delivery status.
@@ -45,16 +47,13 @@ The project is designed for a local grocery business that needs a practical and 
 
 ## Problem Statement
 
-Isumi Mart currently depends on manual records for product details, stock quantities, customer orders, bills, deliveries, and sales information. Manual processes can cause problems such as:
+Isumi Mart currently depends on manual records for product details, stock quantities,bills, and sales information. Manual processes can cause problems such as:
 
 - Incorrect stock quantities
 - Lost or incomplete records
-- Delays in processing customer orders
-- Difficulty tracking Cash on Delivery payments
-- Difficulty identifying low-stock and expired products
-- Limited visibility of delivery status
-- Difficulty preparing daily sales information
-- Errors when managing walk-in customer sales and online orders separately
+- Difficulty identifying low-stock products
+- Difficulty preparing sales information
+- Errors when managing pos.
 
 This system solves these problems by storing important business information in one centralized PostgreSQL database.
 
@@ -64,7 +63,7 @@ This system solves these problems by storing important business information in o
 
 ### Customer Features
 
-- Register and log in securely using Clerk
+- Register and log in securely using JWT/bcrypt
 - Browse available grocery products
 - Search products by name
 - Filter products by category
@@ -77,6 +76,7 @@ This system solves these problems by storing important business information in o
 - View personal order history
 - Track order and delivery status
 - View delivery details
+- Cancel orders
 
 ### Owner Features
 
@@ -85,13 +85,10 @@ The Owner manages all shop activities. There is no separate Cashier role in this
 - Manage product categories
 - Add, update, deactivate, and view products
 - Manage product prices, images, units, and stock levels
-- Manage suppliers
-- Record stock purchases from suppliers
 - View inventory quantities
 - View low-stock products
-- View products close to expiry
 - Manage online orders
-- Confirm, prepare, cancel, and update customer orders
+- Confirm, prepare, and update customer orders
 - Assign a delivery agent to an order
 - Manage delivery status
 - Record walk-in customer sales
@@ -102,7 +99,7 @@ The Owner manages all shop activities. There is no separate Cashier role in this
 
 ### Delivery Agent Features
 
-- Log in securely using Clerk
+- Log in securely using JWT/bcryptr
 - View assigned deliveries
 - View customer delivery details
 - Update delivery status
@@ -119,10 +116,8 @@ The Owner manages all shop activities. There is no separate Cashier role in this
 | Role | Description | Main Permissions |
 |---|---|---|
 | Customer | A user who purchases groceries online | Browse products, manage cart, place COD orders, track personal orders |
-| Owner | The main shop administrator | Manage products, inventory, suppliers, online orders, walk-in sales, delivery agents, and reports |
+| Owner | The main shop administrator | Manage products, inventory, online orders, walk-in sales, delivery agents, and reports |
 | Delivery Agent | A staff member who delivers confirmed online orders | View assigned deliveries, update delivery status, collect COD payments |
-
-> **Note:** The system does not include a separate Cashier role. The Owner manages both online orders and walk-in customer sales.
 
 ---
 
@@ -176,24 +171,6 @@ Inventory Is Reduced
 Sales Record and Bill Are Created
 ```
 
-### Stock Purchase Workflow
-
-```text
-Owner Creates Supplier Record
-        ↓
-Owner Creates Purchase Order
-        ↓
-Supplier Delivers Products
-        ↓
-Owner Receives Stock
-        ↓
-System Increases Inventory Quantity
-        ↓
-Product Batch and Expiry Details Are Recorded
-        ↓
-Stock Movement History Is Created
-```
-
 ---
 
 ## Technology Stack
@@ -215,10 +192,57 @@ Stock Movement History Is Created
 ## Project Structure
 
 ```text
+## Project Structure
+
+```text
+Isumi_mart/
+│
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── errors/
+│   │   ├── generated/
+│   │   ├── middleware/
+|   |   ├── models/
+│   │   ├── repository/
+│   │   ├── routes/
+│   │   ├── service/
+│   │   └── util/
+│   │   ├── app.js
+│   │
+│   ├── prisma/
+│   │   └── schema.prisma
+│   │
+│   ├── .env.example
+│   ├── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── assets/
+│   │   ├── app.css
+│   │   └── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── tests/
+│   ├── auth.spec.js
+│   └── customer.spec.js
+│   └── delivery.spec.js
+│   └── owner.spec.js
+│
+├── .gitignore
+└── README.md
 
 ```
-
-> The actual folder structure may change slightly as the project develops.
 
 ---
 
@@ -234,18 +258,11 @@ Main database entities include:
 | Address | Stores saved customer delivery addresses |
 | Category | Stores grocery product categories |
 | Product | Stores product information, prices, status, and category |
-| Inventory | Stores the current available quantity for each product |
-| ProductBatch | Stores received stock batches and expiry dates |
-| Supplier | Stores supplier information |
-| PurchaseOrder | Stores owner stock-purchase records |
-| PurchaseOrderItem | Stores products included in a stock purchase |
+| Stock | |
 | StockMovement | Records every increase or decrease in stock |
-| Cart | Stores a customer’s active shopping cart |
 | CartItem | Stores products and quantities in a cart |
 | Order | Stores customer online orders |
 | OrderItem | Stores product and pricing details for each order |
-| Payment | Stores Cash on Delivery payment status |
-| Delivery | Stores delivery-agent assignment and delivery progress |
 | WalkInSale | Stores physical shop sales managed by the Owner |
 | WalkInSaleItem | Stores products included in a walk-in sale |
 
@@ -254,7 +271,7 @@ Main database entities include:
 - A customer can access only their own online orders.
 - A delivery agent can access only deliveries assigned to them.
 - Product prices are saved in order items so previous orders retain the correct historical price.
-- Stock movements are recorded for purchases, online orders, walk-in sales, damaged stock, expired products, and manual adjustments.
+- Stock movements are recorded for purchases, online orders, walk-in sales, damaged stock, and manual adjustments.
 - Cash on Delivery payments remain `PENDING` until the order is successfully delivered and cash is collected.
 - Products should be marked as inactive instead of permanently deleted when they have sales history.
 
@@ -262,97 +279,111 @@ Main database entities include:
 
 ## Installation and Setup
 
-### Prerequisites
-
-Install the following before running the project:
-
-- Node.js version 18 or later
-- npm, pnpm, or yarn
-- PostgreSQL
-- Git
-
 ### 1. Clone the Repository
 
 ```bash
-https://github.com/ISUMI-MART/Isumi_mart.git
-
+git clone https://github.com/your-username/Isumi_mart.git
+cd Isumi_mart
 ```
 
-### 2. Install Dependencies
+### 2. Backend Setup
+
+Navigate to the backend folder:
+
+```bash
+cd backend
+```
+
+Install the required dependencies:
 
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
+Create a `.env` file and add the required environment variables:
 
-Create a `.env` file in the project root.
+```env
+DATABASE_URL="your_database_connection_string"
+JWT_SECRET="your_jwt_secret"
 
-```bash
-cp .env.example .env
 ```
 
-Then add your database and Clerk values.
-
-### 4. Create the Database
-
-Create a PostgreSQL database named:
-
-```text
-isumi_mart
-```
-
-Example using PostgreSQL command line:
-
-```sql
-CREATE DATABASE isumi_mart;
-```
-
-### 5. Run Prisma Migration
-
-```bash
-npx prisma migrate dev --name initial_schema
-```
-
-### 6. Generate Prisma Client
+Generate the Prisma Client:
 
 ```bash
 npx prisma generate
 ```
 
-### 7. Start the Development Server
+Run the database migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Start the backend server:
 
 ```bash
 npm run dev
 ```
 
-Open the application in your browser:
+### 3. Frontend Setup
 
-```text
-http://localhost:3000
+Open a new terminal and navigate to the frontend:
+
+```bash
+cd frontend
 ```
 
----
+Install the required dependencies:
 
-## Environment Variables
+```bash
+npm install
+```
 
-Create a `.env` file using the following example.
+Create a `.env` file:
 
 ```env
-# PostgreSQL Database
-DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/isumi_mart?schema=public"
-
+VITE_API_URL=http://localhost:4000/api
 ```
 
-> Never commit `.env` files, database passwords, Clerk secret keys, or production credentials to GitHub.
+Start the frontend development server:
 
-Add this to `.gitignore`:
+```bash
+npm run dev
+```
 
-```gitignore
-.env
-.env.local
-node_modules
-.next
+### 4. Run the Application
+
+After starting both the backend and frontend, open the frontend URL shown in the terminal, for example:
+
+```text
+http://localhost:5173
+```
+
+The backend API will run on:
+
+```text
+http://localhost:4000
+```
+
+### 5. Running Tests
+
+From the project root, install Playwright if it has not already been installed:
+
+```bash
+npx playwright install
+```
+
+Run the tests:
+
+```bash
+npx playwright test
+```
+
+To run tests with the browser visible:
+
+```bash
+npx playwright test --headed
 ```
 
 ---
@@ -364,11 +395,9 @@ node_modules
 | `npm run dev` | Starts the development server |
 | `npm run build` | Creates a production build |
 | `npm run start` | Starts the production server |
-| `npm run lint` | Runs lint checks |
 | `npx prisma studio` | Opens Prisma Studio to view and manage database records |
 | `npx prisma migrate dev` | Creates and applies a development migration |
 | `npx prisma generate` | Generates Prisma Client |
-| `npx prisma format` | Formats the Prisma schema |
 
 ---
 
@@ -381,31 +410,29 @@ node_modules
 | Home | `/` | Landing page and featured products |
 | Products | `/products` | Product browsing, search, and filtering |
 | Product Details | `/products/[id]` | Product information and add-to-cart option |
-| Login | `/sign-in` | Clerk login page |
-| Register | `/sign-up` | Clerk registration page |
+| Login | `/login` |  Login page |
+| Register | `/register` | Registration page |
 
 ### Customer Pages
 
 | Page | Route | Description |
 |---|---|---|
-| Cart | `/customer/cart` | View, edit, and remove cart items |
-| Checkout | `/customer/checkout` | Add delivery details and place COD order |
-| My Orders | `/customer/orders` | View customer order history |
-| Order Details | `/customer/orders/[id]` | View order items, payment, and delivery status |
-| Addresses | `/customer/addresses` | Manage saved delivery addresses |
+| Cart | `/cart` | View, edit, and remove cart items |
+| Checkout address | `/checkout/address` | Add delivery details |
+| Order summary | `/checkout/summary` | One last check before placing the order |
+| Order confirmation | `/order-confirmation/[id]` | View order details and order place message |
+| Order history | `/orders` | View all current and past orders |
+| Track order | `/orders/[id]` | View order items, payment, and delivery status |
 
 ### Owner Pages
 
 | Page | Route | Description |
 |---|---|---|
-| Owner Dashboard | `/owner/dashboard` | Sales, order, inventory, and delivery summary |
-| Products | `/owner/products` | Manage products |
-| Categories | `/owner/categories` | Manage product categories |
-| Inventory | `/owner/inventory` | View stock, low stock, and expiry information |
+| Owner Dashboard | `/owner/overview` | Sales, order, inventory, and delivery summary |
+| Inventory | `/owner/inventory` | View stock, low stock, and select category |
 | Suppliers | `/owner/suppliers` | Manage suppliers |
-| Purchases | `/owner/purchase-orders` | Manage stock purchases |
-| Online Orders | `/owner/orders` | Confirm, prepare, cancel, and assign orders |
-| Deliveries | `/owner/deliveries` | Assign delivery agents and monitor delivery status |
+| Online Orders | `/owner/orders` | Confirm, prepare, and assign orders |
+| Delivery agents | `/owner/deliveriy-agents` | Assign delivery agents and monitor delivery status |
 | Walk-In Sales | `/owner/walk-in-sales` | Record physical shop sales |
 | Reports | `/owner/reports` | View sales, inventory, order, and delivery reports |
 
@@ -413,9 +440,8 @@ node_modules
 
 | Page | Route | Description |
 |---|---|---|
-| Delivery Dashboard | `/delivery/dashboard` | Summary of assigned deliveries |
-| Assigned Deliveries | `/delivery/assigned-orders` | List of assigned orders |
-| Delivery Details | `/delivery/orders/[id]` | Customer address, contact details, and delivery update actions |
+| Delivery Dashboard | `/delivery` | Summary of assigned deliveries |
+| Delivery completed | `/delivery/completed` | View completed deliveries |
 
 ---
 
@@ -429,12 +455,8 @@ The application API is organized around the following modules:
 | Users | Customer profiles, owner accounts, delivery-agent accounts |
 | Categories | Create, update, list, and deactivate categories |
 | Products | Product CRUD operations, search, filtering, and availability |
-| Inventory | Stock levels, adjustments, low-stock alerts, and expiry alerts |
-| Suppliers | Supplier management |
-| Purchases | Purchase orders, received stock, and product batches |
 | Cart | Add items, update quantities, remove items, and view cart |
 | Orders | Online checkout, stock validation, order management, and order history |
-| Payments | Cash on Delivery payment records and collection status |
 | Deliveries | Delivery assignment, delivery tracking, and status updates |
 | Walk-In Sales | Physical-shop billing, sale records, and stock reduction |
 | Reports | Daily sales, order, inventory, and delivery summaries |
@@ -442,8 +464,6 @@ The application API is organized around the following modules:
 ---
 
 ## Security and Access Control
-
-The system uses Clerk for authentication and session management.
 
 - Customer registration is handled through JWT auth system.
 - Customer login is handled through JWT.
@@ -491,7 +511,6 @@ Possible future improvements include:
 - Product discounts and promotional codes
 - Multiple shop branches
 - Barcode scanning for walk-in sales
-- Printable PDF invoices and bills
 - Advanced sales and profit reports
 - Supplier payment and credit tracking
 - Delivery route optimization
@@ -504,13 +523,11 @@ Possible future improvements include:
 
 ## AI Usage Declaration
 
-Lovable AI was used during the planning stage to explore UI ideas and create an initial sample prototype/wireframe. The generated code was not directly used as the final system implementation unless explicitly stated in project documentation.
+Figma AI was used during the planning stage to explore UI ideas and create an initial sample prototype/wireframe. The generated code was not directly used as the final system implementation unless explicitly stated in project documentation.
 
 The final project design, database schema, frontend implementation, backend logic, integration, testing, and documentation are developed and reviewed by the project team.
 
 ---
-
-## License
 
 This project was developed as a university group project for educational purposes.
 
