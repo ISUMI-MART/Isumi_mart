@@ -281,7 +281,7 @@ Main database entities include:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/Isumi_mart.git
+git clone https://github.com/ISUMI-MART/Isumi_mart.git
 cd Isumi_mart
 ```
 
