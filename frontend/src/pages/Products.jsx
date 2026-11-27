@@ -46,7 +46,7 @@ function Products({ addToCart }) {
 
         const result = await getProducts({
           page: currentPage,
-          limit: 10,
+          limit: 21,
           search,
           categorySlug,
         });

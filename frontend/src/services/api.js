@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export async function getProducts({
   page = 1,
-  limit = 10,
+  limit = 21,
   search = "",
   categorySlug = "",
 } = {}) {
