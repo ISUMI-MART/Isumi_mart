@@ -75,6 +75,10 @@ function Products({ addToCart }) {
       }
     });
 
+    if ("search" in changes || "category" in changes) {
+      next.delete("page");
+    }
+
     setSearchParams(next);
   };
 
