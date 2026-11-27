@@ -12,7 +12,7 @@ function WalkInSales() {
   const [completedSale, setCompletedSale] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const productsPerPage = 15;
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

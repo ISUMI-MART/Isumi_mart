@@ -268,7 +268,6 @@ export class OrderRepository {
       });
     }
 
-    // EXISTING STATUS UPDATE LOGIC
     const data = { status };
 
     if (status === "PICKED_UP") {

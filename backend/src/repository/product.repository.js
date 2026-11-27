@@ -66,7 +66,7 @@ export class ProductRepository {
   async getAll(filters = {}) {
     const {
       page = 1,
-      limit = 10,
+      limit = 21,
       sortBy = "createdAt",
       sortOrder = "desc",
       search,

@@ -10,10 +10,7 @@ export class ProductController {
         const product = await productService.createProduct(body);
         res.status(201).json({ success: true, data: product })
     })
-    // getAll = catchAsync(async (req, res) => {
-    //     const products  = await productService.getAllProduct();
-    //     res.json({ success: true, data: products  })
-    // })
+
     getAll = catchAsync(async (req, res) => {
         const filters = req.validated.query;
 

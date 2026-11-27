@@ -24,11 +24,7 @@ function DeliveryOrderDetails({ order, onStatusChange, updating = false }) {
         );
     }
 
-    const isTerminal = [
-        "DELIVERED",
-        "DELIVERY_FAILED",
-        "CANCELLED",
-    ].includes(order.status);
+    const isTerminal = [ "DELIVERED","DELIVERY_FAILED","CANCELLED",].includes(order.status);
 
     const statusLabels = {
         ASSIGNED: "Assigned",

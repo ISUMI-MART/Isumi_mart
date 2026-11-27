@@ -13,7 +13,6 @@ const stockMovementRouter = Router();
 
 const stockMovementController = new StockMovementController();
 
-
 stockMovementRouter.get("/",requireAuth,requireRole("OWNER"),stockMovementController.getAllMovements);
 stockMovementRouter.get("/product/:productId",requireAuth,requireRole("OWNER"),stockMovementController.getMovementsByProduct);
 stockMovementRouter.post("/",requireAuth,requireRole("OWNER"),validate(createStockMovementSchema),stockMovementController.createMovement);

@@ -10,7 +10,7 @@ function createOrderError(message, statusCode = 400) {
 }
 
 export class OrderService {
-  // Create a new order
+
   async create(userId, data) {
     return await orderRepository.createOrder({
       ...data,
@@ -18,12 +18,10 @@ export class OrderService {
     });
   }
 
-  // Get all orders
   async getAll(userId, role) {
     return await orderRepository.getAll(userId, role);
   }
 
-  // Get a specific order by ID
   async getById(id, userId, role) {
     const order = await orderRepository.getById(id);
 
@@ -44,8 +42,6 @@ export class OrderService {
     return order;
   }
 
-  // Update the status of an existing order
-  // Update the status of an existing order
   async updateStatus(id, status, userId, role, extraData = {}) {
     const order = await orderRepository.getById(id);
 
@@ -53,7 +49,6 @@ export class OrderService {
       throw new NotFoundError("Order not found");
     }
 
-    // CUSTOMER permissions
     if (role === "CUSTOMER") {
       // Customers can cancel only their own orders
       if (order.userId !== userId) {
