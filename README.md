@@ -19,13 +19,12 @@ Customers can browse products and place online grocery orders, while the Owner m
 - [Project Structure](#project-structure)
 - [Database Design](#database-design)
 - [Installation and Setup](#installation-and-setup)
-- [Environment Variables](#environment-variables)
 - [Available Scripts](#available-scripts)
 - [Main Pages](#main-pages)
 - [API Modules](#api-modules)
 - [Team Members](#team-members)
 - [Future Improvements](#future-improvements)
-- [License](#license)
+- [AI Usage Declaration](#ai-usage-declaration)
 
 ---
 
@@ -401,7 +400,7 @@ npx playwright test --headed
 
 ---
 
-## Main Pages(The actual pages may change slightly as the project develops. )
+## Main Pages
 
 ### Public Pages
 
